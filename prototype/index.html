@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <title>Сделайте товар конкурентнее</title>
+    <link rel="preload" href="../assets/fonts/AvitoSansText-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../assets/fonts/AvitoSansText-Medium.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../assets/fonts/AvitoSansText-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../assets/fonts/AvitoSansText-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="device" data-device>
+      <div class="main-scroll" data-main-scroll>
+        <img class="status-bar" src="../assets/status-bar.svg" alt="">
+        <h1 class="page-title">Сделайте ваш товар<br>конкурентнее</h1>
+
+        <section class="recommendation" data-recommendation>
+          <div class="recommendation-header">
+            <div class="recommendation-title">
+              <img src="../assets/ai-sparkle.svg" alt="">
+              <span>Советует нейросеть</span>
+            </div>
+            <button class="master-toggle" type="button" data-master-toggle>Отключить</button>
+          </div>
+          <div class="recommendation-panel">
+            <div class="benefit-list" data-recommended-list></div>
+          </div>
+        </section>
+
+        <section class="additional">
+          <h2>Сделать ещё круче</h2>
+          <div class="additional-panel">
+            <div class="benefit-list" data-additional-list></div>
+          </div>
+        </section>
+        <div class="scroll-safe-area"></div>
+      </div>
+
+      <footer class="checkout-footer" data-checkout-footer>
+        <div class="product-result">
+          <img class="product-result-image" data-product-thumbnail src="../assets/product-thumbnail.png" alt="Коричневые туфли">
+          <div class="product-result-copy">
+            <div class="product-result-price">
+              <strong data-current-price>4 500 ₽</strong>
+              <span data-old-price>5 000 ₽</span>
+            </div>
+            <button class="competition-link" type="button" data-open-sheet="competition">
+              <span data-competition-label>Высокая конкурентность</span>
+              <img src="../assets/question.svg" alt="Подробнее">
+            </button>
+          </div>
+        </div>
+        <button class="benefits-summary" type="button" data-open-sheet="summary">
+          <span data-summary-label>4 преимущества, 2 платных</span>
+          <span class="summary-price" data-summary-price>150 ₽ <s>320 ₽</s></span>
+          <img src="../assets/chevron-down.svg" alt="Открыть">
+        </button>
+        <button class="primary-button checkout-button" type="button" data-continue>Продолжить</button>
+        <div class="home-indicator"></div>
+      </footer>
+
+      <div class="backdrop" data-backdrop></div>
+
+      <section class="sheet product-sheet" data-sheet="product" aria-label="Скидка на товар" aria-hidden="true">
+        <div class="sheet-scroll">
+          <div class="sheet-hero product-hero">
+            <div class="sheet-handle"></div>
+            <img class="product-hero-image" src="../assets/product-hero.png" alt="Иллюстрация скидки">
+          </div>
+          <button class="sheet-close" type="button" data-close-sheet><img src="../assets/close.svg" alt="Закрыть"></button>
+          <div class="sheet-content product-content">
+            <h2>Хватамба</h2>
+            <p>Объявление станет заметнее — появится значок «Скидка» и перечёркнутая цена. Скидку проверим <a href="#">по правилам</a></p>
+            <div class="discount-input"><span data-product-value>10%</span><button type="button" data-clear-product><img src="../assets/close.svg" alt="Очистить"></button></div>
+            <div class="choice-chips" data-product-chips></div>
+          </div>
+        </div>
+        <div class="sheet-purchase-footer">
+          <div class="sheet-product-result">
+            <img src="../assets/product-thumbnail.png" alt="Коричневые туфли">
+            <div><strong>4 500 ₽ <s>5 000 ₽</s></strong><span>Хорошая скидка</span></div>
+          </div>
+          <button class="primary-button" type="button" data-apply-product>Продолжить</button>
+          <div class="home-indicator"></div>
+        </div>
+      </section>
+
+      <section class="sheet delivery-sheet" data-sheet="delivery" aria-label="Скидка на доставку" aria-hidden="true">
+        <div class="sheet-scroll">
+          <div class="sheet-hero delivery-hero">
+            <div class="sheet-handle"></div>
+            <img src="../assets/delivery-hero.png" alt="Автомобиль доставки">
+          </div>
+          <button class="sheet-close" type="button" data-close-sheet><img src="../assets/close.svg" alt="Закрыть"></button>
+          <div class="sheet-content delivery-content">
+            <h2>Скидка на доставку</h2>
+            <p>Чем выше скидка, тем дешевле доставка для покупателя</p>
+            <h3>Выберите сумму</h3>
+            <div class="delivery-control">
+              <div class="delivery-value"><span data-delivery-value>200 ₽</span><button type="button" data-clear-delivery><img src="../assets/close.svg" alt="Очистить"></button></div>
+              <input type="range" min="50" max="1500" step="50" value="200" data-delivery-range aria-label="Скидка на доставку">
+              <div class="range-labels"><span>50</span><span>1 500</span></div>
+            </div>
+            <div class="delivery-banner"><strong data-delivery-banner-title>Оптимально — 200 ₽.</strong> <span data-delivery-banner-copy>Для 50% покупателей доставка будет бесплатной, остальным скидка.</span></div>
+          </div>
+        </div>
+        <div class="sheet-purchase-footer">
+          <div class="sheet-product-result delivery-result">
+            <img src="../assets/product-thumbnail.png" alt="Коричневые туфли">
+            <div><strong data-payout-price>от 4 300 ₽</strong><span>Выплатим при покупке с доставкой. Вычтем меньше, если выйдет дешевле</span></div>
+          </div>
+          <button class="primary-button" type="button" data-apply-delivery>Продолжить</button>
+          <div class="home-indicator"></div>
+        </div>
+      </section>
+
+      <section class="sheet promotion-sheet" data-sheet="promotion" aria-label="Поднять в поиске" aria-hidden="true">
+        <div class="sheet-scroll promotion-scroll">
+          <div class="sheet-handle"></div>
+          <button class="sheet-close" type="button" data-close-sheet><img src="../assets/close.svg" alt="Закрыть"></button>
+          <div class="promotion-content">
+            <h2>Продвижение</h2>
+            <p>Чем больше бюджет, тем чаще объявление попадает в топ поиска и рекомендаций.</p>
+            <h3>Количество дней</h3>
+            <div class="duration-chips" data-duration-chips></div>
+            <h3>Бюджет</h3>
+            <div class="budget-cards" data-budget-cards></div>
+          </div>
+          <div class="promotion-bottom-space"></div>
+        </div>
+        <div class="promotion-footer">
+          <div class="promotion-total"><span data-promotion-days>23</span><p data-promotion-result>Когда объявление соберёт столько контактов, оно опустится в поиске</p></div>
+          <button class="promotion-done" type="button" data-apply-promotion>Готово</button>
+          <div class="home-indicator"></div>
+        </div>
+      </section>
+
+      <section class="sheet summary-sheet" data-sheet="summary" aria-label="Итого с преимуществами" aria-hidden="true">
+        <div class="sheet-handle"></div>
+        <button class="sheet-close" type="button" data-close-sheet><img src="../assets/close.svg" alt="Закрыть"></button>
+        <div class="summary-illustration">
+          <img src="../assets/product-thumbnail.png" alt="Товар с подключёнными преимуществами">
+        </div>
+        <h2>Итого с приемуществами</h2>
+        <div class="summary-lines" data-summary-lines></div>
+        <div class="summary-note"><strong>*0 ₽</strong> за подключение вы ничего не платите</div>
+        <button class="primary-button summary-cta" type="button" data-summary-apply>Подключить все за 120 ₽</button>
+        <div class="home-indicator"></div>
+      </section>
+
+      <section class="sheet competition-sheet" data-sheet="competition" aria-label="Конкурентность" aria-hidden="true">
+        <div class="sheet-hero competition-hero"><div class="sheet-handle"></div><img src="../assets/competition-hero.png" alt="График роста"></div>
+        <button class="sheet-close" type="button" data-close-sheet><img src="../assets/close.svg" alt="Закрыть"></button>
+        <div class="competition-content">
+          <h2>Конкурентность</h2>
+          <p data-competition-description>Сравниваем товары разных продавцов и определяем, что помогает продавать</p>
+          <div class="competition-tabs" data-competition-tabs></div>
+          <div class="competition-list" data-competition-list></div>
+        </div>
+        <div class="home-indicator"></div>
+      </section>
+
+      <div class="toast" data-toast role="status" aria-live="polite"></div>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
