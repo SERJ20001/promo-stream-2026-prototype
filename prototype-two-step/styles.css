@@ -410,26 +410,28 @@ button {
   cursor: pointer;
 }
 
-.day-chip::before,
-.discount-chip::before {
+.day-chip::after,
+.discount-chip::after {
   position: absolute;
   right: 0;
   left: 0;
   content: "";
 }
 
-.day-chip::before {
+.day-chip::after {
   top: -4px;
   bottom: -4px;
 }
 
-.discount-chip::before {
+.discount-chip::after {
   top: -7px;
   bottom: -7px;
 }
 
 .discount-chip:disabled {
+  color: inherit;
   cursor: default;
+  opacity: 1;
 }
 
 .day-chip.is-selected,
