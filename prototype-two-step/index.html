@@ -10,7 +10,13 @@
     <link rel="preload" href="../assets/fonts/AvitoSansText-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../assets/fonts/Manrope_Cut_008-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../assets/success-product-card.png" as="image">
-    <link rel="stylesheet" href="./styles.css?v=2">
+    <link rel="preload" href="../assets/two-step/check-selected.svg" as="image">
+    <link rel="preload" href="../assets/two-step/switch-off.svg" as="image">
+    <link rel="preload" href="../assets/two-step/switch-on.svg" as="image">
+    <link rel="preload" href="../assets/two-step/promo-balloon.png" as="image">
+    <link rel="preload" href="../assets/two-step/promo-plane.png" as="image">
+    <link rel="preload" href="../assets/two-step/promo-rocket.png" as="image">
+    <link rel="stylesheet" href="./styles.css?v=3">
   </head>
   <body>
     <main class="device" data-device>
@@ -51,7 +57,7 @@
             <img class="promotion-off-art" src="../assets/two-step/promo-balloon-large.png" alt="">
           </section>
 
-          <h2 class="visibility-heading">Выделедение</h2>
+          <h2 class="visibility-heading">Выделение</h2>
           <div class="visibility-list">
             <article class="feature-card">
               <div class="feature-copy">
@@ -127,7 +133,7 @@
               </div>
             </div>
             <button class="two-step-summary-trigger" type="button" data-open-final-summary data-debug-label="Итого двух шагов">
-              <span class="summary-row"><span>2 скидки</span><i></i><strong data-discount-total>до 600 ₽</strong></span>
+              <span class="summary-row"><span data-discount-count>2 скидки</span><i></i><strong data-discount-total>до 600 ₽</strong></span>
               <span class="summary-row"><span data-benefit-count>3 преимущества</span><i></i><strong data-benefit-total>300 ₽</strong></span>
               <span class="chevron"></span>
             </button>
@@ -157,12 +163,9 @@
           <h3>Платные преимущества</h3>
           <div class="sheet-lines" data-final-benefit-lines></div>
         </section>
-        <section class="final-section final-discounts">
+        <section class="final-section final-discounts" data-final-discounts>
           <h3>Скидки</h3>
-          <div class="sheet-lines">
-            <div class="sheet-line"><span>Скидка на товар</span><i></i><span><s>500 ₽</s><b>0 ₽</b></span></div>
-            <div class="sheet-line"><span>Скидка на доставку</span><i></i><span><s>до 100 ₽</s><b>0 ₽</b></span></div>
-          </div>
+          <div class="sheet-lines" data-final-discount-lines></div>
         </section>
         <div class="pay-now"><strong>Заплатить сейчас</strong><i></i><span data-pay-total>300 ₽</span></div>
         <div class="free-note"><strong>*0 ₽</strong> за подключение скидок вы ничего не платите</div>
@@ -178,6 +181,6 @@
 
       <div class="toast" data-toast role="status" aria-live="polite"></div>
     </main>
-    <script src="./app.js?v=2"></script>
+    <script src="./app.js?v=3"></script>
   </body>
 </html>

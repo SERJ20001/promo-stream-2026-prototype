@@ -30,6 +30,7 @@ const elements = {
   oldPrice: document.querySelector("[data-old-price]"),
   stepTwoScore: document.querySelector("[data-step-two-score]"),
   stepTwoBars: document.querySelector("[data-step-two-bars]"),
+  discountCount: document.querySelector("[data-discount-count]"),
   discountTotal: document.querySelector("[data-discount-total]"),
   benefitCount: document.querySelector("[data-benefit-count]"),
   benefitTotal: document.querySelector("[data-benefit-total]"),
@@ -37,6 +38,8 @@ const elements = {
   sheets: [...document.querySelectorAll("[data-sheet]")],
   stepOneLines: document.querySelector("[data-step-one-lines]"),
   finalBenefitLines: document.querySelector("[data-final-benefit-lines]"),
+  finalDiscounts: document.querySelector("[data-final-discounts]"),
+  finalDiscountLines: document.querySelector("[data-final-discount-lines]"),
   payTotal: document.querySelector("[data-pay-total]"),
   payButtonTotal: document.querySelector("[data-pay-button-total]"),
   payout: document.querySelector("[data-payout]"),
@@ -79,26 +82,39 @@ function pluralize(value, one, few, many) {
 
 function getBenefits() {
   return [
-    state.promotion && { id: "promotion", label: `Продвижение на ${state.promotionDays} дней`, price: 100 },
+    state.promotion && { id: "promotion", label: `Продвижение на ${state.promotionDays} дней`, price: state.promotionBudget },
     state.xl && { id: "xl", label: "XL размер объявления", price: 100 },
     state.color && { id: "color", label: "Выделение цены цветом", price: 100 }
   ].filter(Boolean);
 }
 
-function createChip(value, selectedValue, suffix, onClick, className) {
+function getDiscounts() {
+  const productAmount = state.productDiscount ? 5000 * state.productPercent / 100 : 0;
+  const deliveryAmount = state.delivery ? state.deliveryAmount : 0;
+
+  return {
+    count: Number(state.delivery) + Number(state.productDiscount),
+    currentPrice: 5000 - productAmount,
+    deliveryAmount,
+    productAmount,
+    total: productAmount + deliveryAmount
+  };
+}
+
+function createChip(value, suffix, onClick, className) {
   const button = document.createElement("button");
   button.type = "button";
-  button.className = `${className} ${selectedValue === value ? "is-selected" : ""}`;
+  button.className = className;
   button.textContent = `${value}${suffix}`;
+  button.dataset.value = String(value);
   button.dataset.debugLabel = `${value}${suffix}`;
   button.addEventListener("click", onClick);
   return button;
 }
 
-function renderPromotionControls() {
+function initializeControls() {
   elements.dayChips.replaceChildren(...[7, 14, 30].map((value) => createChip(
     value,
-    state.promotionDays,
     " дней",
     () => {
       state.promotionDays = value;
@@ -110,16 +126,57 @@ function renderPromotionControls() {
   elements.budgetCarousel.replaceChildren(...promotionBudgets.map((budget) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = `budget-card ${state.promotionBudget === budget.value ? "is-selected" : ""}`;
+    button.className = "budget-card";
+    button.dataset.value = String(budget.value);
     button.dataset.debugLabel = `${budget.value} ₽`;
-    const isSelected = state.promotionBudget === budget.value;
-    button.innerHTML = `<strong>${budget.reach}<img class="budget-visibility" src="../assets/two-step/visibility.svg" alt=""></strong><img class="budget-check" src="../assets/two-step/${isSelected ? "check-selected.svg" : "check-default.svg"}" alt=""><span>${budget.description}</span><small>${budget.value} ₽</small><img class="budget-art" src="../assets/two-step/${budget.art}" alt="">`;
+    button.innerHTML = `<strong>${budget.reach}<img class="budget-visibility" src="../assets/two-step/visibility.svg" alt=""></strong><img class="budget-check" src="../assets/two-step/check-default.svg" alt=""><span>${budget.description}</span><small>${budget.value} ₽</small><img class="budget-art" src="../assets/two-step/${budget.art}" alt="">`;
     button.addEventListener("click", () => {
       state.promotionBudget = budget.value;
       render();
     });
     return button;
   }));
+  elements.deliveryChips.replaceChildren(...[100, 200, 300].map((value) => createChip(
+    value,
+    " ₽",
+    () => {
+      state.deliveryAmount = value;
+      render();
+    },
+    "discount-chip"
+  )));
+
+  elements.productDiscountChips.replaceChildren(...[10, 15, 20].map((value) => createChip(
+    value,
+    "%",
+    () => {
+      state.productPercent = value;
+      render();
+    },
+    "discount-chip"
+  )));
+}
+
+function updateChipSelection(container, selectedValue, enabled = true) {
+  [...container.children].forEach((button) => {
+    const isSelected = enabled && Number(button.dataset.value) === selectedValue;
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+    button.disabled = !enabled;
+  });
+}
+
+function renderPromotionControls() {
+  updateChipSelection(elements.dayChips, state.promotionDays);
+  [...elements.budgetCarousel.children].forEach((button) => {
+    const isSelected = Number(button.dataset.value) === state.promotionBudget;
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+    const check = button.querySelector(".budget-check");
+    const checkName = isSelected ? "check-selected.svg" : "check-default.svg";
+    const checkSource = `../assets/two-step/${checkName}`;
+    if (check.getAttribute("src") !== checkSource) check.setAttribute("src", checkSource);
+  });
 }
 
 function renderStepOne() {
@@ -147,45 +204,26 @@ function renderStepOne() {
 }
 
 function renderDiscountControls() {
-  elements.deliveryChips.replaceChildren(...[100, 200, 300].map((value) => createChip(
-    value,
-    state.deliveryAmount,
-    " ₽",
-    () => {
-      state.deliveryAmount = value;
-      render();
-    },
-    "discount-chip"
-  )));
-
-  elements.productDiscountChips.replaceChildren(...[10, 15, 20].map((value) => createChip(
-    value,
-    state.productPercent,
-    "%",
-    () => {
-      state.productPercent = value;
-      render();
-    },
-    "discount-chip"
-  )));
+  updateChipSelection(elements.deliveryChips, state.deliveryAmount, state.delivery);
+  updateChipSelection(elements.productDiscountChips, state.productPercent, state.productDiscount);
 }
 
 function renderStepTwo() {
-  const discountCount = Number(state.delivery) + Number(state.productDiscount);
+  const discounts = getDiscounts();
   const benefits = getBenefits();
   const benefitsTotal = benefits.reduce((sum, benefit) => sum + benefit.price, 0);
 
-  elements.currentPrice.textContent = "4 500 ₽";
-  elements.oldPrice.hidden = false;
-  elements.discountTotal.textContent = "до 600 ₽";
-  elements.discountTotal.previousElementSibling.previousElementSibling.textContent = "2 скидки";
+  elements.currentPrice.textContent = `${formatNumber(discounts.currentPrice)} ₽`;
+  elements.oldPrice.hidden = !state.productDiscount;
+  elements.discountCount.textContent = `${discounts.count} ${pluralize(discounts.count, "скидка", "скидки", "скидок")}`;
+  elements.discountTotal.textContent = `${state.delivery ? "до " : ""}${formatNumber(discounts.total)} ₽`;
   elements.benefitCount.textContent = `${benefits.length} ${pluralize(benefits.length, "преимущество", "преимущества", "преимуществ")}`;
   elements.benefitTotal.textContent = `${formatNumber(benefitsTotal)} ₽`;
-  elements.payout.textContent = "от 4 400 ₽";
+  elements.payout.textContent = `от ${formatNumber(discounts.currentPrice - discounts.deliveryAmount)} ₽`;
 
   const scoreLabels = ["Низкая выгода", "Средняя выгода", "Заметная выгода"];
-  elements.stepTwoScore.textContent = scoreLabels[discountCount];
-  elements.stepTwoBars.className = `score-bars benefit-bars level-${discountCount}`;
+  elements.stepTwoScore.textContent = scoreLabels[discounts.count];
+  elements.stepTwoBars.className = `score-bars benefit-bars level-${discounts.count}`;
 
   renderDiscountControls();
 }
@@ -197,12 +235,26 @@ function createLine(label, price) {
   return line;
 }
 
+function createDiscountLine(label, price, upTo = false) {
+  const line = document.createElement("div");
+  line.className = "sheet-line";
+  line.innerHTML = `<span>${label}</span><i></i><span><s>${upTo ? "до " : ""}${formatNumber(price)} ₽</s><b>0 ₽</b></span>`;
+  return line;
+}
+
 function renderSheets() {
   const benefits = getBenefits();
+  const discounts = getDiscounts();
   const total = benefits.reduce((sum, benefit) => sum + benefit.price, 0);
   const lines = benefits.map((benefit) => createLine(benefit.label, benefit.price));
+  const discountLines = [
+    state.productDiscount && createDiscountLine("Скидка на товар", discounts.productAmount),
+    state.delivery && createDiscountLine("Скидка на доставку", discounts.deliveryAmount, true)
+  ].filter(Boolean);
   elements.stepOneLines.replaceChildren(...lines.map((line) => line.cloneNode(true)));
   elements.finalBenefitLines.replaceChildren(...lines);
+  elements.finalDiscountLines.replaceChildren(...discountLines);
+  elements.finalDiscounts.hidden = discountLines.length === 0;
   elements.payTotal.textContent = `${formatNumber(total)} ₽`;
   elements.payButtonTotal.textContent = `${formatNumber(total)} ₽`;
 }
@@ -315,5 +367,6 @@ window.visualViewport?.addEventListener("scroll", syncViewport);
 
 document.querySelectorAll(".step-scroll").forEach(guardVerticalScroll);
 
+initializeControls();
 render();
 syncViewport();
