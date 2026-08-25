@@ -61,13 +61,6 @@ const featureCatalog = [
   }
 ];
 
-const summaryCatalog = [
-  { id: "product", label: "Скидка на товар", old: "300 ₽", current: "0 ₽", strikeOld: false },
-  { id: "delivery", label: "Скидка на доставку", old: "100 ₽", current: "0 ₽", strikeOld: false },
-  { id: "promote", label: "Поднять в поиске", old: "120 ₽", current: "68 ₽", strikeOld: true },
-  { id: "mail", label: "Рассылка скидок", old: "200 ₽", current: "88 ₽", strikeOld: true }
-];
-
 const competitionContent = {
   low: {
     label: "Низкая конкурентность",
@@ -118,6 +111,7 @@ const state = {
 
 const elements = {
   device: document.querySelector("[data-device]"),
+  successScreen: document.querySelector("[data-success-screen]"),
   mainScroll: document.querySelector("[data-main-scroll]"),
   recommendedList: document.querySelector("[data-recommended-list]"),
   additionalList: document.querySelector("[data-additional-list]"),
@@ -141,7 +135,6 @@ const elements = {
   budgetCards: document.querySelector("[data-budget-cards]"),
   promotionDays: document.querySelector("[data-promotion-days]"),
   promotionResult: document.querySelector("[data-promotion-result]"),
-  summaryLines: document.querySelector("[data-summary-lines]"),
   competitionDescription: document.querySelector("[data-competition-description]"),
   competitionTabs: document.querySelector("[data-competition-tabs]"),
   competitionList: document.querySelector("[data-competition-list]"),
@@ -335,16 +328,6 @@ function renderPromotionControls() {
   elements.promotionResult.textContent = "Когда объявление соберёт столько контактов, оно опустится в поиске";
 }
 
-function renderSummary() {
-  elements.summaryLines.replaceChildren(...summaryCatalog.map((item) => {
-    const line = document.createElement("div");
-    line.className = "summary-line";
-    const previousPrice = item.strikeOld ? `<s>${item.old}</s>` : `<span>${item.old}</span>`;
-    line.innerHTML = `<span>${item.label}</span><span class="summary-line-dot"></span><span class="summary-line-value">${previousPrice}<span class="${item.current === "0 ₽" ? "free" : ""}">${item.current}</span></span>`;
-    return line;
-  }));
-}
-
 function renderCompetition() {
   const keys = ["low", "medium", "high"];
   const labels = ["Низкая", "Средняя", "Высокая"];
@@ -377,8 +360,13 @@ function render() {
   renderProductControls();
   renderDeliveryControls();
   renderPromotionControls();
-  renderSummary();
   renderCompetition();
+}
+
+function showRecommendations() {
+  elements.successScreen.classList.add("is-hidden");
+  elements.successScreen.setAttribute("aria-hidden", "true");
+  elements.mainScroll.scrollTop = 0;
 }
 
 function openSheet(name) {
@@ -470,6 +458,7 @@ document.querySelectorAll("[data-open-sheet]").forEach((button) => {
 
 document.querySelectorAll("[data-close-sheet]").forEach((button) => button.addEventListener("click", () => closeSheet()));
 elements.backdrop.addEventListener("click", () => closeSheet());
+document.querySelector("[data-start-recommendations]").addEventListener("click", showRecommendations);
 document.querySelector("[data-clear-product]").addEventListener("click", () => {
   state.productPercent = 0;
   renderProductControls();
@@ -486,12 +475,8 @@ document.querySelector("[data-apply-product]").addEventListener("click", () => a
 document.querySelector("[data-apply-delivery]").addEventListener("click", () => applyFeature("delivery"));
 document.querySelector("[data-apply-promotion]").addEventListener("click", () => applyFeature("promote"));
 document.querySelector("[data-summary-apply]").addEventListener("click", () => {
-  featureCatalog.filter((feature) => feature.group === "recommended").forEach((feature) => {
-    state.enabled[feature.id] = true;
-  });
   closeSheet();
-  render();
-  showToast("Преимущества подключены");
+  showToast("Переходим к оплате");
 });
 document.querySelector("[data-continue]").addEventListener("click", () => showToast("Следующий экран не показан в макете"));
 

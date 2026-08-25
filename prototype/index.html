@@ -9,7 +9,8 @@
     <link rel="preload" href="../assets/fonts/AvitoSansText-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../assets/fonts/AvitoSansText-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../assets/fonts/AvitoSansText-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="preload" href="../assets/initial-summary-product.png" as="image">
+    <link rel="stylesheet" href="./styles.css?v=2">
   </head>
   <body>
     <main class="device" data-device>
@@ -61,6 +62,26 @@
         <button class="primary-button checkout-button" type="button" data-continue>Продолжить</button>
         <div class="home-indicator"></div>
       </footer>
+
+      <section class="success-screen" data-success-screen aria-label="Объявление опубликовано" aria-hidden="false">
+        <img class="success-navbar" src="../assets/success-navbar.png" alt="">
+        <div class="success-product-stage" aria-hidden="true">
+          <img class="success-loop" src="../assets/success-loop-base.png" alt="">
+          <img class="success-product-card" src="../assets/success-product-card.png" alt="">
+        </div>
+        <div class="success-copy">
+          <h1>Всё получилось!</h1>
+          <p>Опубликуем через минуту</p>
+        </div>
+        <div class="success-footer">
+          <div class="success-offer">
+            <p>Знаем как сделать товар<br>конкурентнее и продать быстрее</p>
+            <img src="../assets/success-banner-art.png" alt="">
+            <button class="primary-button success-cta" type="button" data-start-recommendations>Хочу продать быстрее</button>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </section>
 
       <div class="backdrop" data-backdrop></div>
 
@@ -138,17 +159,38 @@
         </div>
       </section>
 
-      <section class="sheet summary-sheet" data-sheet="summary" aria-label="Итого с преимуществами" aria-hidden="true">
+      <section class="sheet summary-sheet" data-sheet="summary" aria-label="Итого" aria-hidden="true">
         <div class="sheet-handle"></div>
         <button class="sheet-close" type="button" data-close-sheet><img src="../assets/close.svg" alt="Закрыть"></button>
-        <div class="summary-illustration">
-          <img src="../assets/product-thumbnail.png" alt="Товар с подключёнными преимуществами">
+        <h2>Итого</h2>
+        <section class="summary-section summary-section-paid">
+          <h3>Платные преимущества</h3>
+          <div class="summary-lines">
+            <div class="summary-line"><span>Продвижение на 7 дней</span><span class="summary-line-dot"></span><span>100 ₽</span></div>
+            <div class="summary-line"><span>XL размер объявления</span><span class="summary-line-dot"></span><span>100 ₽</span></div>
+          </div>
+        </section>
+        <section class="summary-section summary-section-discounts">
+          <h3>Скидки</h3>
+          <div class="summary-lines">
+            <div class="summary-line"><span>Скидка на товар</span><span class="summary-line-dot"></span><span class="summary-line-value"><span class="summary-old-price">500 ₽</span><span class="summary-free-price">0 ₽</span></span></div>
+            <div class="summary-line"><span>Скидка на доставку</span><span class="summary-line-dot"></span><span class="summary-line-value"><span class="summary-old-price">до 100 ₽</span><span class="summary-free-price">0 ₽</span></span></div>
+          </div>
+        </section>
+        <div class="summary-pay-row">
+          <strong>Заплатить сейчас</strong>
+          <span class="summary-line-dot"></span>
+          <span>300 ₽</span>
         </div>
-        <h2>Итого с приемуществами</h2>
-        <div class="summary-lines" data-summary-lines></div>
-        <div class="summary-note"><strong>*0 ₽</strong> за подключение вы ничего не платите</div>
-        <button class="primary-button summary-cta" type="button" data-summary-apply>Подключить все за 120 ₽</button>
-        <div class="home-indicator"></div>
+        <div class="summary-note"><strong>*0 ₽</strong> за подключение скидок вы ничего не платите</div>
+        <div class="summary-footer">
+          <div class="summary-product-result">
+            <img src="../assets/initial-summary-product.png" alt="Коричневые ботинки">
+            <div><strong>от 4 400 ₽</strong><span>Получите за товар когда его купят</span></div>
+          </div>
+          <button class="primary-button summary-cta" type="button" data-summary-apply>Оплатить 300 ₽</button>
+          <div class="home-indicator"></div>
+        </div>
       </section>
 
       <section class="sheet competition-sheet" data-sheet="competition" aria-label="Конкурентность" aria-hidden="true">
@@ -165,6 +207,6 @@
 
       <div class="toast" data-toast role="status" aria-live="polite"></div>
     </main>
-    <script src="./app.js"></script>
+    <script src="./app.js?v=2"></script>
   </body>
 </html>
