@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="40" height="21" viewBox="0 0 40 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="x/Switcher">
+<path id="BG" fill-rule="evenodd" clip-rule="evenodd" d="M10 1C4.47715 1 0 5.47715 0 11C0 16.5228 4.47715 21 10 21H30C35.5228 21 40 16.5228 40 11C40 5.47715 35.5228 1 30 1H10Z" fill="#141414"/>
+<path id=" Element" fill-rule="evenodd" clip-rule="evenodd" d="M30 18C33.866 18 37 14.866 37 11C37 7.13401 33.866 4 30 4C26.134 4 23 7.13401 23 11C23 14.866 26.134 18 30 18Z" fill="white"/>
+</g>
+</svg>

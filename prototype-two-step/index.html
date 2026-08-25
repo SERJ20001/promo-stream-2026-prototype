@@ -8,8 +8,9 @@
     <link rel="preload" href="../assets/fonts/AvitoSansText-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../assets/fonts/AvitoSansText-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../assets/fonts/AvitoSansText-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../assets/fonts/Manrope_Cut_008-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../assets/success-product-card.png" as="image">
-    <link rel="stylesheet" href="./styles.css?v=1">
+    <link rel="stylesheet" href="./styles.css?v=2">
   </head>
   <body>
     <main class="device" data-device>
@@ -35,13 +36,13 @@
         <div class="step-scroll" data-step-one-scroll>
           <header class="step-header step-one-header">
             <span class="step-pill">Шаг 1 из 2</span>
-            <h1>Нужно поднять<br>заметность</h1>
+            <h1>Нужно поднять заметность</h1>
             <p>Ваше объявление новое, оно будет низко<br>в поиске и рекомендациях</p>
           </header>
 
           <section class="promotion-card" data-promotion-card>
             <h2>Продвижение</h2>
-            <p>Больше бюджет → чаще<br>в топе поиска и рекомендаций</p>
+            <p>Гарантированно поднимает товар<br>в поиске и дает прирост просмотров</p>
             <button class="switch" type="button" role="switch" data-toggle="promotion" aria-label="Продвижение" data-debug-label="Продвижение"></button>
             <div class="promotion-controls">
               <div class="day-chips" data-day-chips></div>
@@ -70,25 +71,24 @@
             </article>
           </div>
           <div class="step-one-spacer"></div>
-        </div>
-
-        <footer class="checkout-footer step-one-footer" data-step-one-footer>
-          <div class="product-score">
-            <span class="product-thumb"><img src="../assets/two-step/product-thumbnail.png" alt="Коричневые ботинки"></span>
-            <div class="product-score-copy">
-              <strong>5 000 ₽</strong>
-              <span class="score-line"><i class="score-bars" data-step-one-bars></i><span data-step-one-score>Заметность максимальная</span></span>
+          <footer class="checkout-footer step-one-footer" data-step-one-footer>
+            <div class="product-score">
+              <span class="product-thumb"><img src="../assets/two-step/product-thumbnail.png" alt="Коричневые ботинки"></span>
+              <div class="product-score-copy">
+                <strong>5 000 ₽</strong>
+                <span class="score-line"><i class="score-bars" data-step-one-bars></i><span data-step-one-score>Заметность максимальная</span></span>
+              </div>
             </div>
-          </div>
-          <button class="summary-trigger" type="button" data-open-step-one-summary data-debug-label="Итого шага 1">
-            <span data-step-one-summary>3 преимущества</span>
-            <i></i>
-            <strong data-step-one-total>300 ₽</strong>
-            <span class="chevron"></span>
-          </button>
-          <button class="primary-button footer-button" type="button" data-next-step data-debug-label="Далее без шторки">Далее</button>
-          <div class="home-indicator"></div>
-        </footer>
+            <button class="summary-trigger" type="button" data-open-step-one-summary data-debug-label="Итого шага 1">
+              <span data-step-one-summary>3 преимущества</span>
+              <i></i>
+              <strong data-step-one-total>300 ₽</strong>
+              <span class="chevron"></span>
+            </button>
+            <button class="primary-button footer-button" type="button" data-next-step data-debug-label="Далее без шторки">Далее</button>
+            <div class="home-indicator"></div>
+          </footer>
+        </div>
       </section>
 
       <section class="screen step-screen" data-screen="step-two" aria-label="Шаг 2 из 2">
@@ -118,24 +118,23 @@
             <button class="switch" type="button" role="switch" data-toggle="productDiscount" aria-label="Скидка на товар" data-debug-label="Скидка товара"></button>
             <img src="../assets/two-step/discount-art.png" alt="Процент скидки">
           </section>
-        </div>
-
-        <footer class="checkout-footer step-two-footer">
-          <div class="product-score step-two-product">
-            <span class="product-thumb"><img src="../assets/two-step/product-thumbnail.png" alt="Коричневые ботинки"></span>
-            <div class="product-score-copy">
-              <div class="price-row"><strong data-current-price>4 500 ₽</strong><s data-old-price>5 000 ₽</s></div>
-              <span class="score-line"><i class="score-bars benefit-bars" data-step-two-bars></i><span data-step-two-score>Заметная выгода</span></span>
+          <footer class="checkout-footer step-two-footer">
+            <div class="product-score step-two-product">
+              <span class="product-thumb"><img src="../assets/two-step/product-thumbnail.png" alt="Коричневые ботинки"></span>
+              <div class="product-score-copy">
+                <div class="price-row"><strong data-current-price>4 500 ₽</strong><s data-old-price>5 000 ₽</s></div>
+                <span class="score-line"><i class="score-bars benefit-bars" data-step-two-bars></i><span data-step-two-score>Заметная выгода</span></span>
+              </div>
             </div>
-          </div>
-          <button class="two-step-summary-trigger" type="button" data-open-final-summary data-debug-label="Итого двух шагов">
-            <span class="summary-row"><span>2 скидки</span><i></i><strong data-discount-total>до 600 ₽</strong></span>
-            <span class="summary-row"><span data-benefit-count>3 преимущества</span><i></i><strong data-benefit-total>300 ₽</strong></span>
-            <span class="chevron"></span>
-          </button>
-          <button class="primary-button footer-button" type="button" data-finish data-debug-label="Продолжить без шторки">Далее</button>
-          <div class="home-indicator"></div>
-        </footer>
+            <button class="two-step-summary-trigger" type="button" data-open-final-summary data-debug-label="Итого двух шагов">
+              <span class="summary-row"><span>2 скидки</span><i></i><strong data-discount-total>до 600 ₽</strong></span>
+              <span class="summary-row"><span data-benefit-count>3 преимущества</span><i></i><strong data-benefit-total>300 ₽</strong></span>
+              <span class="chevron"></span>
+            </button>
+            <button class="primary-button footer-button" type="button" data-finish data-debug-label="Продолжить без шторки">Далее</button>
+            <div class="home-indicator"></div>
+          </footer>
+        </div>
       </section>
 
       <div class="backdrop" data-backdrop></div>
@@ -179,6 +178,6 @@
 
       <div class="toast" data-toast role="status" aria-live="polite"></div>
     </main>
-    <script src="./app.js?v=1"></script>
+    <script src="./app.js?v=2"></script>
   </body>
 </html>

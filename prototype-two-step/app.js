@@ -112,7 +112,8 @@ function renderPromotionControls() {
     button.type = "button";
     button.className = `budget-card ${state.promotionBudget === budget.value ? "is-selected" : ""}`;
     button.dataset.debugLabel = `${budget.value} ₽`;
-    button.innerHTML = `<strong>${budget.reach}</strong><span>${budget.description}</span><small>${budget.value} ₽</small><img src="../assets/two-step/${budget.art}" alt="">`;
+    const isSelected = state.promotionBudget === budget.value;
+    button.innerHTML = `<strong>${budget.reach}<img class="budget-visibility" src="../assets/two-step/visibility.svg" alt=""></strong><img class="budget-check" src="../assets/two-step/${isSelected ? "check-selected.svg" : "check-default.svg"}" alt=""><span>${budget.description}</span><small>${budget.value} ₽</small><img class="budget-art" src="../assets/two-step/${budget.art}" alt="">`;
     button.addEventListener("click", () => {
       state.promotionBudget = budget.value;
       render();
@@ -128,11 +129,14 @@ function renderStepOne() {
 
   elements.stepOneScroll.classList.toggle("is-promotion-off", !state.promotion);
   elements.stepOneFooter.classList.toggle("is-empty", count === 0);
-  elements.stepOneSummary.textContent = `${count} ${pluralize(count, "преимущество", "преимущества", "преимуществ")}`;
+  elements.stepOneSummary.textContent = count === 1
+    ? benefits[0].label
+    : `${count} ${pluralize(count, "преимущество", "преимущества", "преимуществ")}`;
   elements.stepOneTotal.textContent = `${formatNumber(total)} ₽`;
-  elements.stepOneBars.className = `score-bars level-${count}`;
+  const barLevel = count === 0 ? 0 : Math.min(count + 1, 3);
+  elements.stepOneBars.className = `score-bars level-${barLevel}`;
 
-  const scoreLabels = ["Заметность низкая", "Заметность средняя", "Заметность высокая", "Заметность максимальная"];
+  const scoreLabels = ["Заметность низкая", "Заметность высокая", "Заметность высокая", "Заметность максимальная"];
   elements.stepOneScore.textContent = scoreLabels[count];
 
   document.querySelectorAll("[data-toggle]").forEach((toggle) => {
@@ -167,24 +171,21 @@ function renderDiscountControls() {
 }
 
 function renderStepTwo() {
-  const productDiscountAmount = state.productDiscount ? Math.round(5000 * state.productPercent / 100) : 0;
-  const deliveryDiscountAmount = state.delivery ? state.deliveryAmount : 0;
-  const totalDiscount = productDiscountAmount + deliveryDiscountAmount;
   const discountCount = Number(state.delivery) + Number(state.productDiscount);
   const benefits = getBenefits();
   const benefitsTotal = benefits.reduce((sum, benefit) => sum + benefit.price, 0);
 
-  elements.currentPrice.textContent = `${formatNumber(5000 - productDiscountAmount)} ₽`;
-  elements.oldPrice.hidden = !state.productDiscount;
-  elements.discountTotal.textContent = totalDiscount ? `до ${formatNumber(totalDiscount)} ₽` : "0 ₽";
-  elements.discountTotal.previousElementSibling.previousElementSibling.textContent = `${discountCount} ${pluralize(discountCount, "скидка", "скидки", "скидок")}`;
+  elements.currentPrice.textContent = "4 500 ₽";
+  elements.oldPrice.hidden = false;
+  elements.discountTotal.textContent = "до 600 ₽";
+  elements.discountTotal.previousElementSibling.previousElementSibling.textContent = "2 скидки";
   elements.benefitCount.textContent = `${benefits.length} ${pluralize(benefits.length, "преимущество", "преимущества", "преимуществ")}`;
   elements.benefitTotal.textContent = `${formatNumber(benefitsTotal)} ₽`;
-  elements.payout.textContent = `от ${formatNumber(5000 - totalDiscount)} ₽`;
+  elements.payout.textContent = "от 4 400 ₽";
 
   const scoreLabels = ["Низкая выгода", "Средняя выгода", "Заметная выгода"];
   elements.stepTwoScore.textContent = scoreLabels[discountCount];
-  elements.stepTwoBars.className = `score-bars benefit-bars level-${discountCount + 1}`;
+  elements.stepTwoBars.className = `score-bars benefit-bars level-${discountCount}`;
 
   renderDiscountControls();
 }
@@ -259,6 +260,30 @@ function syncViewport() {
   document.body.style.paddingTop = `${viewport ? viewport.offsetTop : 0}px`;
 }
 
+function guardVerticalScroll(container) {
+  let lastX = 0;
+  let lastY = 0;
+
+  container.addEventListener("touchstart", (event) => {
+    lastX = event.touches[0].clientX;
+    lastY = event.touches[0].clientY;
+  }, { passive: true });
+
+  container.addEventListener("touchmove", (event) => {
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - lastX;
+    const deltaY = touch.clientY - lastY;
+    lastX = touch.clientX;
+    lastY = touch.clientY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) return;
+
+    const atTop = container.scrollTop <= 0;
+    const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 1;
+    if ((atTop && deltaY > 0) || (atBottom && deltaY < 0)) event.preventDefault();
+  }, { passive: false });
+}
+
 document.querySelector("[data-start]").addEventListener("click", () => showScreen("step-one"));
 document.querySelector("[data-next-step]").addEventListener("click", () => showScreen("step-two"));
 document.querySelector("[data-open-step-one-summary]").addEventListener("click", () => openSheet("step-one-summary"));
@@ -287,6 +312,8 @@ if (new URLSearchParams(window.location.search).has("debug")) {
 window.addEventListener("resize", syncViewport);
 window.visualViewport?.addEventListener("resize", syncViewport);
 window.visualViewport?.addEventListener("scroll", syncViewport);
+
+document.querySelectorAll(".step-scroll").forEach(guardVerticalScroll);
 
 render();
 syncViewport();
