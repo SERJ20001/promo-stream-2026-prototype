@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <title>Продать быстрее — два шага</title>
+    <link rel="preload" href="../assets/fonts/AvitoSansText-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../assets/fonts/AvitoSansText-Medium.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../assets/fonts/AvitoSansText-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../assets/success-product-card.png" as="image">
+    <link rel="stylesheet" href="./styles.css?v=1">
+  </head>
+  <body>
+    <main class="device" data-device>
+      <section class="screen start-screen is-active" data-screen="start" aria-label="Объявление опубликовано">
+        <img class="start-navbar" src="../assets/success-navbar.png" alt="">
+        <img class="start-loop" src="../assets/success-loop-base.png" alt="">
+        <img class="start-product" src="../assets/success-product-card.png" alt="Ботинки Hermes, размер 44">
+        <div class="start-copy">
+          <h1>Всё получилось!</h1>
+          <p>Опубликуем через минуту</p>
+        </div>
+        <footer class="start-footer">
+          <div class="start-offer">
+            <p>Знаем как сделать товар<br>конкурентнее и продать быстрее</p>
+            <img src="../assets/success-banner-art.png" alt="">
+            <button class="primary-button start-button" type="button" data-start data-debug-label="К шагу 1">Хочу продать быстрее</button>
+          </div>
+          <div class="home-indicator"></div>
+        </footer>
+      </section>
+
+      <section class="screen step-screen" data-screen="step-one" aria-label="Шаг 1 из 2">
+        <div class="step-scroll" data-step-one-scroll>
+          <header class="step-header step-one-header">
+            <span class="step-pill">Шаг 1 из 2</span>
+            <h1>Нужно поднять<br>заметность</h1>
+            <p>Ваше объявление новое, оно будет низко<br>в поиске и рекомендациях</p>
+          </header>
+
+          <section class="promotion-card" data-promotion-card>
+            <h2>Продвижение</h2>
+            <p>Больше бюджет → чаще<br>в топе поиска и рекомендаций</p>
+            <button class="switch" type="button" role="switch" data-toggle="promotion" aria-label="Продвижение" data-debug-label="Продвижение"></button>
+            <div class="promotion-controls">
+              <div class="day-chips" data-day-chips></div>
+              <div class="budget-carousel" data-budget-carousel></div>
+            </div>
+            <img class="promotion-off-art" src="../assets/two-step/promo-balloon-large.png" alt="">
+          </section>
+
+          <h2 class="visibility-heading">Выделедение</h2>
+          <div class="visibility-list">
+            <article class="feature-card">
+              <div class="feature-copy">
+                <h3>XL размер объявления</h3>
+                <p>Больше бюджет → чаще<br>в топе поиска и рекомендаций</p>
+                <span class="feature-chip">7 дней · 100 ₽</span>
+              </div>
+              <button class="switch" type="button" role="switch" data-toggle="xl" aria-label="XL размер объявления" data-debug-label="XL размер"></button>
+            </article>
+            <article class="feature-card">
+              <div class="feature-copy">
+                <h3>Выделение цены цветом</h3>
+                <p>Больше бюджет → чаще<br>в топе поиска и рекомендаций</p>
+                <span class="feature-chip">7 дней · 100 ₽</span>
+              </div>
+              <button class="switch" type="button" role="switch" data-toggle="color" aria-label="Выделение цены цветом" data-debug-label="Цвет цены"></button>
+            </article>
+          </div>
+          <div class="step-one-spacer"></div>
+        </div>
+
+        <footer class="checkout-footer step-one-footer" data-step-one-footer>
+          <div class="product-score">
+            <span class="product-thumb"><img src="../assets/two-step/product-thumbnail.png" alt="Коричневые ботинки"></span>
+            <div class="product-score-copy">
+              <strong>5 000 ₽</strong>
+              <span class="score-line"><i class="score-bars" data-step-one-bars></i><span data-step-one-score>Заметность максимальная</span></span>
+            </div>
+          </div>
+          <button class="summary-trigger" type="button" data-open-step-one-summary data-debug-label="Итого шага 1">
+            <span data-step-one-summary>3 преимущества</span>
+            <i></i>
+            <strong data-step-one-total>300 ₽</strong>
+            <span class="chevron"></span>
+          </button>
+          <button class="primary-button footer-button" type="button" data-next-step data-debug-label="Далее без шторки">Далее</button>
+          <div class="home-indicator"></div>
+        </footer>
+      </section>
+
+      <section class="screen step-screen" data-screen="step-two" aria-label="Шаг 2 из 2">
+        <div class="step-scroll step-two-scroll">
+          <header class="step-header step-two-header">
+            <span class="step-pill">Шаг 2 из 2</span>
+            <h1>Сделайте товар<br>выгоднее</h1>
+            <p>Больше 67% конкурентов дают скидки<br>→ делают товар выгоднее и продают чаще</p>
+          </header>
+
+          <section class="discount-card delivery-card">
+            <div class="discount-copy">
+              <h2>Скидка на доставку</h2>
+              <p>Больше бюджет → чаще<br>в топе поиска и рекомендаций</p>
+              <div class="discount-chips" data-delivery-chips></div>
+            </div>
+            <button class="switch" type="button" role="switch" data-toggle="delivery" aria-label="Скидка на доставку" data-debug-label="Скидка доставки"></button>
+            <img src="../assets/two-step/delivery-art.png" alt="Машина доставки">
+          </section>
+
+          <section class="discount-card product-discount-card">
+            <div class="discount-copy">
+              <h2>Скидка на товар</h2>
+              <p>Больше бюджет → чаще<br>в топе поиска и рекомендаций</p>
+              <div class="discount-chips" data-product-discount-chips></div>
+            </div>
+            <button class="switch" type="button" role="switch" data-toggle="productDiscount" aria-label="Скидка на товар" data-debug-label="Скидка товара"></button>
+            <img src="../assets/two-step/discount-art.png" alt="Процент скидки">
+          </section>
+        </div>
+
+        <footer class="checkout-footer step-two-footer">
+          <div class="product-score step-two-product">
+            <span class="product-thumb"><img src="../assets/two-step/product-thumbnail.png" alt="Коричневые ботинки"></span>
+            <div class="product-score-copy">
+              <div class="price-row"><strong data-current-price>4 500 ₽</strong><s data-old-price>5 000 ₽</s></div>
+              <span class="score-line"><i class="score-bars benefit-bars" data-step-two-bars></i><span data-step-two-score>Заметная выгода</span></span>
+            </div>
+          </div>
+          <button class="two-step-summary-trigger" type="button" data-open-final-summary data-debug-label="Итого двух шагов">
+            <span class="summary-row"><span>2 скидки</span><i></i><strong data-discount-total>до 600 ₽</strong></span>
+            <span class="summary-row"><span data-benefit-count>3 преимущества</span><i></i><strong data-benefit-total>300 ₽</strong></span>
+            <span class="chevron"></span>
+          </button>
+          <button class="primary-button footer-button" type="button" data-finish data-debug-label="Продолжить без шторки">Далее</button>
+          <div class="home-indicator"></div>
+        </footer>
+      </section>
+
+      <div class="backdrop" data-backdrop></div>
+
+      <section class="bottom-sheet first-summary-sheet" data-sheet="step-one-summary" aria-label="Итого первого шага" aria-hidden="true">
+        <div class="sheet-handle"></div>
+        <button class="sheet-close" type="button" data-close-sheet aria-label="Закрыть" data-debug-label="Закрыть"></button>
+        <h2>Итого</h2>
+        <div class="sheet-lines" data-step-one-lines></div>
+        <button class="primary-button sheet-continue" type="button" data-sheet-next data-debug-label="К шагу 2">Далее: к настройке выгод</button>
+        <p class="payment-caption">*Оплата преимуществ на последнем шаге</p>
+        <div class="home-indicator"></div>
+      </section>
+
+      <section class="bottom-sheet final-summary-sheet" data-sheet="final-summary" aria-label="Итого двух шагов" aria-hidden="true">
+        <div class="sheet-handle"></div>
+        <button class="sheet-close" type="button" data-close-sheet aria-label="Закрыть" data-debug-label="Закрыть"></button>
+        <h2>Итого</h2>
+        <section class="final-section final-benefits">
+          <h3>Платные преимущества</h3>
+          <div class="sheet-lines" data-final-benefit-lines></div>
+        </section>
+        <section class="final-section final-discounts">
+          <h3>Скидки</h3>
+          <div class="sheet-lines">
+            <div class="sheet-line"><span>Скидка на товар</span><i></i><span><s>500 ₽</s><b>0 ₽</b></span></div>
+            <div class="sheet-line"><span>Скидка на доставку</span><i></i><span><s>до 100 ₽</s><b>0 ₽</b></span></div>
+          </div>
+        </section>
+        <div class="pay-now"><strong>Заплатить сейчас</strong><i></i><span data-pay-total>300 ₽</span></div>
+        <div class="free-note"><strong>*0 ₽</strong> за подключение скидок вы ничего не платите</div>
+        <footer class="final-sheet-footer">
+          <div class="final-product">
+            <img src="../assets/initial-summary-product.png" alt="Коричневые ботинки">
+            <div><strong data-payout>от 4 400 ₽</strong><span>Получите за товар когда его купят</span></div>
+          </div>
+          <button class="primary-button final-pay-button" type="button" data-pay data-debug-label="Оплатить">Оплатить <span data-pay-button-total>300 ₽</span></button>
+          <div class="home-indicator"></div>
+        </footer>
+      </section>
+
+      <div class="toast" data-toast role="status" aria-live="polite"></div>
+    </main>
+    <script src="./app.js?v=1"></script>
+  </body>
+</html>
