@@ -118,6 +118,7 @@ const elements = {
   recommendation: document.querySelector("[data-recommendation]"),
   masterToggle: document.querySelector("[data-master-toggle]"),
   checkoutFooter: document.querySelector("[data-checkout-footer]"),
+  checkoutButton: document.querySelector("[data-continue]"),
   productThumbnail: document.querySelector("[data-product-thumbnail]"),
   currentPrice: document.querySelector("[data-current-price]"),
   oldPrice: document.querySelector("[data-old-price]"),
@@ -233,6 +234,7 @@ function renderCheckout() {
   const level = allRecommended ? "high" : isEmpty ? "low" : "medium";
 
   elements.checkoutFooter.classList.toggle("is-empty", isEmpty);
+  elements.checkoutButton.textContent = isEmpty ? "Не делать товар конкурентнее" : "Продолжить";
   elements.productThumbnail.src = isEmpty
     ? "../assets/product-thumbnail-off.png"
     : allRecommended
