@@ -1,0 +1,23 @@
+name: Снять прототип скидок v39 с публикации
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  expire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Проверить срок и снять публикацию
+        env:
+          EXPIRES_AT: "2026-09-20T19:11:43.639260+00:00"
+        run: |
+          if [ "$(date -u +%s)" -lt "$(date -u -d "$EXPIRES_AT" +%s)" ]; then exit 0; fi
+          if [ ! -d discounts-v39 ]; then exit 0; fi
+          git rm -r discounts-v39
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Снять прототип скидок v39 по окончании срока"
+          git push
