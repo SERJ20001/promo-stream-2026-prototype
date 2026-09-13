@@ -158,12 +158,6 @@ $('#scroll').addEventListener('scroll', () => {
 $('#carousel').addEventListener('keydown', event => {
   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { event.preventDefault(); $('#carousel').scrollBy({ left: (event.key === 'ArrowRight' ? 1 : -1) * 333, behavior: 'smooth' }); }
 });
-try {
-  const saved = JSON.parse(localStorage.getItem('promo-stream-selection-v1') || 'null');
-  if (saved) for (const key of Object.keys(defaults)) {
-    if (typeof saved[key] === typeof defaults[key] && (typeof saved[key] !== 'number' || Number.isFinite(saved[key]) && saved[key] >= 0 && saved[key] <= (key === 'deliveryAmount' ? 1000 : 50))) state[key] = saved[key];
-  }
-} catch {}
 $('.compactWrap').inert = true;
 render();
 for (const name of ['badge-sale', 'badge-delivery', 'badge-quantity', 'toggle']) {
