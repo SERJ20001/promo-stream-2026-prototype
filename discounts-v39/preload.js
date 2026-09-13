@@ -3,17 +3,12 @@
     'badge-delivery-off.png', 'badge-delivery-on.png', 'badge-quantity-off.png', 'badge-quantity-on.png',
     'badge-sale-off.png', 'badge-sale-on.png', 'continue-button.png', 'delivery-discount.png',
     'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png',
-    'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'price-strike.png', 'product-boots.png',
+    'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-boots.png',
     'quantity-discount.png', 'sale-hvatamba.png', 'sale-lovita.png', 'sales-info.png', 'sales-timeline.png',
-    'sheet-delivery-v38.png', 'sheet-delivery.png', 'sheet-hvatamba-v38.png', 'sheet-hvatamba.png',
-    'sheet-lovita-v38.png', 'sheet-lovita.png', 'sheet-methods.png', 'sheet-promotion.png',
-    'sheet-quantity-v38.png', 'sheet-quantity.png', 'sheet-views.png', 'status-bar.png', 'toggle-off.png', 'toggle-on.png'
+    'sheet-delivery-v38.png', 'sheet-hvatamba-v38.png', 'sheet-lovita-v38.png', 'sheet-methods.png',
+    'sheet-promotion.png', 'sheet-quantity-v38.png', 'sheet-views.png', 'status-bar.png', 'toggle-off.png', 'toggle-on.png'
   ].map(name => `assets/${name}`);
-  const introAssets = [
-    'autopublish-v33.png',
-    ...Array.from({ length: 10 }, (_, index) => `flow-${index}.png`),
-    ...Array.from({ length: 10 }, (_, index) => `step-${index + 1}.png`)
-  ].map(name => `assets/intro/${name}`);
+  const introAssets = Array.from({ length: 10 }, (_, index) => `assets/intro/flow-${index}.png`);
   const fontAssets = [
     'fonts/AvitoSansText-Regular.woff2',
     'fonts/AvitoSansText-Bold.woff2',
