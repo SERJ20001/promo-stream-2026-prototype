@@ -259,6 +259,7 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .publicationCard { position: absolute; top: 32%; left: 20px; width: calc(100% - 40px); height: 130px; display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 28px; background: white; box-shadow: 0 4px 24px #0000001f, 0 1px 3px #0000000d; }
 .publicationCard > img { width: 106px; height: 106px; object-fit: cover; border-radius: 20px; flex-shrink: 0; }
 .publicationCard > div { padding-top: 2px; display: flex; flex-direction: column; font: 15px/20px 'Avito Text', sans-serif; white-space: nowrap; }
+.publicationCard > .publicationBadges { position: absolute; flex-direction: row; margin: 0; padding: 0; white-space: normal; }
 .publicationCard strong { font-size: 18px; line-height: 22px; transform-origin: left top; }
 .publicationHome { position: absolute; bottom: 0; left: 0; width: 100%; }
 .confettiTitle { top: calc(32% + 158px); left: 30px; right: 30px; font: 700 32px/36px 'Avito Text', sans-serif; white-space: pre-line; }

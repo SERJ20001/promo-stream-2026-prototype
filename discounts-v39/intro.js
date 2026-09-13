@@ -18,7 +18,18 @@ document.querySelector('#app').append(intro);
 let introIndex = 0;
 let publicationTimer;
 let publicationRun = 0;
+let publicationBadges;
 const introOrder = [0, 1, 2, 3, 4, 5, 6, 8, 9, 7];
+function restorePublicationBadges() {
+  if (!publicationBadges) return;
+  const { node, parent, style } = publicationBadges;
+  node.getAnimations().forEach(effect => effect.cancel());
+  node.classList.remove('publicationBadges');
+  if (style === null) node.removeAttribute('style');
+  else node.setAttribute('style', style);
+  parent.append(node);
+  publicationBadges = undefined;
+}
 function introPrefill(index, height) {
   const field = (x, y, width, blockHeight, content, className = '') => `<div class="introPrefill ${className}" style="left:${x / 375 * 100}%;top:${y / height * 100}%;width:${width / 375 * 100}%;height:${blockHeight / height * 100}%">${content}</div>`;
   const input = (x, y, width, blockHeight, text, className = '') => field(x, y, width, blockHeight, `<span>${text}</span>`, `introInputPatch ${className}`);
@@ -37,9 +48,11 @@ function introPrefill(index, height) {
 function showIntro(index) {
   clearTimeout(publicationTimer);
   publicationRun += 1;
+  restorePublicationBadges();
   document.querySelector('#screen').inert = false;
   document.querySelector('#screen').getAnimations({ subtree: true }).forEach(effect => effect.cancel());
   document.querySelector('.product').style.visibility = '';
+  document.querySelector('.product').style.opacity = '';
   document.querySelector('#screen .title').style.visibility = '';
   document.querySelector('#header').classList.remove('headerCompact');
   document.dispatchEvent(new Event('promo:confetti-stop'));
@@ -128,7 +141,7 @@ async function showPublicationRecommendations() {
   screen.inert = true;
   document.querySelector('#scroll').scrollTop = 0;
   const target = document.querySelector('.product');
-  target.style.visibility = 'hidden';
+  target.style.opacity = '0';
   const targetTitle = screen.querySelector('.title');
   targetTitle.style.visibility = 'hidden';
   const appBounds = document.querySelector('#app').getBoundingClientRect();
@@ -141,6 +154,17 @@ async function showPublicationRecommendations() {
   const start = getComputedStyle(card);
   const end = getComputedStyle(target);
   const from = Object.fromEntries(['top', 'left', 'width', 'height', 'padding', 'borderRadius', 'transform', 'gap'].map(key => [key, start[key]]));
+  const badges = target.querySelector('.badges');
+  const badgeBounds = badges.getBoundingClientRect();
+  publicationBadges = { node: badges, parent: badges.parentElement, style: badges.getAttribute('style') };
+  badges.classList.add('publicationBadges');
+  badges.style.width = `${badgeBounds.width}px`;
+  badges.style.right = `${bounds.right - badgeBounds.right}px`;
+  badges.style.bottom = `${bounds.bottom - badgeBounds.bottom}px`;
+  card.append(badges);
+  badges.animate([{ opacity: 0 }, { opacity: 1 }], {
+    duration: reduced ? 0 : 220, delay: reduced ? 0 : 500, easing: 'ease-out', fill: 'both'
+  });
   card.getAnimations().forEach(effect => effect.cancel());
   movingTitle.getAnimations().forEach(effect => effect.cancel());
   movingTitle.animate([
@@ -158,6 +182,7 @@ async function showPublicationRecommendations() {
   card.querySelector('.publicationDetails').animate([{ opacity: 1 }, { opacity: 0 }], { ...options, duration: reduced ? 0 : 200 });
   await motion.finished.catch(() => {});
   if (run !== publicationRun) return;
+  restorePublicationBadges();
   const originalPhoto = card.querySelector('img');
   originalPhoto.getAnimations().forEach(effect => effect.cancel());
   target.querySelector('img').replaceWith(originalPhoto);
@@ -169,7 +194,6 @@ async function showPublicationRecommendations() {
   targetTitle.style.visibility = '';
   document.dispatchEvent(new Event('promo:confetti-stop'));
   screen.inert = false;
-  card.querySelector('.badges').animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 300 });
 }
 
 const introParams = new URLSearchParams(location.search);
