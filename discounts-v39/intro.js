@@ -20,13 +20,18 @@ let publicationTimer;
 let publicationRun = 0;
 const introOrder = [0, 1, 2, 3, 4, 5, 6, 8, 9, 7];
 function introPrefill(index, height) {
-  const field = (x, y, width, blockHeight, text, background = '#f2f1f0') => `<div class="introPrefill" style="left:${x / 375 * 100}%;top:${(y - 44) / height * 100}%;width:${width / 375 * 100}%;height:${blockHeight / height * 100}%;background:${background}">${text}</div>`;
-  if (index === 1) return field(16, 216, 208, 208, '<img src="assets/product-boots.png" alt="Ботинки Hermes">');
-  if (index === 2) return field(28, 166, 270, 44, 'Ботинки Hermes');
-  if (index === 3) return field(16, 226, 290, 27, 'Ботинки', 'white') + field(336, 226, 28, 28, '<span class="introSelectedCategory" role="img" aria-label="Категория выбрана">✓</span>', 'white');
-  if (index === 9) return field(296, 224, 46, 24, '<img src="assets/toggle-off.png" alt="XL-объявление выключено">') + field(296, 426, 46, 24, '<img src="assets/toggle-off.png" alt="Выделение цены выключено">');
-  if (index === 5) return field(28, 148, 275, 40, '5 000 ₽');
-  if (index === 4) return field(28, 416, 280, 38, 'Новое') + field(16, 796, 343, 46, 'Можно добавить — так у покупателей будет меньше вопросов', 'white') + field(16, 968, 343, 60, 'Старайтесь использовать меньше эмодзи и не пишите большими буквами: многих это отталкивает.', 'white') + field(28, 534, 270, 40, '44') + field(28, 668, 270, 40, 'Hermes') + field(27, 1055, 320, 135, 'Ботинки Hermes, коричневая кожа. Новые, размер 44. Без дефектов.');
+  const field = (x, y, width, blockHeight, content, className = '') => `<div class="introPrefill ${className}" style="left:${x / 375 * 100}%;top:${y / height * 100}%;width:${width / 375 * 100}%;height:${blockHeight / height * 100}%">${content}</div>`;
+  const input = (x, y, width, blockHeight, text, className = '') => field(x, y, width, blockHeight, `<span>${text}</span>`, `introInputPatch ${className}`);
+  if (index === 1) return field(16, 172, 208, 208, '<img src="assets/product-boots.png" alt="Ботинки Hermes">', 'introPhotoPatch');
+  if (index === 2) return input(16, 117, 343, 52, 'Ботинки Hermes');
+  if (index === 9) return field(296, 179, 46, 26, '<img src="assets/toggle-off.png" alt="XL-объявление выключено">', 'introTogglePatch') + field(296, 381, 46, 26, '<img src="assets/toggle-off.png" alt="Выделение цены выключено">', 'introTogglePatch');
+  if (index === 5) return input(16, 101, 343, 52, '5 000 ₽');
+  if (index === 4) return input(16, 369, 343, 52, 'Новое')
+    + input(16, 477, 343, 52, '44')
+    + input(16, 611, 343, 52, 'Hermes')
+    + field(16, 750, 343, 44, 'Можно добавить — так у покупателей будет меньше вопросов', 'introCopyPatch')
+    + field(16, 920, 343, 60, 'Старайтесь использовать меньше эмодзи и не пишите большими буквами: многих это отталкивает.', 'introCopyPatch')
+    + input(16, 1000, 343, 158, 'Ботинки Hermes, коричневая кожа. Новые, размер 44. Без дефектов.', 'introTextareaPatch');
   return '';
 }
 function showIntro(index) {
@@ -58,6 +63,7 @@ function showIntro(index) {
     card.innerHTML = '<img src="assets/product-boots.png" alt="Ботинки Hermes"><div><strong>5 000 ₽</strong><span>Ботинки Hermes</span><span class="publicationDetails">Новое, 44 размер</span></div>';
     document.querySelector('#app').append(card);
   }
+  intro.scrollTop = 0;
   intro.querySelector('.introViewport').scrollTop = 0;
   intro.focus({ preventScroll: true });
   if (index + 1 < introSteps.length) {
