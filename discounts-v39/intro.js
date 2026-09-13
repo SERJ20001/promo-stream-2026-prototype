@@ -179,6 +179,11 @@ async function showPublicationRecommendations() {
   document.querySelectorAll('#screen .visibility, #screen .options, #screen .footer').forEach(node => node.animate([{ opacity: 0, transform: 'translateY(48px)' }, { opacity: 1, transform: 'translateY(0)' }], { ...options, duration: reduced ? 0 : 570, delay: reduced ? 0 : 150, fill: 'both' }));
   const motion = card.animate([from, { top: `${bounds.top - appBounds.top}px`, left: `${bounds.left - appBounds.left}px`, width: `${bounds.width}px`, height: `${bounds.height}px`, padding: end.padding, borderRadius: end.borderRadius, gap: end.gap, transform: 'rotate(0deg)' }], options);
   card.querySelector('img').animate([{ width: '106px', height: '106px' }, { width: `${photoBounds.width}px`, height: `${photoBounds.height}px`, borderRadius: '18px' }], options);
+  const textInfo = card.querySelector('strong').parentElement;
+  textInfo.animate([
+    { paddingTop: getComputedStyle(textInfo).paddingTop },
+    { paddingTop: getComputedStyle(target.querySelector('.productInfo')).paddingTop }
+  ], options);
   card.querySelector('.publicationDetails').animate([{ opacity: 1 }, { opacity: 0 }], { ...options, duration: reduced ? 0 : 200 });
   await motion.finished.catch(() => {});
   if (run !== publicationRun) return;
