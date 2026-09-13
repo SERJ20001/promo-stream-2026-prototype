@@ -25,7 +25,7 @@ function introPrefill(index, height) {
   if (index === 2) return field(28, 166, 270, 44, 'Ботинки Hermes');
   if (index === 3) return field(16, 226, 290, 27, 'Ботинки', 'white') + field(336, 226, 28, 28, '<span class="introSelectedCategory" role="img" aria-label="Категория выбрана">✓</span>', 'white');
   if (index === 9) return field(296, 224, 46, 24, '<img src="assets/toggle-off.png" alt="XL-объявление выключено">') + field(296, 426, 46, 24, '<img src="assets/toggle-off.png" alt="Выделение цены выключено">');
-  if (index === 5) return field(28, 160, 275, 40, '5 000 ₽');
+  if (index === 5) return field(28, 148, 275, 40, '5 000 ₽');
   if (index === 4) return field(28, 416, 280, 38, 'Новое') + field(16, 796, 343, 46, 'Можно добавить — так у покупателей будет меньше вопросов', 'white') + field(16, 968, 343, 60, 'Старайтесь использовать меньше эмодзи и не пишите большими буквами: многих это отталкивает.', 'white') + field(28, 534, 270, 40, '44') + field(28, 668, 270, 40, 'Hermes') + field(27, 1055, 320, 135, 'Ботинки Hermes, коричневая кожа. Новые, размер 44. Без дефектов.');
   return '';
 }

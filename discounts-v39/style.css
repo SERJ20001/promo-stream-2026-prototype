@@ -286,3 +286,11 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .publicationCardInitial { top: 110px; }
 .confettiTitle { top: calc(45.58% - 94px); }
 @media (max-width: 500px) { .phone { height: 100dvh; border-radius: 0; box-shadow: none; } }
+
+.sheet.staticSheet { display: flex; flex-direction: column; overflow: hidden; height: min(762px, 92%); }
+.staticSheet #sheetContent { display: flex; flex-direction: column; min-height: 0; height: 100%; }
+.sheetBodyScroll { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+.sheetBodyCrop { overflow: hidden; }
+.sheetFixedFooter { position: relative; flex-shrink: 0; overflow: hidden; background: white; border-radius: 24px 24px 0 0; box-shadow: 0 -4px 16px #00000008; }
+.sheetFooterImage { width: 100%; }
+.sheetFixedFooter .sheetDoneHotspot { z-index: 1; }

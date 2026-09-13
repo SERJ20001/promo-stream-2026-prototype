@@ -117,7 +117,10 @@ function openSheet(name) {
   };
   const preview = sheets[name];
   if (!preview) return;
-  sheet(preview.title, `<div class="figmaSheetCanvas"><img class="figmaSheetImage" src="assets/sheet-${name}${['hvatamba', 'lovita', 'delivery', 'quantity'].includes(name) ? '-v38' : ''}.png" width="375" height="${preview.height}" alt="${preview.title}. Статичный макет настроек.">${sheetSelection(name)}<button class="sheetDoneHotspot" data-action="close" aria-label="Закрыть шторку" style="height:${100 * 100 / preview.height}%"></button></div>`);
+  const footerHeight = ['hvatamba', 'lovita', 'delivery'].includes(name) ? 132 : name === 'quantity' ? 76 : 100;
+  const bodyHeight = preview.height - footerHeight;
+  const canvas = `<div class="figmaSheetCanvas"><img class="figmaSheetImage" src="assets/sheet-${name}${['hvatamba', 'lovita', 'delivery', 'quantity'].includes(name) ? '-v38' : ''}.png" width="375" height="${preview.height}" alt="${preview.title}. Статичный макет настроек.">${sheetSelection(name)}</div>`;
+  sheet(preview.title, `<div class="sheetBodyScroll"><div class="sheetBodyCrop" style="aspect-ratio:375/${bodyHeight}">${canvas}</div></div><div class="sheetFixedFooter" style="aspect-ratio:375/${footerHeight}"><div class="sheetFooterImage" style="transform:translateY(-${bodyHeight / preview.height * 100}%)">${canvas}</div><button class="sheetDoneHotspot" data-action="close" aria-label="Закрыть шторку" style="height:${Math.min(76, footerHeight) / footerHeight * 100}%"></button></div>`);
   $('.sheet').classList.add('figmaSheet', 'staticSheet');
   $('.sheet').scrollTop = 0;
 }
