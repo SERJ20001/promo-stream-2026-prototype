@@ -6,14 +6,14 @@
   phone.append(canvas);
   const title = document.createElement('div');
   title.className = 'confettiTitle';
-  title.textContent = 'Объявление\nпочти готово!';
+  title.innerHTML = '<span class="confettiTitleSource">Объявление\nпочти готово!</span><img class="confettiTitleDestination" src="assets/page-title.png" alt="Привлеките покупателей">';
   phone.append(title);
   const context = canvas.getContext('2d');
   const colors = ['#ff487d', '#ffcf24', '#20ccf6', '#9d59ff', '#74ef31'];
   let animation;
   function play() {
     cancelAnimationFrame(animation);
-    title.getAnimations().forEach(effect => effect.cancel());
+    title.getAnimations({ subtree: true }).forEach(effect => effect.cancel());
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
       title.animate([{ opacity: 1 }], { duration: 0, fill: 'forwards' });
       return;
@@ -74,6 +74,6 @@
   document.addEventListener('promo:confetti-stop', () => {
     cancelAnimationFrame(animation);
     context.clearRect(0, 0, canvas.width, canvas.height);
-    title.getAnimations().forEach(effect => effect.cancel());
+    title.getAnimations({ subtree: true }).forEach(effect => effect.cancel());
   });
 })();

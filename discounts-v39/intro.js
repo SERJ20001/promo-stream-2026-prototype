@@ -40,6 +40,7 @@ function showIntro(index) {
   document.querySelector('#screen').inert = false;
   document.querySelector('#screen').getAnimations({ subtree: true }).forEach(effect => effect.cancel());
   document.querySelector('.product').style.visibility = '';
+  document.querySelector('#screen .title').style.visibility = '';
   document.querySelector('#header').classList.remove('headerCompact');
   document.dispatchEvent(new Event('promo:confetti-stop'));
   document.querySelector('.publicationCelebration')?.remove();
@@ -128,16 +129,30 @@ async function showPublicationRecommendations() {
   document.querySelector('#scroll').scrollTop = 0;
   const target = document.querySelector('.product');
   target.style.visibility = 'hidden';
+  const targetTitle = screen.querySelector('.title');
+  targetTitle.style.visibility = 'hidden';
   const appBounds = document.querySelector('#app').getBoundingClientRect();
+  const titleBounds = targetTitle.getBoundingClientRect();
+  const movingTitle = document.querySelector('.confettiTitle');
+  const titleStyle = getComputedStyle(movingTitle);
+  const titleFrom = Object.fromEntries(['top', 'left', 'width', 'height', 'transform'].map(key => [key, titleStyle[key]]));
   const bounds = target.getBoundingClientRect();
   const photoBounds = target.querySelector('img').getBoundingClientRect();
   const start = getComputedStyle(card);
   const end = getComputedStyle(target);
   const from = Object.fromEntries(['top', 'left', 'width', 'height', 'padding', 'borderRadius', 'transform', 'gap'].map(key => [key, start[key]]));
   card.getAnimations().forEach(effect => effect.cancel());
-  document.querySelector('.confettiTitle').animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduced ? 0 : 150, fill: 'forwards' });
+  movingTitle.getAnimations().forEach(effect => effect.cancel());
+  movingTitle.animate([
+    { ...titleFrom, right: 'auto', opacity: 1 },
+    { top: `${titleBounds.top - appBounds.top}px`, left: `${titleBounds.left - appBounds.left}px`, width: `${titleBounds.width}px`, height: `${titleBounds.height}px`, right: 'auto', transform: 'rotate(0deg)', opacity: 1 }
+  ], options);
+  movingTitle.animate([
+    { '--title-reveal': '-15%' }, { '--title-reveal': '-15%', offset: .16 },
+    { '--title-reveal': '100%', offset: .76 }, { '--title-reveal': '100%' }
+  ], options);
   celebration.animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduced ? 0 : 360, fill: 'forwards' });
-  document.querySelectorAll('#screen .title, #screen .visibility, #screen .options, #screen .footer').forEach(node => node.animate([{ opacity: 0, transform: 'translateY(48px)' }, { opacity: 1, transform: 'translateY(0)' }], { ...options, duration: reduced ? 0 : 570, delay: reduced ? 0 : 150, fill: 'both' }));
+  document.querySelectorAll('#screen .visibility, #screen .options, #screen .footer').forEach(node => node.animate([{ opacity: 0, transform: 'translateY(48px)' }, { opacity: 1, transform: 'translateY(0)' }], { ...options, duration: reduced ? 0 : 570, delay: reduced ? 0 : 150, fill: 'both' }));
   const motion = card.animate([from, { top: `${bounds.top - appBounds.top}px`, left: `${bounds.left - appBounds.left}px`, width: `${bounds.width}px`, height: `${bounds.height}px`, padding: end.padding, borderRadius: end.borderRadius, gap: end.gap, transform: 'rotate(0deg)' }], options);
   card.querySelector('img').animate([{ width: '106px', height: '106px' }, { width: `${photoBounds.width}px`, height: `${photoBounds.height}px`, borderRadius: '18px' }], options);
   card.querySelector('.publicationDetails').animate([{ opacity: 1 }, { opacity: 0 }], { ...options, duration: reduced ? 0 : 200 });
@@ -151,6 +166,7 @@ async function showPublicationRecommendations() {
   card.replaceChildren(...target.childNodes);
   target.replaceWith(card);
   celebration.remove();
+  targetTitle.style.visibility = '';
   document.dispatchEvent(new Event('promo:confetti-stop'));
   screen.inert = false;
   card.querySelector('.badges').animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 300 });
