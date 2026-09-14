@@ -1,0 +1,26 @@
+name: Снять прототип с выбором режима с публикации
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+jobs:
+  expire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Проверить срок и снять публикацию
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPIRES_AT: "2026-09-20T19:11:43.639260+00:00"
+        run: |
+          if [ "$(date -u +%s)" -lt "$(date -u -d "$EXPIRES_AT" +%s)" ]; then exit 0; fi
+          if [ ! -d discounts-viewer ]; then exit 0; fi
+          git rm -r discounts-viewer
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Снять прототип с выбором режима по окончании срока"
+          git push
+          gh api --method POST repos/${{ github.repository }}/pages/builds
