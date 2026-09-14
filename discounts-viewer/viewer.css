@@ -12,12 +12,13 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
 .viewerRetry { margin-top: 24px; border: 0; border-radius: 16px; padding: 16px 24px; background: #141414; color: white; font: 16px/20px 'Avito Text', sans-serif; cursor: pointer; }
 .viewerStage { background: #ececeb; grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); }
 .viewerDevice, .viewerDisplay { box-sizing: content-box; }
+.viewerDevice, .viewerDisplay, .viewerStage .phone { max-width: 375px; max-height: 812px; }
 .viewerDevice { position: relative; }
 .viewerDisplay { display: flex; flex-direction: column; overflow: hidden; background: #fff; }
 .viewerStatus, .viewerHome { display: none; flex-shrink: 0; background: #fff; }
 .viewerStatus img { display: block; width: 375px; height: 44px; }
 .viewerStage .phone { flex: none; border-radius: 0; box-shadow: none; }
-.viewerStage[data-viewer='phone'] { display: block; background: #fff; }
+.viewerStage[data-viewer='phone'] { display: grid; background: #fff; }
 .viewerStage[data-viewer='phone'] .viewerDevice, .viewerStage[data-viewer='phone'] .viewerDisplay { width: 100%; height: 100%; }
 .viewerStage[data-viewer='phone'] .phone { width: 100%; height: 100%; }
 .viewerStage[data-viewer='desktop'] .viewerDevice { width: 375px; height: 812px; border: 10px solid #141414; border-radius: 48px; box-shadow: 0 20px 60px #00000026; transform: scale(var(--viewer-scale, 1)); transform-origin: center; }

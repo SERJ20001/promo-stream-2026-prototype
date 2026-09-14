@@ -13,7 +13,7 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=46', 'viewer.css?v=1'];
+  const styles = ['style.css?v=46', 'viewer.css?v=2'];
   const scripts = ['viewer.js?v=1', 'app.js?v=viewer-1', 'intro.js?v=viewer-1', 'confetti.js?v=45'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
