@@ -8,7 +8,11 @@ const introSteps = [
   ['Контакты и способы продажи', 1027],
   ['Автопубликация', 812],
   ['Продвижение объявления', 1007],
-  ['Заметный вид объявления', 812]
+  ['Заметный вид объявления', 812],
+  ['Подтверждение оплаты', 812],
+  ['Оплата услуг Авито', 812],
+  ['Оплата специальных услуг', 812],
+  ['Успешная оплата', 812]
 ];
 const intro = document.createElement('section');
 intro.className = 'introFlow';
@@ -19,7 +23,7 @@ let introIndex = 0;
 let publicationTimer;
 let publicationRun = 0;
 let publicationBadges;
-const introOrder = [0, 1, 2, 3, 4, 5, 6, 8, 9, 7];
+const introOrder = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 7];
 function restorePublicationBadges() {
   if (!publicationBadges) return;
   const { node, parent, style } = publicationBadges;
@@ -35,7 +39,7 @@ function introPrefill(index, height) {
   const input = (x, y, width, blockHeight, text, className = '') => field(x, y, width, blockHeight, `<span>${text}</span>`, `introInputPatch ${className}`);
   if (index === 1) return field(16, 172, 208, 208, '<img src="assets/product-boots.png" alt="Ботинки Hermes">', 'introPhotoPatch');
   if (index === 2) return input(16, 117, 343, 52, 'Ботинки Hermes');
-  if (index === 9) return field(296, 179, 46, 26, '<img src="assets/toggle-off.png" alt="XL-объявление выключено">', 'introTogglePatch') + field(296, 381, 46, 26, '<img src="assets/toggle-off.png" alt="Выделение цены выключено">', 'introTogglePatch');
+  if (index === 9) return field(296, 179, 46, 26, '<img src="assets/toggle-on.png" alt="XL-объявление включено">', 'introTogglePatch') + field(296, 381, 46, 26, '<img src="assets/toggle-off.png" alt="Выделение цены выключено">', 'introTogglePatch');
   if (index === 5) return input(16, 101, 343, 52, '5 000 ₽');
   if (index === 4) return input(16, 369, 343, 52, 'Новое')
     + input(16, 477, 343, 52, '44')
@@ -64,9 +68,15 @@ function showIntro(index) {
   document.querySelector('#screen').hidden = true;
   intro.hidden = false;
   intro.dataset.step = String(index);
-  const contentHeight = [812, 680, 311, 680, 1540, 680, 875, 680, 920, 610][index];
-  const header = index ? '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>' : '';
-  const footer = index ? `<footer class="introFixedFooter">${index === 6 ? '<div class="introPayout"><span>Вы получите за товар</span><strong>5 000 ₽</strong></div>' : ''}<button class="introNext introFixedNext" aria-label="${index === 7 ? 'Разместить объявление' : 'Продолжить'}">${index === 7 ? '<span>Разместить объявление</span>' : '<img src="assets/continue-button.png" alt="Продолжить">'}</button>${index === 8 ? '<button class="introNext introSecondary">Продолжить без продвижения</button>' : ''}</footer>` : '';
+  const contentHeight = [812, 680, 311, 680, 1540, 680, 875, 680, 920, 680, 680, 680, 812, 680][index];
+  const imageHeader = index >= 10 && index <= 13;
+  const header = index ? imageHeader
+    ? `<header class="introFixedHeader introImageHeader"><img src="assets/intro/flow-${index}.png" alt=""></header>`
+    : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>' : '';
+  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к публикации' };
+  const footerLabel = footerLabels[index] || 'Продолжить';
+  const hasFooter = index > 0 && index !== 12;
+  const footer = hasFooter ? `<footer class="introFixedFooter"><button class="introNext introFixedNext" aria-label="${footerLabel}">${footerLabels[index] ? `<span>${footerLabel}</span>` : '<img src="assets/continue-button.png" alt="Продолжить">'}</button></footer>` : '';
   intro.innerHTML = `${header}<div class="introViewport"><div class="introCrop" style="aspect-ratio:375 / ${contentHeight - (index ? 52 : 0)}"><div class="introCanvas"><img src="assets/intro/flow-${index}.png" width="375" height="${height}" alt="${title}. Предзаполненный демонстрационный экран." draggable="false">${introPrefill(index, height)}${index === 0 ? '<button class="introHit introNext" aria-label="Вещи, электроника, хобби, животные" style="top:49.4%;height:8.6%;"></button>' : ''}</div></div></div>${footer}`;
   if (index === 7) {
     const cover = document.createElement('div');
@@ -80,6 +90,7 @@ function showIntro(index) {
   intro.scrollTop = 0;
   intro.querySelector('.introViewport').scrollTop = 0;
   intro.focus({ preventScroll: true });
+  if (index === 12) publicationTimer = setTimeout(() => showIntro(13), 6000);
   if (index + 1 < introSteps.length) {
     const next = new Image();
     next.src = `assets/intro/flow-${introOrder[introOrder.indexOf(index) + 1] ?? 7}.png`;
