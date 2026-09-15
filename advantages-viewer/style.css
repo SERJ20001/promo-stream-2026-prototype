@@ -209,7 +209,8 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 
 .figmaSheet { padding: 0; border-radius: 32px 32px 0 0; }
 .figmaSheet .handle { display: none; }
-.figmaSheet .close { top: 6px; right: 6px; width: 44px; height: 44px; opacity: 0; z-index: 2; }
+.figmaSheet .close { position: sticky; float: right; top: 6px; right: auto; width: 44px; height: 44px; margin: 0 6px -44px 0; opacity: 0; z-index: 2; background: white; }
+.figmaSheet.sheetScrolled .close { opacity: 1; }
 .figmaSheet .close:focus-visible { opacity: 1; }
 .figmaSheet h2 { position: absolute; width: 1px; height: 1px; padding: 0; margin: 0; overflow: hidden; clip-path: inset(50%); }
 .figmaSheetCanvas { position: relative; width: 100%; }
@@ -225,6 +226,17 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .staticSheet { border-radius: 32px 32px 0 0; }
 .sheetDoneHotspot { position: absolute; bottom: 0; left: 0; width: 100%; border: 0; padding: 0; background: transparent; }
 .sheetDoneHotspot:focus-visible { outline: 2px solid #141414; outline-offset: -4px; }
+
+.fixedFooterSheet { display: flex; height: min(var(--sheet-height), 92%); max-height: 92%; overflow: hidden; flex-direction: column; }
+.fixedFooterSheet .close { position: absolute; top: 6px; right: 6px; float: none; margin: 0; }
+.fixedFooterSheet #sheetContent { display: flex; flex: 1; min-height: 0; }
+.fixedSheetLayout { display: flex; width: 100%; min-height: 0; flex: 1; flex-direction: column; }
+.fixedSheetBody { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior-y: none; scrollbar-width: none; }
+.fixedSheetBody::-webkit-scrollbar { display: none; }
+.fixedSheetBodyCrop { position: relative; width: 100%; overflow: hidden; }
+.fixedSheetCanvas { margin: 0; clip-path: none; }
+.fixedSheetFooter { position: relative; z-index: 3; width: 100%; flex: none; overflow: hidden; background: white; box-shadow: 0 -6px 24px rgb(0 0 0 / 8%); }
+.fixedSheetFooterSource { position: absolute; top: 0; left: 0; margin: 0; clip-path: none; }
 
 .sheetValuePatch { position: absolute; display: flex; align-items: center; background: white; font-family: 'Avito Text', sans-serif; font-size: 16px; line-height: 20px; pointer-events: none; }
 .fieldPatch { background: #f2f1f0; }
@@ -285,6 +297,14 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 
 .confettiCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9; }
 
+.heartBalloonLayer { position: absolute; inset: 0; z-index: 16; overflow: hidden; pointer-events: none; }
+.heartBalloonHeart { position: absolute; top: 0; left: 0; width: 212px; height: auto; opacity: 0; user-select: none; transform: translate3d(0, 0, 0); will-change: transform, opacity; }
+.heartBalloonToast { position: absolute; z-index: 1; left: 20px; bottom: 26px; display: flex; width: calc(100% - 40px); min-height: 74px; align-items: center; justify-content: center; padding: 16px 20px; border-radius: 28px; background: #141414; box-shadow: 0 4px 30px rgb(0 0 0 / 12%), 0 1px 3px rgb(0 0 0 / 5%); color: #fff; font-size: 15px; line-height: 20px; text-align: center; opacity: 0; transform: translate3d(0, 18px, 0) scale(.98); transform-origin: 50% 100%; will-change: transform, opacity; }
+
+@media (prefers-reduced-motion: reduce) {
+  .heartBalloonHeart { display: none; }
+}
+
 .confettiTitle { position: absolute; top: 43%; left: 16px; right: 16px; z-index: 10; pointer-events: none; opacity: 0; text-align: center; font: 700 36px/1.05 'Avito Display', sans-serif; color: #141414; transform-origin: center; text-wrap: balance; }
 
 .publicationCelebration { position: absolute; inset: 0; z-index: 8; background: white; overflow: hidden; }
@@ -319,8 +339,7 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .scroll { top: 52px; padding-bottom: 145px; }
 .footer { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 .introFixedHeader { flex-shrink: 0; height: 52px; background: white; z-index: 2; }
-.introFlow:not([data-step="0"]) .introCanvas { margin-top: -52px; }
-.introFlow[data-step="13"] .introCanvas { margin-top: -76px; }
+.introFlow:not([data-step="0"]) .introCanvas { margin-top: 0; }
 .introFixedFooter { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 .publicationNav { height: 52px; }
 .publicationBack { top: 0; }
@@ -330,14 +349,6 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .confettiTitle { height: 72px; }
 .confettiTitleSource { position: absolute; inset: 0; width: 100%; }
 @media (max-width: 500px) { .phone { height: 100dvh; border-radius: 0; box-shadow: none; } }
-
-.sheet.staticSheet { display: flex; flex-direction: column; overflow: hidden; height: min(762px, 92%); }
-.staticSheet #sheetContent { display: flex; flex-direction: column; min-height: 0; height: 100%; }
-.sheetBodyScroll { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; }
-.sheetBodyCrop { overflow: hidden; }
-.sheetFixedFooter { position: relative; flex-shrink: 0; overflow: hidden; background: white; border-radius: 24px 24px 0 0; box-shadow: 0 -4px 16px #00000008; }
-.sheetFooterImage { width: 100%; }
-.sheetFixedFooter .sheetDoneHotspot { z-index: 1; }
 
 .assetGate { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: #fff; font-family: 'Avito Text', Arial, sans-serif; color: #141414; opacity: 1; transition: opacity 180ms ease; }
 .assetGateLeaving { opacity: 0; pointer-events: none; }

@@ -2,7 +2,9 @@
 
 Интерактивная HTML/CSS/JS-вёрстка макетов под экран iPhone 13 размером 375 × 812 пикселей.
 
-Постоянная ссылка: https://serj20001.github.io/promo-stream-2026-prototype/
+Пошаговый flow: https://serj20001.github.io/promo-stream-2026-prototype/discounts-viewer/
+
+Объединённый экран преимуществ: https://serj20001.github.io/promo-stream-2026-prototype/advantages-viewer/
 
 ## Запуск
 

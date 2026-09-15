@@ -22,20 +22,22 @@ intro.setAttribute('aria-label', 'Создание объявления');
 document.querySelector('#app').append(intro);
 let introIndex = 0;
 let publicationTimer;
-let introTransitioning = false;
+let paymentFlow = false;
+let paymentAmount = 0;
 const introAsset = index => {
   const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
   return `assets/intro/flow-${index}${versions[index] || ''}.png`;
 };
-const introOrder = [0, 1, 2, 3, 4, 5, 6, 14, 8, 9, 10, 11, 12, 13];
+const introOrder = [0, 1, 2, 3, 4, 5, 6, 14];
+const paymentOrder = [10, 11, 12, 13];
 function introPrefill(index, height) {
   const field = (x, y, width, blockHeight, content, className = '') => `<div class="introPrefill ${className}" style="left:${x / 375 * 100}%;top:${y / height * 100}%;width:${width / 375 * 100}%;height:${blockHeight / height * 100}%">${content}</div>`;
   const input = (x, y, width, blockHeight, text, className = '') => field(x, y, width, blockHeight, `<span>${text}</span>`, `introInputPatch ${className}`);
   if (index === 1) return field(16, 172, 208, 208, '<img src="assets/product-boots.png" alt="Ботинки Hermes">', 'introPhotoPatch');
   if (index === 2) return input(16, 117, 343, 52, 'Ботинки Hermes');
   if (index === 5) return input(16, 101, 343, 52, '5 000 ₽');
-  if (index === 10) return field(306, 180, 54, 28, '300 ₽', 'introPaymentTotalPatch');
-  if (index === 11) return field(16, 67, 128, 40, '300 ₽', 'introPaymentAmountPatch');
+  if (index === 10) return field(306, 180, 54, 28, money(paymentAmount), 'introPaymentTotalPatch');
+  if (index === 11) return field(16, 67, 128, 40, money(paymentAmount), 'introPaymentAmountPatch');
   if (index === 14) return field(300, 386, 60, 24, '−150 ₽', 'introCommissionAmountPatch')
     + field(286, 432, 74, 24, '4 850 ₽', 'introCommissionPayoutPatch');
   if (index === 4) return input(16, 369, 343, 52, 'Новое')
@@ -50,9 +52,6 @@ function showIntro(index) {
   clearTimeout(publicationTimer);
   document.querySelector('#screen').inert = false;
   document.querySelector('#screen').getAnimations({ subtree: true }).forEach(effect => effect.cancel());
-  document.querySelector('.product').style.visibility = '';
-  document.querySelector('.product').style.opacity = '';
-  document.querySelector('#screen .title').style.visibility = '';
   document.querySelector('#header').classList.remove('headerCompact');
   document.dispatchEvent(new Event('promo:confetti-stop'));
   document.querySelector('.publicationCelebration')?.remove();
@@ -73,7 +72,7 @@ function showIntro(index) {
   const hasFooter = index > 0 && index !== 12;
   const footer = hasFooter ? `<footer class="introFixedFooter"><button class="introNext introFixedNext" aria-label="${footerLabel}">${footerLabels[index] ? `<span>${footerLabel}</span>` : '<img src="assets/continue-button.png" alt="Продолжить">'}</button></footer>` : '';
   const loadingSpinner = index === 12 ? '<span class="paymentSpinner" aria-hidden="true"><img src="assets/loading-spinner.png" alt=""></span>' : '';
-  intro.innerHTML = `${header}<div class="introViewport"><div class="introCrop" style="aspect-ratio:375 / ${contentHeight - (index ? 52 : 0)}"><div class="introCanvas"><img src="${introAsset(index)}" width="375" height="${height}" alt="${title}. Предзаполненный демонстрационный экран." draggable="false">${introPrefill(index, height)}${loadingSpinner}${index === 0 ? '<button class="introHit introNext" aria-label="Вещи, электроника, хобби, животные" style="top:49.4%;height:8.6%;"></button>' : ''}</div></div></div>${footer}`;
+  intro.innerHTML = `${header}<div class="introViewport"><div class="introCrop" style="aspect-ratio:375 / ${contentHeight}"><div class="introCanvas"><img src="${introAsset(index)}" width="375" height="${height}" alt="${title}. Предзаполненный демонстрационный экран." draggable="false">${introPrefill(index, height)}${loadingSpinner}${index === 0 ? '<button class="introHit introNext" aria-label="Вещи, электроника, хобби, животные" style="top:49.4%;height:8.6%;"></button>' : ''}</div></div></div>${footer}`;
   if (index === 14) {
     const cover = document.createElement('div');
     cover.className = 'publicationSourceCover';
@@ -87,9 +86,11 @@ function showIntro(index) {
   intro.querySelector('.introViewport').scrollTop = 0;
   intro.focus({ preventScroll: true });
   if (index === 12) publicationTimer = setTimeout(() => showIntro(13), 6000);
-  if (index + 1 < introSteps.length) {
+  const activeOrder = paymentFlow ? paymentOrder : introOrder;
+  const nextIndex = activeOrder[activeOrder.indexOf(index) + 1];
+  if (nextIndex !== undefined) {
     const next = new Image();
-    next.src = introAsset(introOrder[introOrder.indexOf(index) + 1] ?? 13);
+    next.src = introAsset(nextIndex);
   }
 }
 function showPublicationCelebration() {
@@ -116,60 +117,51 @@ function showPublicationCelebration() {
   ], expansion);
   card.querySelector('strong + span').animate([{ marginTop: '1px' }, { marginTop: '2px' }], expansion);
   document.dispatchEvent(new Event('promo:confetti'));
-  publicationTimer = setTimeout(showPromotionAfterPublication, reduced ? 800 : 3000);
-}
-function needsCalmTransition(from, to) {
-  return [8, 9].includes(from) || [8, 9].includes(to);
-}
-async function transitionToIntro(index) {
-  if (introTransitioning) return;
-  introTransitioning = true;
-  intro.inert = true;
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const outgoing = intro.animate(
-    [{ opacity: 1 }, { opacity: 0 }],
-    { duration: reduced ? 0 : 140, easing: 'ease-out', fill: 'forwards' }
-  );
-  await outgoing.finished.catch(() => {});
-  intro.style.opacity = '0';
-  outgoing.cancel();
-  showIntro(index);
-  intro.inert = true;
-  const incoming = intro.animate(
-    [{ opacity: 0 }, { opacity: 1 }],
-    { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' }
-  );
-  await incoming.finished.catch(() => {});
-  incoming.cancel();
-  intro.style.opacity = '';
-  intro.inert = false;
-  introTransitioning = false;
+  publicationTimer = setTimeout(showRecommendationsAfterPublication, reduced ? 800 : 3000);
 }
 intro.addEventListener('click', event => {
-  if (introTransitioning) return;
+  const activeOrder = paymentFlow ? paymentOrder : introOrder;
   if (event.target.closest('.introBack')) {
-    const previousIndex = introOrder[Math.max(0, introOrder.indexOf(introIndex) - 1)];
-    return needsCalmTransition(introIndex, previousIndex) ? transitionToIntro(previousIndex) : showIntro(previousIndex);
+    const position = activeOrder.indexOf(introIndex);
+    if (paymentFlow && position === 0) return showRecommendations();
+    const previousIndex = activeOrder[Math.max(0, position - 1)];
+    return showIntro(previousIndex);
   }
   if (!event.target.closest('.introNext')) return;
   if (introIndex === 14) return showPublicationCelebration();
-  if (introOrder.indexOf(introIndex) + 1 < introOrder.length) {
-    const nextIndex = introOrder[introOrder.indexOf(introIndex) + 1];
-    return needsCalmTransition(introIndex, nextIndex) ? transitionToIntro(nextIndex) : showIntro(nextIndex);
+  if (paymentFlow && introIndex === 13) {
+    state.paidServicesPaid = true;
+    render();
+    return showRecommendations();
   }
-  intro.hidden = true;
-  const screen = document.querySelector('#screen');
-  screen.hidden = false;
-  document.querySelector('#scroll').scrollTop = 0;
-  screen.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reducedMotion.matches ? 0 : 280, easing: 'ease-in', fill: 'both' });
-  document.querySelector('.back').focus({ preventScroll: true });
+  if (activeOrder.indexOf(introIndex) + 1 < activeOrder.length) {
+    const nextIndex = activeOrder[activeOrder.indexOf(introIndex) + 1];
+    return showIntro(nextIndex);
+  }
+  showRecommendations();
 });
 document.querySelector('.back').addEventListener('click', event => {
   if (document.querySelector('#scroll').scrollTop > 0) return;
   event.stopPropagation();
-  showIntro(13);
+  paymentFlow = false;
+  showIntro(14);
 });
-async function showPromotionAfterPublication() {
+function showRecommendations(keepTransition = false) {
+  clearTimeout(publicationTimer);
+  paymentFlow = false;
+  document.dispatchEvent(new Event('promo:confetti-stop'));
+  document.querySelector('.publicationCelebration')?.remove();
+  document.querySelector('.publicationCard')?.remove();
+  if (!keepTransition) document.querySelector('.publicationTransition')?.remove();
+  intro.hidden = true;
+  intro.inert = true;
+  const screen = document.querySelector('#screen');
+  screen.hidden = false;
+  screen.inert = false;
+  document.querySelector('#scroll').scrollTop = 0;
+  document.querySelector('#header').classList.remove('headerScrolled', 'headerCompact');
+}
+async function showRecommendationsAfterPublication() {
   if (!document.querySelector('.publicationCard') || !document.querySelector('.publicationCelebration')) return;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   intro.inert = true;
@@ -182,16 +174,26 @@ async function showPromotionAfterPublication() {
     { duration: reduced ? 0 : 260, easing: 'ease-in', fill: 'forwards' }
   );
   await cover.finished.catch(() => {});
-  showIntro(8);
-  intro.inert = true;
+  showRecommendations(true);
+  document.querySelector('#screen').inert = true;
   const reveal = transition.animate(
     [{ opacity: 1 }, { opacity: 0 }],
     { duration: reduced ? 0 : 340, easing: 'ease-out', fill: 'forwards' }
   );
   await reveal.finished.catch(() => {});
   transition.remove();
-  intro.inert = false;
+  document.querySelector('#screen').inert = false;
 }
+window.startPaymentFlow = amount => {
+  if (!document.querySelector('#overlay').hidden) closeSheet();
+  paymentAmount = amount;
+  paymentFlow = true;
+  showIntro(10);
+};
 intro.hidden = true;
 document.querySelector('#screen').hidden = true;
-document.addEventListener('promo:viewer-start', () => showIntro(0), { once: true });
+document.addEventListener('promo:viewer-start', () => {
+  const requestedScreen = new URLSearchParams(location.search).get('screen');
+  if (requestedScreen === 'recommendations') showRecommendations();
+  else showIntro(0);
+}, { once: true });

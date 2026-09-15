@@ -15,16 +15,25 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
 .viewerDevice, .viewerDisplay, .viewerStage .phone { max-width: 375px; max-height: 812px; }
 .viewerDevice { position: relative; }
 .viewerDisplay { display: flex; flex-direction: column; overflow: hidden; background: #fff; }
+.viewerDisplay { position: relative; }
 .viewerStatus, .viewerHome { display: none; flex-shrink: 0; background: #fff; }
 .viewerStatus img { display: block; width: 375px; height: 44px; }
 .viewerStage .phone { flex: none; border-radius: 0; box-shadow: none; }
 .viewerStage[data-viewer='phone'] { display: grid; background: #fff; }
 .viewerStage[data-viewer='phone'] .viewerDevice, .viewerStage[data-viewer='phone'] .viewerDisplay { width: 100%; height: 100%; }
 .viewerStage[data-viewer='phone'] .phone { width: 100%; height: 100%; }
+.viewerStage[data-viewer='phone'] .attractivenessSheetCanvas::after,
+.viewerStage[data-viewer='phone'] .totalSheetCanvas::after,
+.viewerStage[data-viewer='phone'] .fixedSheetFooter::after { content: ''; position: absolute; inset: auto 0 0; z-index: 4; height: 34px; background: white; }
+.viewerStage[data-viewer='phone'] .totalCalculation .totalSheetButton { bottom: 10px; }
 .viewerStage[data-viewer='desktop'] .viewerDevice { width: 375px; height: 812px; border: 10px solid #141414; border-radius: 48px; box-shadow: 0 20px 60px #00000026; transform: scale(var(--viewer-scale, 1)); transform-origin: center; }
 .viewerStage[data-viewer='desktop'] .viewerDisplay { width: 375px; height: 812px; border-radius: 38px; }
 .viewerStage[data-viewer='desktop'] .viewerStatus { display: block; height: 44px; }
 .viewerStage[data-viewer='desktop'] .phone { width: 375px; height: 734px; }
 .viewerStage[data-viewer='desktop'] .viewerHome { display: flex; align-items: flex-end; justify-content: center; height: 34px; }
+.viewerStage[data-viewer='desktop'] .viewerDisplay.sheetOpen .phone { height: 768px; }
+.viewerStage[data-viewer='desktop'] .viewerDisplay.sheetOpen .viewerHome { display: none; }
+.viewerStage[data-viewer='desktop'] .viewerDisplay.sheetOpen .viewerStatus::after { content: ''; position: absolute; inset: 0; background: #0006; }
+.viewerStage[data-viewer='desktop'] .viewerDisplay.sheetOpen .viewerStatus { position: relative; }
 .viewerHome i { display: block; width: 134px; height: 5px; margin-bottom: 8px; border-radius: 3px; background: #141414; }
 .viewerStage[data-viewer='desktop'] .footer, .viewerStage[data-viewer='desktop'] .introFixedFooter { padding-bottom: 12px; }
