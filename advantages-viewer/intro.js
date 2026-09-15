@@ -193,7 +193,13 @@ window.startPaymentFlow = amount => {
 intro.hidden = true;
 document.querySelector('#screen').hidden = true;
 document.addEventListener('promo:viewer-start', () => {
-  const requestedScreen = new URLSearchParams(location.search).get('screen');
-  if (requestedScreen === 'recommendations') showRecommendations();
-  else showIntro(0);
+  const search = new URLSearchParams(location.search);
+  const requestedScreen = search.get('screen');
+  const requestedSheet = search.get('sheet');
+  if (requestedScreen === 'recommendations' || requestedSheet) {
+    showRecommendations();
+    if (requestedSheet) openSheet(requestedSheet);
+    return;
+  }
+  showIntro(0);
 }, { once: true });

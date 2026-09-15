@@ -6,6 +6,7 @@
   phone.append(canvas);
   const title = document.createElement('div');
   title.className = 'confettiTitle';
+  title.hidden = true;
   title.innerHTML = '<span class="confettiTitleSource">Опубликовали\nобъявление!</span>';
   phone.append(title);
   const context = canvas.getContext('2d');
@@ -13,6 +14,7 @@
   let animation;
   function play() {
     cancelAnimationFrame(animation);
+    title.hidden = false;
     title.getAnimations({ subtree: true }).forEach(effect => effect.cancel());
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
       title.animate([{ opacity: 1 }], { duration: 0, fill: 'forwards' });
@@ -75,5 +77,6 @@
     cancelAnimationFrame(animation);
     context.clearRect(0, 0, canvas.width, canvas.height);
     title.getAnimations({ subtree: true }).forEach(effect => effect.cancel());
+    title.hidden = true;
   });
 })();

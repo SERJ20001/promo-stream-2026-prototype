@@ -195,7 +195,7 @@ document.addEventListener('click', event => {
     case 'close': return closeSheet();
     case 'complete':
       if (paidServicesTotal(state) > 0 && !state.paidServicesPaid) return window.startPaymentFlow?.(paidServicesTotal(state));
-      return;
+      return summary();
     case 'save':
       try { localStorage.setItem('promo-stream-selection-v1', JSON.stringify(state)); summary(true); } catch { toast('Не удалось сохранить настройки в браузере'); }
       return;
@@ -249,5 +249,3 @@ if (document.modelContext?.registerTool) {
   catch (error) { console.warn('WebMCP registration:', error.message); }
   window.addEventListener('pagehide', event => { if (!event.persisted) lifecycle.abort(); }, { once: true });
 }
-const requestedSheet = new URLSearchParams(location.search).get('sheet');
-if (requestedSheet) openSheet(requestedSheet);
