@@ -86,8 +86,8 @@ function renderRecommendations() {
   const hasPaidServices = paidServicesTotal(state) > 0;
   document.querySelector('[data-services-row]').hidden = !hasPaidServices;
   document.querySelector('[data-services-label]').textContent = 'Платные услуги';
-  document.querySelector('.recommendationTotals').disabled = !hasPaidServices;
-  document.querySelector('.totalDetails').hidden = !hasPaidServices;
+  document.querySelector('.recommendationTotals').disabled = false;
+  document.querySelector('.totalDetails').hidden = false;
   document.querySelector('.recommendationFooter').classList.toggle('withoutPaidServices', !hasPaidServices);
   const needsPayment = hasPaidServices && !state.paidServicesPaid;
   document.querySelector('.continueButton').textContent = needsPayment ? `Оплатить ${money(paidServicesTotal(state))}` : 'Готово';
@@ -106,19 +106,23 @@ function recommendationSheet(name) {
     return true;
   }
   if (name === 'total') {
-    const rows = [];
-    for (const [key, label] of [['promotion', 'Поднятие в поиске на 7 дней'], ['xl', 'Большой размер объявления'], ['highlight', 'Выделение цены цветом']]) {
-      if (state[key]) rows.push([label, money(100)]);
+    const serviceRows = [];
+    for (const [key, label] of [['promotion', 'Продвижение на 7 дней'], ['xl', 'Большой размер объявления'], ['highlight', 'Выделение цены цветом']]) {
+      if (state[key]) serviceRows.push([label, money(100)]);
     }
     const payment = paidServicesTotal(state);
-    const sheetHeight = rows.length === 3 ? 406 : 314 + rows.length * 31;
-    const payout = payoutText();
-    const serviceRows = rows.length
-      ? `${rows.map(([label, value]) => `<div class="totalSheetRow"><span>${label}</span><i></i><strong>${value}</strong></div>`).join('')}<div class="totalSheetRow totalSheetPayment"><span>Заплатить сейчас</span><i></i><strong>${money(payment)}</strong></div>`
-      : '<p class="totalSheetEmpty">Платные услуги не подключены</p>';
+    const adjustmentRows = [
+      hasPayoutAdjustments() && ['Комиссия 3%', money(commissionAmount()), 'commission'],
+      state.hvatamba && ['Скидка в распродаже', money(saleDiscountAmount())],
+      state.delivery && ['Скидка на доставку', money(state.deliveryAmount)]
+    ].filter(Boolean);
+    const sheetHeight = Math.min(516, 336 + (adjustmentRows.length + serviceRows.length) * 30);
+    const rows = (items, extraClass = '') => items.map(([label, value, type]) => `<div class="totalCalculationRow ${extraClass}"><span>${label}${type === 'commission' ? '<img src="assets/question-outline.svg" alt="">' : ''}</span><i></i><strong>${value}</strong></div>`).join('');
     const needsPayment = payment > 0 && !state.paidServicesPaid;
-    sheet('Итого', `<div class="figmaSheetCanvas totalSheetCanvas" style="height:${sheetHeight}px"><img class="figmaSheetImage" src="assets/recommendations/sheet-total-v40.png" width="375" height="406" alt="Расчёт итоговой суммы"><strong class="totalSheetPayout">${payout}</strong><div class="totalSheetServices"><h3>Специальные услуги</h3>${serviceRows}</div><button class="totalSheetButton" data-action="${needsPayment ? 'complete' : 'close'}">${needsPayment ? `Оплатить ${money(payment)}` : 'Готово'}</button></div>`);
-    document.querySelector('.sheet').classList.add('figmaSheet', 'staticSheet', 'totalFigmaSheet');
+    const services = serviceRows.length ? `<section class="totalCalculationServices"><strong class="totalCalculationHeading">Специальные услуги</strong>${rows(serviceRows)}<div class="totalCalculationRow totalCalculationPayment"><span>Заплатить сейчас</span><i></i><strong>${money(payment)}</strong></div></section>` : '';
+    sheet('Итого', `<div class="totalCalculation" style="height:${sheetHeight}px"><strong class="totalCalculationTitle">Итого</strong><section class="totalCalculationReceipt"><div class="totalCalculationRow totalCalculationPrice"><span>Ваша цена</span><i></i><strong>${money(basePrice)}</strong></div>${rows(adjustmentRows)}<div class="totalCalculationRow totalCalculationResult"><span>Получите за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></section>${services}<button class="totalSheetButton" data-action="${needsPayment ? 'complete' : 'close'}">${needsPayment ? `Оплатить ${money(payment)}` : 'Готово'}</button></div>`);
+    document.querySelector('.sheet').classList.add('figmaSheet', 'staticSheet', 'totalCalculationSheet', 'sheetCloseAlwaysVisible');
+    document.querySelector('.sheet').style.setProperty('--total-sheet-height', `${sheetHeight}px`);
     document.querySelector('.sheet').scrollTop = 0;
     return true;
   }

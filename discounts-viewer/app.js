@@ -6,7 +6,9 @@ const all = selector => [...document.querySelectorAll(selector)];
 const basePrice = 5000;
 const commissionRate = 3;
 const currentPrice = () => state.hvatamba ? basePrice * (1 - state.hvatambaPercent / 100) : basePrice;
-const commissionAmount = () => currentPrice() * commissionRate / 100;
+const hasPayoutAdjustments = () => state.hvatamba || state.delivery;
+const commissionAmount = () => hasPayoutAdjustments() ? Math.floor(currentPrice() * commissionRate / 100 / 100) * 100 : 0;
+const saleDiscountAmount = () => basePrice - currentPrice();
 const discountKeys = ['hvatamba', 'delivery', 'quantity'];
 const paidServiceKeys = ['promotion', 'xl', 'highlight'];
 const enabledDiscountsCount = () => discountKeys.filter(key => state[key]).length;
@@ -106,7 +108,7 @@ function closeSheet() {
 }
 function sheet(title, body) {
   clearTimeout(toastTimer); $('#toast').classList.remove('shown');
-  $('.sheet').classList.remove('figmaSheet', 'staticSheet', 'scoreSheet', 'totalFigmaSheet', 'fixedFooterSheet', 'sheetScrolled', 'sheetCloseAlwaysVisible');
+  $('.sheet').classList.remove('figmaSheet', 'staticSheet', 'scoreSheet', 'totalFigmaSheet', 'totalCalculationSheet', 'fixedFooterSheet', 'sheetScrolled', 'sheetCloseAlwaysVisible');
   returnFocus = document.activeElement;
   $('#sheetContent').innerHTML = `<h2 id="sheetTitle">${title}</h2>${body}`;
   $('#overlay').hidden = false; $('#screen').inert = true;

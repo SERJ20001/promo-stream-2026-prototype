@@ -70,16 +70,23 @@
 .scoreExplanation h3 { display: flex; justify-content: space-between; gap: 8px; font-size: 16px; line-height: 22px; margin: 0 0 10px; }
 .scoreExplanation p { font-size: 15px; line-height: 20px; margin: 0; }
 
-.attractivenessSheetCanvas, .totalSheetCanvas { overflow: hidden; }
-.totalFigmaSheet { overflow: hidden; }
-.totalSheetPayout { position: absolute; left: 73px; right: 15px; top: 84px; height: 24px; display: flex; align-items: center; background: white; font-size: 20px; line-height: 24px; font-weight: 700; white-space: nowrap; }
-.totalSheetServices { position: absolute; left: 0; right: 0; top: 143px; bottom: 0; padding: 8px 15px 0; background: white; z-index: 1; }
-.totalSheetServices h3 { margin: 0 0 14px; font-size: 16px; line-height: 20px; }
-.totalSheetRow { display: flex; align-items: center; gap: 5px; height: 20px; margin-bottom: 10px; font-size: 16px; line-height: 20px; white-space: nowrap; }
-.totalSheetRow i { flex: 1; min-width: 4px; margin-top: 8px; border-bottom: 1px dotted #c9c9c9; }
-.totalSheetRow strong { font-weight: 400; }
-.totalSheetPayment span { font-weight: 700; }
-.totalSheetEmpty { margin: 0 !important; color: #757575; font-size: 16px !important; line-height: 20px !important; }
+.attractivenessSheetCanvas { overflow: hidden; }
+.totalCalculationSheet { height: min(var(--total-sheet-height), 92%); max-height: 92%; overflow: hidden; }
+.totalCalculationSheet .close { position: absolute; top: 12px; right: 8px; width: 42px; height: 42px; margin: 0; background: transparent; opacity: 1; }
+.totalCalculation { position: relative; display: flex; height: 100%; flex-direction: column; padding: 38px 16px 82px; }
+.totalCalculationTitle { margin-bottom: 24px; font: 700 26px/30px 'Avito Display', 'Avito Text', sans-serif; }
+.totalCalculationReceipt, .totalCalculationServices { display: grid; gap: 10px; }
+.totalCalculationServices { margin-top: 24px; }
+.totalCalculationHeading { margin-bottom: 8px; font: 700 26px/30px 'Avito Display', 'Avito Text', sans-serif; }
+.totalCalculationRow { display: flex; align-items: baseline; gap: 5px; min-height: 20px; font-size: 16px; line-height: 20px; white-space: nowrap; }
+.totalCalculationRow > span { display: inline-flex; align-items: center; flex-shrink: 0; }
+.totalCalculationRow > span img { width: 12px; height: 16px; margin-left: 2px; }
+.totalCalculationRow i { flex: 1; min-width: 4px; border-bottom: 1px dotted #c9c9c9; transform: translateY(-3px); }
+.totalCalculationRow strong { flex-shrink: 0; font-weight: 400; }
+.totalCalculationPrice span, .totalCalculationPrice strong, .totalCalculationResult strong, .totalCalculationPayment span, .totalCalculationPayment strong { font-weight: 700; }
+.totalCalculationResult { align-items: flex-start; }
+.totalCalculationResult i { margin-top: 12px; }
+.totalCalculationResult strong { font-size: 18px; }
 .totalSheetButton { position: absolute; left: 10px; right: 10px; bottom: 34px; height: 52px; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; appearance: none; -webkit-appearance: none; border: 0; border-radius: 16px; background: #141414; color: white; box-shadow: none; font-size: 16px; line-height: 20px; z-index: 2; }
 .introFixedHeader { position: absolute; inset: 0 0 auto; z-index: 5; height: 52px; overflow: hidden; background: white; }
 .introFixedHeader .save { display: flex; align-items: center; }
