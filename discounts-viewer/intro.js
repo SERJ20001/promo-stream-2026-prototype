@@ -5,14 +5,15 @@ const introSteps = [
   ['Категория товара', 812],
   ['Параметры и описание', 1693],
   ['Цена товара', 812],
-  ['Контакты и способы продажи', 1027],
+  ['Адрес и способы продажи', 812],
   ['Автопубликация', 812],
   ['Продвижение объявления', 1007],
   ['Заметный вид объявления', 812],
   ['Подтверждение оплаты', 812],
   ['Оплата услуг Авито', 812],
   ['Оплата специальных услуг', 812],
-  ['Успешная оплата', 812]
+  ['Успешная оплата', 812],
+  ['Комиссия Авито Доставки', 812]
 ];
 const intro = document.createElement('section');
 intro.className = 'introFlow';
@@ -23,7 +24,8 @@ let introIndex = 0;
 let publicationTimer;
 let publicationRun = 0;
 let publicationBadges;
-const introOrder = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 7];
+const introAsset = index => `assets/intro/flow-${index}${index === 6 ? '-v49' : ''}.png`;
+const introOrder = [0, 1, 2, 3, 4, 5, 6, 14, 8, 9, 10, 11, 12, 13, 7];
 function restorePublicationBadges() {
   if (!publicationBadges) return;
   const { node, parent, style } = publicationBadges;
@@ -68,16 +70,17 @@ function showIntro(index) {
   document.querySelector('#screen').hidden = true;
   intro.hidden = false;
   intro.dataset.step = String(index);
-  const contentHeight = [812, 680, 311, 680, 1540, 680, 875, 680, 920, 680, 680, 680, 812, 680][index];
+  const contentHeight = [812, 680, 311, 680, 1540, 680, 740, 680, 920, 680, 680, 680, 812, 680, 680][index];
   const imageHeader = index >= 10 && index <= 13;
   const header = index ? imageHeader
-    ? `<header class="introFixedHeader introImageHeader"><img src="assets/intro/flow-${index}.png" alt=""></header>`
+    ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""></header>`
     : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>' : '';
   const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к публикации' };
   const footerLabel = footerLabels[index] || 'Продолжить';
   const hasFooter = index > 0 && index !== 12;
   const footer = hasFooter ? `<footer class="introFixedFooter"><button class="introNext introFixedNext" aria-label="${footerLabel}">${footerLabels[index] ? `<span>${footerLabel}</span>` : '<img src="assets/continue-button.png" alt="Продолжить">'}</button></footer>` : '';
-  intro.innerHTML = `${header}<div class="introViewport"><div class="introCrop" style="aspect-ratio:375 / ${contentHeight - (index ? 52 : 0)}"><div class="introCanvas"><img src="assets/intro/flow-${index}.png" width="375" height="${height}" alt="${title}. Предзаполненный демонстрационный экран." draggable="false">${introPrefill(index, height)}${index === 0 ? '<button class="introHit introNext" aria-label="Вещи, электроника, хобби, животные" style="top:49.4%;height:8.6%;"></button>' : ''}</div></div></div>${footer}`;
+  const loadingSpinner = index === 12 ? '<span class="paymentSpinner" aria-hidden="true"><img src="assets/loading-spinner.png" alt=""></span>' : '';
+  intro.innerHTML = `${header}<div class="introViewport"><div class="introCrop" style="aspect-ratio:375 / ${contentHeight - (index ? 52 : 0)}"><div class="introCanvas"><img src="${introAsset(index)}" width="375" height="${height}" alt="${title}. Предзаполненный демонстрационный экран." draggable="false">${introPrefill(index, height)}${loadingSpinner}${index === 0 ? '<button class="introHit introNext" aria-label="Вещи, электроника, хобби, животные" style="top:49.4%;height:8.6%;"></button>' : ''}</div></div></div>${footer}`;
   if (index === 7) {
     const cover = document.createElement('div');
     cover.className = 'publicationSourceCover';
@@ -93,7 +96,7 @@ function showIntro(index) {
   if (index === 12) publicationTimer = setTimeout(() => showIntro(13), 6000);
   if (index + 1 < introSteps.length) {
     const next = new Image();
-    next.src = `assets/intro/flow-${introOrder[introOrder.indexOf(index) + 1] ?? 7}.png`;
+    next.src = introAsset(introOrder[introOrder.indexOf(index) + 1] ?? 7);
   }
 }
 function showPublicationCelebration() {

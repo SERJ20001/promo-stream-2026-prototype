@@ -68,6 +68,7 @@ button { color: inherit; }
 .primary:active { background: #333; transform: scale(.985); }
 .total { width: 100%; border: 0; background: transparent; }
 .total strong { white-space: nowrap; font-weight: 400; }
+.totalHelp { width: 14px; height: 14px; flex-shrink: 0; }
 button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2px solid #141414; outline-offset: 3px; }
 .overlay { position: absolute; inset: 0; z-index: 10; display: flex; align-items: flex-end; }
 .scrim { position: absolute; inset: 0; background: #0006; animation: fadeIn 180ms ease both; }
@@ -85,7 +86,8 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .countLabel { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 15px; }
 .countLabel select { font: inherit; padding: 8px; border: 1px solid #ddd; border-radius: 8px; background: white; }
 .receipt { display: grid; grid-template-columns: 1fr auto; gap: 14px 8px; font-size: 15px; margin: 24px 0; }
-.sheet.totalSheet { display: flex; flex-direction: column; height: min(504px, 92%); max-height: 92%; overflow: hidden; padding: 28px 10px 16px; }
+.sheet.totalSheet { display: flex; flex-direction: column; height: min(330px, 92%); max-height: 92%; overflow: hidden; padding: 28px 10px 16px; }
+.totalSheet #sheetContent { display: flex; flex-direction: column; min-height: 0; height: 100%; }
 .totalSheet #sheetTitle { flex-shrink: 0; margin: 8px 6px 14px; font-size: 24px; line-height: 28px; }
 .totalSheetBody { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 0 6px 12px; }
 .totalReceipt, .totalServices { display: grid; gap: 10px; }
@@ -94,11 +96,14 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .totalRow > span { flex-shrink: 0; }
 .totalRow > i { flex: 1; min-width: 8px; border-bottom: 1px dotted #ccc; transform: translateY(-3px); }
 .totalRow > strong { flex-shrink: 0; font-weight: 400; white-space: nowrap; }
+.totalInfoRow { width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; }
 .totalResult { align-items: flex-start; margin-top: 2px; }
 .totalResult > i { margin-top: 12px; }
 .totalResult > strong, .totalPayNow > span, .totalPayNow > strong { font-weight: 700; }
 .totalSheetFooter { flex-shrink: 0; padding-top: 8px; background: white; }
 .totalSheet .totalSheetFooter .primary { margin: 0; }
+.deliveryHint { position: absolute; z-index: 2; top: 62px; left: 10px; width: 238px; padding: 12px; border-radius: 18px; background: #141414; color: white; font-size: 14px; line-height: 18px; opacity: 0; transform: translateY(4px); transition: opacity 180ms ease, transform 180ms ease; pointer-events: none; }
+.deliveryHint.shown { opacity: 1; transform: none; }
 .muted { color: #757575; font-size: 14px !important; }
 .summaryPhoto { width: 80px; height: 80px; border-radius: 18px; }
 .sheet h3 { margin: 10px 0 4px; }
@@ -256,6 +261,9 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .introImageHeader > img { position: absolute; inset: 0 auto auto 0; display: block; width: 100%; height: auto; }
 .introFixedNext { display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; padding: 0; border: 0; border-radius: 16px; background: #141414; color: white; font-size: 16px; }
 .introFixedNext img { width: 100%; height: 52px; }
+.paymentSpinner { position: absolute; left: 154px; top: 340px; display: grid; place-items: center; width: 68px; height: 68px; background: white; }
+.paymentSpinner img { width: 56px; height: 56px; animation: paymentSpin 900ms linear infinite; }
+@keyframes paymentSpin { to { transform: rotate(360deg); } }
 .introPayout { display: flex; align-items: center; justify-content: space-between; padding: 10px 8px 18px; font-size: 14px; }
 .introPayout strong { font-weight: 400; }
 

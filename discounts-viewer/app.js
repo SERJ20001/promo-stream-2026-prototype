@@ -10,18 +10,12 @@ const currentPrice = () => basePrice * (1 - activeSalePercent() / 100);
 const commissionAmount = () => basePrice * commissionRate / 100;
 const saleDiscountAmount = () => basePrice - currentPrice();
 const quantityDiscountAmount = () => state.quantity ? currentPrice() * state.quantityPercent / 100 : 0;
-const payoutBounds = () => {
-  const upper = Math.max(0, currentPrice() - commissionAmount());
-  const deliveryDiscount = state.delivery ? state.deliveryAmount : 0;
-  const lower = Math.max(0, upper - deliveryDiscount - quantityDiscountAmount());
-  return { upper, lower };
-};
-const payoutText = () => {
-  const { upper, lower } = payoutBounds();
-  return lower === upper ? money(upper) : `от ${new Intl.NumberFormat('ru-RU').format(upper)} до ${money(lower)}`;
-};
+const payoutAmount = () => Math.max(0, currentPrice() - commissionAmount() - (state.delivery ? state.deliveryAmount : 0) - quantityDiscountAmount());
+const payoutText = () => money(payoutAmount());
 let returnFocus;
 let toastTimer;
+let deliveryHintTimer;
+let deliveryHintHideTimer;
 let hasRendered = false;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 function render() {
@@ -72,6 +66,8 @@ function toast(message) {
   toastTimer = setTimeout(() => $('#toast').classList.remove('shown'), 2400);
 }
 function closeSheet() {
+  clearTimeout(deliveryHintTimer);
+  clearTimeout(deliveryHintHideTimer);
   $('#overlay').hidden = true; $('#screen').inert = false;
   returnFocus?.focus({ preventScroll: true });
 }
@@ -120,13 +116,12 @@ function openSheet(name) {
   if (name === 'total') {
     const rows = [
       ['Ваша цена', money(basePrice)],
-      [`Комиссия ${commissionRate}%`, money(commissionAmount())],
       activeSalePercent() && ['Скидка в распродаже', money(saleDiscountAmount())],
-      state.delivery && ['Скидка на доставку', `до ${money(state.deliveryAmount)}`],
-      state.quantity && ['Скидка за количество', `до ${money(quantityDiscountAmount())}`]
+      state.delivery && ['Скидка на доставку', money(state.deliveryAmount), true],
+      state.quantity && ['Скидка за количество', money(quantityDiscountAmount())]
     ].filter(Boolean);
-    const receiptRows = rows.map(([label, value]) => `<div class="totalRow"><span>${label}</span><i></i><strong>${value}</strong></div>`).join('');
-    sheet('Итого', `<div class="totalSheetBody"><div class="totalReceipt">${receiptRows}<div class="totalRow totalResult"><span>Получите за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></div><h3>Специальные услуги</h3><div class="totalServices"><div class="totalRow"><span>Продвижение на 7 дней</span><i></i><strong>100 ₽</strong></div><div class="totalRow"><span>XL размер объявления</span><i></i><strong>100 ₽</strong></div><div class="totalRow"><span>Выделение цены цветом</span><i></i><strong>100 ₽</strong></div><div class="totalRow totalPayNow"><span>Заплатить сейчас</span><i></i><strong>300 ₽</strong></div></div></div><div class="totalSheetFooter"><button class="primary" data-action="close">Оплатить 300 ₽</button></div>`);
+    const receiptRows = rows.map(([label, value, interactive]) => `<${interactive ? 'button' : 'div'} class="totalRow${interactive ? ' totalInfoRow' : ''}"${interactive ? ' data-action="delivery-info" aria-describedby="deliveryHint"' : ''}><span>${label}</span><i></i><strong>${value}</strong></${interactive ? 'button' : 'div'}>`).join('');
+    sheet('Итого', `<div class="totalSheetBody"><div class="totalReceipt">${receiptRows}<div class="totalRow totalResult"><span>Придёт за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></div></div><div class="deliveryHint" id="deliveryHint" role="status" hidden>Вычтем меньше, если доставка выйдет дешевле</div><div class="totalSheetFooter"><button class="primary" data-action="close">Готово</button></div>`);
     $('.sheet').classList.add('totalSheet');
     return;
   }
@@ -158,6 +153,19 @@ document.addEventListener('click', event => {
   if (button.dataset.sheet) return openSheet(button.dataset.sheet);
   switch (button.dataset.action) {
     case 'close': return closeSheet();
+    case 'delivery-info': {
+      const hint = $('#deliveryHint');
+      if (!hint) return;
+      clearTimeout(deliveryHintTimer);
+      clearTimeout(deliveryHintHideTimer);
+      hint.hidden = false;
+      requestAnimationFrame(() => hint.classList.add('shown'));
+      deliveryHintTimer = setTimeout(() => {
+        hint.classList.remove('shown');
+        deliveryHintHideTimer = setTimeout(() => { hint.hidden = true; }, 180);
+      }, 4000);
+      return;
+    }
     case 'save':
       try { localStorage.setItem('promo-stream-selection-v1', JSON.stringify(state)); summary(true); } catch { toast('Не удалось сохранить настройки в браузере'); }
       return;
