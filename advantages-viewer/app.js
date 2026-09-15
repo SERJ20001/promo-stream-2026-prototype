@@ -169,13 +169,13 @@ function openSheet(name) {
     $('.sheet').classList.toggle('sheetScrolled', bodyScroller.scrollTop > 24);
   }, { passive: true });
 }
-function summary(saved = false) {
+function summary() {
   const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.delivery && `Скидка на доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от ${state.quantityCount} товаров`].filter(Boolean);
   for (const [key, label] of [['promotion', 'Продвижение'], ['xl', 'Большой размер объявления'], ['highlight', 'Выделение цены цветом']]) {
     if (state[key]) items.push(`${label} — 7 дней, ${money(100)}`);
   }
   items.push(`Привлекательность — ${attractivenessScore(state)}%`);
-  sheet(saved ? 'Настройки сохранены' : 'Всё готово', `<img class="summaryPhoto" src="assets/product-boots.png" alt="Ботинки Hermes"><h3>Ботинки Hermes</h3><div class="summaryPrice">${money(currentPrice())}</div><ul class="summaryList">${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>Без дополнительных скидок</li>'}</ul><p class="muted">${saved ? 'Выбор сохранён в этом браузере.' : 'Предпросмотр настроек. Реальное объявление не изменено.'}</p><button class="primary" data-action="close">Вернуться к настройкам</button><button class="textButton" data-action="reset">Начать заново</button>`);
+  sheet('Всё готово', `<img class="summaryPhoto" src="assets/product-boots.png" alt="Ботинки Hermes"><h3>Ботинки Hermes</h3><div class="summaryPrice">${money(currentPrice())}</div><ul class="summaryList">${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>Без дополнительных скидок</li>'}</ul><p class="muted">Предпросмотр настроек. Реальное объявление не изменено.</p><button class="primary" data-action="close">Вернуться к настройкам</button><button class="textButton" data-action="reset">Начать заново</button>`);
 }
 document.addEventListener('click', event => {
   const button = event.target.closest('button, [data-action]'); if (!button) return;
@@ -196,9 +196,6 @@ document.addEventListener('click', event => {
     case 'complete':
       if (paidServicesTotal(state) > 0 && !state.paidServicesPaid) return window.startPaymentFlow?.(paidServicesTotal(state));
       return summary();
-    case 'save':
-      try { localStorage.setItem('promo-stream-selection-v1', JSON.stringify(state)); summary(true); } catch { toast('Не удалось сохранить настройки в браузере'); }
-      return;
     case 'reset': state = { ...defaults }; photoFiles.clear(); try { localStorage.removeItem('promo-stream-selection-v1'); } catch {} closeSheet(); render(); $('#scroll').scrollTo({ top: 0, behavior: 'smooth' }); all('.recommendationCarousel').forEach(carousel => carousel.scrollTo({ left: 0 })); return;
     case 'back': if ($('#scroll').scrollTop > 0) $('#scroll').scrollTo({ top: 0, behavior: 'smooth' }); else sheet('Вернуться назад?', `<p>Вы можете продолжить настройку или начать выбор скидок заново.</p><button class="primary" data-action="close">Остаться</button><button class="textButton" data-action="reset">Начать заново</button>`);
   }
@@ -220,6 +217,7 @@ $('#scroll').addEventListener('scroll', () => {
   const scrollTop = $('#scroll').scrollTop;
   const compact = scrollTop > 205;
   $('#header').classList.toggle('headerScrolled', scrollTop > 0);
+  $('#screen').classList.toggle('headerIsScrolled', scrollTop > 0);
   $('#header').classList.toggle('headerCompact', compact); $('#screen').classList.toggle('headerIsCompact', compact); $('.compactWrap').setAttribute('aria-hidden', String(!compact)); $('.compactWrap').inert = !compact;
 }, { passive: true });
 $('.compactWrap').inert = true;

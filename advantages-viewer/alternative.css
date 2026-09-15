@@ -1,9 +1,14 @@
 .recommendationsScreen { position: absolute; inset: 0; }
 .recommendationsScreen::before { content: ''; position: absolute; inset: 0 0 auto; z-index: 4; height: 52px; background: #fff; pointer-events: none; transition: height 240ms ease; }
+.recommendationsScreen.headerIsScrolled::before { height: 96px; }
 .recommendationsScreen.headerIsCompact::before { height: 109px; }
 .recommendationsScreen .header { position: absolute; inset: 0 0 auto; z-index: 5; overflow: hidden; background: transparent; }
-.recommendationsScreen .headerScrolled { background: #fff; }
+.recommendationsScreen .headerScrolled { height: 96px; background: #fff; }
+.recommendationsScreen .headerScrolled:not(.headerCompact)::after { content: ''; position: absolute; inset: 52px 0 0; z-index: 2; background: #fff; }
+.recommendationsScreen .header:not(.headerCompact) .compactWrap { visibility: hidden; }
 .recommendationsScreen .scroll { padding: 54px 0 158px; inset: 0; overflow-x: hidden; }
+.recommendationsScreen.headerIsScrolled .scroll { clip-path: inset(96px 0 0); }
+.recommendationsScreen.headerIsCompact .scroll { clip-path: inset(109px 0 0); }
 .recommendationProduct { display: flex; gap: 12px; height: 127px; margin: 0 14px; padding: 13px 14px; border-radius: 28px; box-shadow: 0 4px 24px #0000001f, 0 1px 3px #0000000d; }
 .recommendationProduct .productInfo { padding-top: 1px; }
 .recommendationProduct .productName { margin-top: 2px; }
@@ -95,7 +100,5 @@
 .totalCalculationResult strong { font-size: 16px; }
 .totalSheetButton { position: absolute; left: 10px; right: 10px; bottom: 16px; height: 52px; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; appearance: none; -webkit-appearance: none; border: 0; border-radius: 16px; background: #141414; color: white; box-shadow: none; font-size: 16px; line-height: 20px; z-index: 2; }
 .introFixedHeader { position: absolute; inset: 0 0 auto; z-index: 5; height: 52px; overflow: hidden; background: white; }
-.introFixedHeader .save { display: flex; align-items: center; }
-
 .introDescription { align-items: flex-start; padding-top: 8px; }
 .introCopy { align-items: flex-start; border-radius: 0; }

@@ -66,7 +66,7 @@ function showIntro(index) {
   const imageHeader = index >= 10 && index <= 13;
   const header = index ? imageHeader
     ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""></header>`
-    : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>' : '';
+    : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button></nav></header>' : '';
   const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к публикации' };
   const footerLabel = footerLabels[index] || 'Продолжить';
   const hasFooter = index > 0 && index !== 12;
@@ -98,7 +98,7 @@ function showPublicationCelebration() {
   const celebration = document.createElement('section');
   celebration.className = 'publicationCelebration';
   celebration.setAttribute('aria-label', 'Объявление опубликовано');
-  celebration.innerHTML = `<div class="publicationNav"><img src="${introAsset(14)}" alt=""><button class="introHit publicationBack" aria-label="Назад"></button></div>`;
+  celebration.innerHTML = '<div class="publicationNav"><button class="back introHit publicationBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button></div>';
   document.querySelector('#app').append(celebration);
   celebration.querySelector('.publicationBack').addEventListener('click', () => showIntro(14));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -158,6 +158,7 @@ function showRecommendations(keepTransition = false) {
   const screen = document.querySelector('#screen');
   screen.hidden = false;
   screen.inert = false;
+  screen.classList.remove('headerIsScrolled', 'headerIsCompact');
   document.querySelector('#scroll').scrollTop = 0;
   document.querySelector('#header').classList.remove('headerScrolled', 'headerCompact');
 }
