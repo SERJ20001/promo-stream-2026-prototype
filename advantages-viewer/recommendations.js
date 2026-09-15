@@ -28,50 +28,28 @@ document.querySelectorAll('[data-card-group]').forEach(group => {
   }).join('');
 });
 
+const scoreOutline = '<svg class="scoreVector" viewBox="0 0 100 100" preserveAspectRatio="none" overflow="visible" aria-hidden="true" focusable="false"><rect x="0.892857" y="0.892857" width="98.2143" height="98.2143" rx="18.75" fill="none" stroke="#e6e6e6" stroke-width="1.78571"/><rect data-score-progress x="0.892857" y="0.892857" width="98.2143" height="98.2143" rx="18.75" fill="none" stroke="#000" stroke-width="1.78571" stroke-linecap="round"/></svg>';
+const scoreHeart = '<svg class="scoreHeart" viewBox="0 0 16 15" aria-hidden="true" focusable="false"><path d="M7.95703 1.78125C9.71224 0.583458 12.1231 0.764064 13.6797 2.32422H13.6807C15.44 4.08816 15.4391 6.94608 13.6797 8.70996L13.6807 8.71094L8.69629 13.7061C8.5088 13.8939 8.25467 13.9999 7.98926 14C7.72367 14 7.46885 13.8941 7.28125 13.7061L2.31836 8.73145C2.31199 8.72506 2.30695 8.71746 2.30078 8.71094C0.562482 6.95213 0.56717 4.11583 2.31543 2.36328L2.48242 2.20312C4.01629 0.813935 6.27588 0.673894 7.95703 1.78125Z" fill="#000" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>';
+
 document.querySelectorAll('[data-product-preview]').forEach(preview => {
-  preview.innerHTML = `<div class="scorePhoto"><object class="scoreVector" data="assets/recommendations/score-outline.svg" type="image/svg+xml" tabindex="-1" aria-hidden="true"></object><img class="scoreProduct" src="assets/product-boots.png" alt="Ботинки Hermes"><object class="scoreHeart" data="assets/recommendations/score-heart.svg" type="image/svg+xml" tabindex="-1" aria-hidden="true"></object></div><div class="productInfo"><div class="price"><strong data-price>5 000 ₽</strong><del data-old aria-label="5 000 ₽"><img class="oldPriceImage" src="assets/old-price-header.png" alt="5 000 ₽"></del></div>${preview.dataset.productPreview === 'full' ? '<div class="productName">Ботинки Hermes</div><div class="productCondition">Новое, 44 размер</div>' : ''}<button class="scoreButton" data-sheet="attractiveness">Привлекательность <span data-score>0%</span></button></div>`;
+  preview.innerHTML = `<div class="scorePhoto">${scoreOutline}<img class="scoreProduct" src="assets/product-boots.png" alt="Ботинки Hermes">${scoreHeart}</div><div class="productInfo"><div class="price"><strong data-price>5 000 ₽</strong><del data-old aria-label="5 000 ₽"><img class="oldPriceImage" src="assets/old-price-header.png" alt="5 000 ₽"></del></div>${preview.dataset.productPreview === 'full' ? '<div class="productName">Ботинки Hermes</div><div class="productCondition">Новое, 44 размер</div>' : ''}<button class="scoreButton" data-sheet="attractiveness">Привлекательность <span data-score>0%</span></button></div>`;
 });
 
 const photoFiles = new Map();
 
-function withSvg(object, callback) {
-  const apply = () => {
-    const svg = object.contentDocument?.documentElement;
-    if (svg) callback(svg);
-  };
-  object.addEventListener('load', apply, { once: true });
-  apply();
+function renderScoreVector(svg, percent, color) {
+  const progress = svg.querySelector('[data-score-progress]');
+  const length = progress.getTotalLength();
+  progress.style.transition = reducedMotion.matches ? 'none' : 'stroke-dasharray 450ms ease, stroke 450ms ease';
+  progress.setAttribute('stroke', color);
+  progress.setAttribute('stroke-dasharray', `${length * percent / 100} ${length}`);
+  progress.setAttribute('stroke-dashoffset', String(-length * 0.6));
+  svg.style.opacity = '1';
 }
 
-function renderScoreVector(object, percent, color) {
-  withSvg(object, svg => {
-    const base = svg.querySelector('rect');
-    if (!base) return;
-    base.setAttribute('fill', 'none');
-    base.setAttribute('stroke', '#e6e6e6');
-    base.setAttribute('stroke-linecap', 'round');
-    let progress = svg.querySelector('[data-score-progress]');
-    if (!progress) {
-      progress = base.cloneNode();
-      progress.dataset.scoreProgress = '';
-      progress.style.transition = reducedMotion.matches ? 'none' : 'stroke-dasharray 450ms ease, stroke 450ms ease';
-      svg.append(progress);
-    }
-    const length = progress.getTotalLength();
-    progress.setAttribute('stroke', color);
-    progress.setAttribute('stroke-dasharray', `${length * percent / 100} ${length}`);
-    progress.setAttribute('stroke-dashoffset', String(-length * 0.6));
-    object.style.opacity = '1';
-  });
-}
-
-function renderScoreHeart(object, color) {
-  withSvg(object, svg => {
-    const heart = svg.querySelector('path');
-    if (!heart) return;
-    heart.setAttribute('fill', color);
-    object.style.opacity = '1';
-  });
+function renderScoreHeart(svg, color) {
+  svg.querySelector('path').setAttribute('fill', color);
+  svg.style.opacity = '1';
 }
 
 function renderRecommendations() {
@@ -112,7 +90,7 @@ function recommendationSheet(name) {
     }
     const payment = paidServicesTotal(state);
     const adjustmentRows = [
-      hasPayoutAdjustments() && ['Комиссия 3%', money(commissionAmount()), 'commission'],
+      hasCommission() && ['Комиссия 3%', money(commissionAmount()), 'commission'],
       state.hvatamba && ['Скидка в распродаже', money(saleDiscountAmount())],
       state.delivery && ['Скидка на доставку', money(state.deliveryAmount)]
     ].filter(Boolean);

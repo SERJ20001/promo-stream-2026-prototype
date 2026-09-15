@@ -1,4 +1,6 @@
 .recommendationsScreen { position: absolute; inset: 0; }
+.recommendationsScreen::before { content: ''; position: absolute; inset: 0 0 auto; z-index: 4; height: 52px; background: #fff; pointer-events: none; transition: height 240ms ease; }
+.recommendationsScreen.headerIsCompact::before { height: 109px; }
 .recommendationsScreen .header { position: absolute; inset: 0 0 auto; z-index: 5; overflow: hidden; background: transparent; }
 .recommendationsScreen .headerScrolled { background: #fff; }
 .recommendationsScreen .scroll { padding: 54px 0 158px; inset: 0; overflow-x: hidden; }

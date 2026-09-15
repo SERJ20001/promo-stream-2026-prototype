@@ -7,7 +7,7 @@
     'quantity-discount.png', 'sale-hvatamba.png', 'sheet-delivery.png', 'sheet-hvatamba.png', 'sheet-methods.png',
     'sheet-promotion-v43.png', 'sheet-quantity.png', 'sheet-views.png', 'status-bar.png', 'toggle-off.png', 'toggle-on.png'
   ].map(name => `assets/${name}`).concat([
-    'score-outline.svg', 'score-heart.svg', 'sheet-attractiveness-v42.png', 'sheet-total-v40.png'
+    'sheet-attractiveness-v42.png', 'sheet-total-v40.png'
   ].map(name => `assets/recommendations/${name}`)).concat([
     '1000-57649.png', '1000-57661.png', '1000-57673.png', '1000-57689.png', '1000-57711.png',
     '1000-57723.png', '1000-57736.png', '1000-57748.png', '1000-57760.png'
@@ -20,8 +20,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=67', 'alternative.css?v=67', 'viewer.css?v=67'];
-  const scripts = ['viewer.js?v=67', 'recommendation-model.js?v=67', 'recommendations.js?v=67', 'app.js?v=67', 'intro.js?v=67', 'confetti.js?v=67', 'heart-balloon.js?v=67'];
+  const styles = ['style.css?v=68', 'alternative.css?v=68', 'viewer.css?v=68'];
+  const scripts = ['viewer.js?v=68', 'recommendation-model.js?v=68', 'recommendations.js?v=68', 'app.js?v=68', 'intro.js?v=68', 'confetti.js?v=68', 'heart-balloon.js?v=68'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();
