@@ -2,7 +2,7 @@
   const images = [
     'badge-delivery-off.png', 'badge-delivery-on.png', 'badge-quantity-off.png', 'badge-quantity-on.png',
     'badge-sale-off.png', 'badge-sale-on.png', 'continue-button.png', 'delivery-discount.png',
-    'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png', 'loading-spinner.png', 'question-outline.png',
+    'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png', 'loading-spinner.png', 'question-outline.svg',
     'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-boots.png',
     'quantity-discount.png', 'sale-hvatamba.png', 'sale-lovita.png', 'sales-info.png', 'sales-timeline.png',
     'sheet-delivery-v38.png', 'sheet-hvatamba-v38.png', 'sheet-lovita-v38.png', 'sheet-methods.png',
@@ -16,8 +16,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=52', 'viewer.css?v=2'];
-  const scripts = ['viewer.js?v=1', 'app.js?v=viewer-7', 'intro.js?v=viewer-7', 'confetti.js?v=47'];
+  const styles = ['style.css?v=54', 'viewer.css?v=2'];
+  const scripts = ['viewer.js?v=1', 'app.js?v=viewer-8', 'intro.js?v=viewer-8', 'confetti.js?v=47'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();

@@ -22,7 +22,6 @@ intro.setAttribute('aria-label', 'Создание объявления');
 document.querySelector('#app').append(intro);
 let introIndex = 0;
 let publicationTimer;
-let publicationRun = 0;
 let introTransitioning = false;
 const introAsset = index => {
   const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
@@ -49,7 +48,6 @@ function introPrefill(index, height) {
 }
 function showIntro(index) {
   clearTimeout(publicationTimer);
-  publicationRun += 1;
   document.querySelector('#screen').inert = false;
   document.querySelector('#screen').getAnimations({ subtree: true }).forEach(effect => effect.cancel());
   document.querySelector('.product').style.visibility = '';
@@ -172,26 +170,26 @@ document.querySelector('.back').addEventListener('click', event => {
   showIntro(13);
 });
 async function showPromotionAfterPublication() {
-  const run = publicationRun;
-  const card = document.querySelector('.publicationCard');
-  const celebration = document.querySelector('.publicationCelebration');
-  if (!card || !celebration) return;
+  if (!document.querySelector('.publicationCard') || !document.querySelector('.publicationCelebration')) return;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const duration = reduced ? 0 : 320;
-  const fade = celebration.animate([{ opacity: 1 }, { opacity: 0 }], { duration, easing: 'ease-in', fill: 'forwards' });
-  card.animate([{ opacity: 1, transform: 'rotate(1deg)' }, { opacity: 0, transform: 'rotate(0deg) scale(.985)' }], { duration, easing: 'ease-in', fill: 'forwards' });
-  await fade.finished.catch(() => {});
-  if (run !== publicationRun) return;
-  intro.style.opacity = '0';
+  intro.inert = true;
+  const transition = document.createElement('div');
+  transition.className = 'publicationTransition';
+  transition.setAttribute('aria-hidden', 'true');
+  document.querySelector('#app').append(transition);
+  const cover = transition.animate(
+    [{ opacity: 0 }, { opacity: 1 }],
+    { duration: reduced ? 0 : 260, easing: 'ease-in', fill: 'forwards' }
+  );
+  await cover.finished.catch(() => {});
   showIntro(8);
   intro.inert = true;
-  const entrance = intro.animate(
-    [{ opacity: 0 }, { opacity: 1 }],
-    { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' }
+  const reveal = transition.animate(
+    [{ opacity: 1 }, { opacity: 0 }],
+    { duration: reduced ? 0 : 340, easing: 'ease-out', fill: 'forwards' }
   );
-  await entrance.finished.catch(() => {});
-  entrance.cancel();
-  intro.style.opacity = '';
+  await reveal.finished.catch(() => {});
+  transition.remove();
   intro.inert = false;
 }
 intro.hidden = true;
