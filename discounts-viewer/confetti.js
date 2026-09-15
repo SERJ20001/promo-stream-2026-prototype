@@ -7,12 +7,14 @@
   const title = document.createElement('div');
   title.className = 'confettiTitle';
   title.innerHTML = '<span class="confettiTitleSource">Опубликовали\nобъявление!</span>';
+  title.setAttribute('aria-hidden', 'true');
   phone.append(title);
   const context = canvas.getContext('2d');
   const colors = ['#ff487d', '#ffcf24', '#20ccf6', '#9d59ff', '#74ef31'];
   let animation;
   function play() {
     cancelAnimationFrame(animation);
+    title.setAttribute('aria-hidden', 'false');
     title.getAnimations({ subtree: true }).forEach(effect => effect.cancel());
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
       title.animate([{ opacity: 1 }], { duration: 0, fill: 'forwards' });
@@ -75,5 +77,6 @@
     cancelAnimationFrame(animation);
     context.clearRect(0, 0, canvas.width, canvas.height);
     title.getAnimations({ subtree: true }).forEach(effect => effect.cancel());
+    title.setAttribute('aria-hidden', 'true');
   });
 })();

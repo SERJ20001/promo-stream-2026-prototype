@@ -48,8 +48,9 @@ function introPrefill(index, height) {
 }
 function showIntro(index) {
   clearTimeout(publicationTimer);
-  document.querySelector('#screen').inert = false;
-  document.querySelector('#screen').getAnimations({ subtree: true }).forEach(effect => effect.cancel());
+  const screen = document.querySelector('#screen');
+  screen.inert = true;
+  screen.getAnimations({ subtree: true }).forEach(effect => effect.cancel());
   document.querySelector('.product').style.visibility = '';
   document.querySelector('.product').style.opacity = '';
   document.querySelector('#screen .title').style.visibility = '';
@@ -63,7 +64,7 @@ function showIntro(index) {
   document.querySelector('#screen').hidden = true;
   intro.hidden = false;
   intro.dataset.step = String(index);
-  const contentHeight = [812, 680, 311, 680, 1540, 680, 740, 680, 920, 680, 680, 680, 812, 680, 680][index];
+  const contentHeight = [812, 680, 311, 680, 1540, 680, 738, 680, 920, 680, 680, 680, 812, 680, 680][index];
   const imageHeader = index >= 10 && index <= 13;
   const header = index ? imageHeader
     ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""></header>`
@@ -74,6 +75,12 @@ function showIntro(index) {
   const footer = hasFooter ? `<footer class="introFixedFooter"><button class="introNext introFixedNext" aria-label="${footerLabel}">${footerLabels[index] ? `<span>${footerLabel}</span>` : '<img src="assets/continue-button.png" alt="Продолжить">'}</button></footer>` : '';
   const loadingSpinner = index === 12 ? '<span class="paymentSpinner" aria-hidden="true"><img src="assets/loading-spinner.png" alt=""></span>' : '';
   intro.innerHTML = `${header}<div class="introViewport"><div class="introCrop" style="aspect-ratio:375 / ${contentHeight - (index ? 52 : 0)}"><div class="introCanvas"><img src="${introAsset(index)}" width="375" height="${height}" alt="${title}. Предзаполненный демонстрационный экран." draggable="false">${introPrefill(index, height)}${loadingSpinner}${index === 0 ? '<button class="introHit introNext" aria-label="Вещи, электроника, хобби, животные" style="top:49.4%;height:8.6%;"></button>' : ''}</div></div></div>${footer}`;
+  const viewport = intro.querySelector('.introViewport');
+  viewport.addEventListener('scroll', () => {
+    const limit = Math.max(0, viewport.scrollHeight - viewport.clientHeight);
+    const clamped = Math.min(limit, Math.max(0, viewport.scrollTop));
+    if (clamped !== viewport.scrollTop) viewport.scrollTop = clamped;
+  }, { passive: true });
   if (index === 14) {
     const cover = document.createElement('div');
     cover.className = 'publicationSourceCover';
@@ -84,9 +91,9 @@ function showIntro(index) {
     document.querySelector('#app').append(card);
   }
   intro.scrollTop = 0;
-  intro.querySelector('.introViewport').scrollTop = 0;
+  viewport.scrollTop = 0;
   intro.focus({ preventScroll: true });
-  if (index === 12) publicationTimer = setTimeout(() => showIntro(13), 6000);
+  if (index === 12) publicationTimer = setTimeout(() => transitionToIntro(13), 6000);
   if (index + 1 < introSteps.length) {
     const next = new Image();
     next.src = introAsset(introOrder[introOrder.indexOf(index) + 1] ?? 13);
@@ -99,7 +106,7 @@ function showPublicationCelebration() {
   celebration.setAttribute('aria-label', 'Объявление опубликовано');
   celebration.innerHTML = `<div class="publicationNav"><img src="${introAsset(14)}" alt=""><button class="introHit publicationBack" aria-label="Назад"></button></div>`;
   document.querySelector('#app').append(celebration);
-  celebration.querySelector('.publicationBack').addEventListener('click', () => showIntro(14));
+  celebration.querySelector('.publicationBack').addEventListener('click', () => transitionFromPublication(14, 140, 220));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const card = document.querySelector('.publicationCard');
   const photo = card.querySelector('img');
@@ -117,9 +124,6 @@ function showPublicationCelebration() {
   card.querySelector('strong + span').animate([{ marginTop: '1px' }, { marginTop: '2px' }], expansion);
   document.dispatchEvent(new Event('promo:confetti'));
   publicationTimer = setTimeout(showPromotionAfterPublication, reduced ? 800 : 3000);
-}
-function needsCalmTransition(from, to) {
-  return [8, 9].includes(from) || [8, 9].includes(to);
 }
 async function transitionToIntro(index) {
   if (introTransitioning) return;
@@ -149,28 +153,25 @@ intro.addEventListener('click', event => {
   if (introTransitioning) return;
   if (event.target.closest('.introBack')) {
     const previousIndex = introOrder[Math.max(0, introOrder.indexOf(introIndex) - 1)];
-    return needsCalmTransition(introIndex, previousIndex) ? transitionToIntro(previousIndex) : showIntro(previousIndex);
+    return transitionToIntro(previousIndex);
   }
   if (!event.target.closest('.introNext')) return;
   if (introIndex === 14) return showPublicationCelebration();
   if (introOrder.indexOf(introIndex) + 1 < introOrder.length) {
     const nextIndex = introOrder[introOrder.indexOf(introIndex) + 1];
-    return needsCalmTransition(introIndex, nextIndex) ? transitionToIntro(nextIndex) : showIntro(nextIndex);
+    return transitionToIntro(nextIndex);
   }
-  intro.hidden = true;
-  const screen = document.querySelector('#screen');
-  screen.hidden = false;
-  document.querySelector('#scroll').scrollTop = 0;
-  screen.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reducedMotion.matches ? 0 : 280, easing: 'ease-in', fill: 'both' });
-  document.querySelector('.back').focus({ preventScroll: true });
+  transitionToDiscounts();
 });
 document.querySelector('.back').addEventListener('click', event => {
   if (document.querySelector('#scroll').scrollTop > 0) return;
   event.stopPropagation();
-  showIntro(13);
+  transitionFromDiscounts(13);
 });
-async function showPromotionAfterPublication() {
+async function transitionFromPublication(index, coverDuration, revealDuration) {
   if (!document.querySelector('.publicationCard') || !document.querySelector('.publicationCelebration')) return;
+  if (introTransitioning) return;
+  introTransitioning = true;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   intro.inert = true;
   const transition = document.createElement('div');
@@ -179,18 +180,59 @@ async function showPromotionAfterPublication() {
   document.querySelector('#app').append(transition);
   const cover = transition.animate(
     [{ opacity: 0 }, { opacity: 1 }],
-    { duration: reduced ? 0 : 260, easing: 'ease-in', fill: 'forwards' }
+    { duration: reduced ? 0 : coverDuration, easing: 'ease-in', fill: 'forwards' }
   );
   await cover.finished.catch(() => {});
-  showIntro(8);
+  showIntro(index);
   intro.inert = true;
   const reveal = transition.animate(
     [{ opacity: 1 }, { opacity: 0 }],
-    { duration: reduced ? 0 : 340, easing: 'ease-out', fill: 'forwards' }
+    { duration: reduced ? 0 : revealDuration, easing: 'ease-out', fill: 'forwards' }
   );
   await reveal.finished.catch(() => {});
   transition.remove();
   intro.inert = false;
+  introTransitioning = false;
+}
+function showPromotionAfterPublication() {
+  transitionFromPublication(8, 260, 340);
+}
+async function transitionToDiscounts() {
+  if (introTransitioning) return;
+  introTransitioning = true;
+  intro.inert = true;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const outgoing = intro.animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduced ? 0 : 140, easing: 'ease-out', fill: 'forwards' });
+  await outgoing.finished.catch(() => {});
+  outgoing.cancel();
+  intro.hidden = true;
+  const screen = document.querySelector('#screen');
+  screen.hidden = false;
+  screen.inert = true;
+  document.querySelector('#scroll').scrollTop = 0;
+  const incoming = screen.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' });
+  await incoming.finished.catch(() => {});
+  incoming.cancel();
+  screen.inert = false;
+  document.querySelector('.back').focus({ preventScroll: true });
+  introTransitioning = false;
+}
+async function transitionFromDiscounts(index) {
+  if (introTransitioning) return;
+  introTransitioning = true;
+  const screen = document.querySelector('#screen');
+  screen.inert = true;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const outgoing = screen.animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduced ? 0 : 140, easing: 'ease-out', fill: 'forwards' });
+  await outgoing.finished.catch(() => {});
+  outgoing.cancel();
+  showIntro(index);
+  intro.inert = true;
+  const incoming = intro.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' });
+  await incoming.finished.catch(() => {});
+  incoming.cancel();
+  intro.inert = false;
+  introTransitioning = false;
 }
 intro.hidden = true;
 document.querySelector('#screen').hidden = true;

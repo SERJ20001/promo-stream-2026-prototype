@@ -1,4 +1,4 @@
-const defaults = { hvatamba: false, lovita: false, delivery: false, quantity: false, hvatambaPercent: 20, lovitaPercent: 10, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3 };
+const defaults = { hvatamba: false, lovita: false, delivery: false, quantity: false, hvatambaPercent: 10, lovitaPercent: 20, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3 };
 let state = { ...defaults };
 const money = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const $ = selector => document.querySelector(selector);
@@ -16,7 +16,16 @@ let toastTimer;
 let deliveryHintTimer;
 let deliveryHintHideTimer;
 let hasRendered = false;
+let sheetClosing = false;
+let compactHeaderVisible = false;
+let scrollFrame;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const smoothScrollBehavior = () => reducedMotion.matches ? 'auto' : 'smooth';
+function clampScrollPosition(element) {
+  const limit = Math.max(0, element.scrollHeight - element.clientHeight);
+  const clamped = Math.min(limit, Math.max(0, element.scrollTop));
+  if (clamped !== element.scrollTop) element.scrollTop = clamped;
+}
 function render() {
   $('.help').classList.toggle('hasNotification', state.hvatamba && state.lovita);
   all('[data-toggle]').forEach(button => {
@@ -64,17 +73,38 @@ function toast(message) {
   clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').classList.add('shown');
   toastTimer = setTimeout(() => $('#toast').classList.remove('shown'), 2400);
 }
-function closeSheet() {
+async function closeSheet() {
   clearTimeout(deliveryHintTimer);
   clearTimeout(deliveryHintHideTimer);
-  $('#overlay').hidden = true; $('#screen').inert = false;
+  const overlay = $('#overlay');
+  if (overlay.hidden || sheetClosing) return;
+  sheetClosing = true;
+  overlay.inert = true;
+  if (!reducedMotion.matches) {
+    overlay.getAnimations({ subtree: true }).forEach(animation => {
+      try { animation.finish(); } catch {}
+    });
+    const scrim = overlay.querySelector('.scrim');
+    const panel = overlay.querySelector('.sheet');
+    const animations = [
+      scrim.animate([{ opacity: getComputedStyle(scrim).opacity }, { opacity: 0 }], { duration: 160, easing: 'ease-out', fill: 'forwards' }),
+      panel.animate([{ transform: getComputedStyle(panel).transform }, { transform: 'translateY(100%)' }], { duration: 220, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' })
+    ];
+    await Promise.allSettled(animations.map(animation => animation.finished));
+    animations.forEach(animation => animation.cancel());
+  }
+  overlay.hidden = true;
+  overlay.inert = false;
+  $('#screen').inert = false;
   returnFocus?.focus({ preventScroll: true });
+  sheetClosing = false;
 }
 function sheet(title, body) {
   clearTimeout(toastTimer); $('#toast').classList.remove('shown');
   $('.sheet').classList.remove('figmaSheet', 'staticSheet', 'totalSheet');
   returnFocus = document.activeElement;
   $('#sheetContent').innerHTML = `<h2 id="sheetTitle">${title}</h2>${body}`;
+  all('.sheetBodyScroll, .totalSheetBody').forEach(element => element.addEventListener('scroll', () => clampScrollPosition(element), { passive: true }));
   $('#overlay').hidden = false; $('#screen').inert = true;
   $('.sheet').focus({ preventScroll: true });
 }
@@ -160,6 +190,9 @@ document.addEventListener('click', event => {
       clearTimeout(deliveryHintTimer);
       clearTimeout(deliveryHintHideTimer);
       hint.hidden = false;
+      const sheetRect = $('.sheet').getBoundingClientRect();
+      const rowRect = button.getBoundingClientRect();
+      hint.style.top = `${Math.max(54, rowRect.top - sheetRect.top - hint.offsetHeight - 8)}px`;
       requestAnimationFrame(() => hint.classList.add('shown'));
       deliveryHintTimer = setTimeout(() => {
         hint.classList.remove('shown');
@@ -170,8 +203,8 @@ document.addEventListener('click', event => {
     case 'save':
       try { localStorage.setItem('promo-stream-selection-v1', JSON.stringify(state)); summary(true); } catch { toast('Не удалось сохранить настройки в браузере'); }
       return;
-    case 'reset': state = { ...defaults }; try { localStorage.removeItem('promo-stream-selection-v1'); } catch {} closeSheet(); render(); $('#scroll').scrollTo({ top: 0, behavior: 'smooth' }); $('#carousel').scrollTo({ left: 0 }); return;
-    case 'back': if ($('#scroll').scrollTop > 0) $('#scroll').scrollTo({ top: 0, behavior: 'smooth' }); else sheet('Вернуться назад?', `<p>Вы можете продолжить настройку или начать выбор скидок заново.</p><button class="primary" data-action="close">Остаться</button><button class="textButton" data-action="reset">Начать заново</button>`);
+    case 'reset': state = { ...defaults }; try { localStorage.removeItem('promo-stream-selection-v1'); } catch {} closeSheet(); render(); $('#scroll').scrollTo({ top: 0, behavior: smoothScrollBehavior() }); $('#carousel').scrollTo({ left: 0 }); return;
+    case 'back': if ($('#scroll').scrollTop > 0) $('#scroll').scrollTo({ top: 0, behavior: smoothScrollBehavior() }); else sheet('Вернуться назад?', `<p>Вы можете продолжить настройку или начать выбор скидок заново.</p><button class="primary" data-action="close">Остаться</button><button class="textButton" data-action="reset">Начать заново</button>`);
   }
 });
 document.addEventListener('keydown', event => {
@@ -184,12 +217,22 @@ document.addEventListener('keydown', event => {
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   }
 });
+function updateCompactHeader() {
+  scrollFrame = undefined;
+  const scrollTop = $('#scroll').scrollTop;
+  const compact = compactHeaderVisible ? scrollTop >= 170 : scrollTop > 200;
+  if (compact === compactHeaderVisible) return;
+  compactHeaderVisible = compact;
+  $('#header').classList.toggle('headerCompact', compact);
+  $('.compactWrap').setAttribute('aria-hidden', String(!compact));
+  $('.compactWrap').inert = !compact;
+}
 $('#scroll').addEventListener('scroll', () => {
-  const compact = $('#scroll').scrollTop > 205;
-  $('#header').classList.toggle('headerCompact', compact); $('.compactWrap').setAttribute('aria-hidden', String(!compact)); $('.compactWrap').inert = !compact;
+  clampScrollPosition($('#scroll'));
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateCompactHeader);
 }, { passive: true });
 $('#carousel').addEventListener('keydown', event => {
-  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { event.preventDefault(); $('#carousel').scrollBy({ left: (event.key === 'ArrowRight' ? 1 : -1) * 333, behavior: 'smooth' }); }
+  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { event.preventDefault(); $('#carousel').scrollBy({ left: (event.key === 'ArrowRight' ? 1 : -1) * 333, behavior: smoothScrollBehavior() }); }
 });
 $('.compactWrap').inert = true;
 render();
