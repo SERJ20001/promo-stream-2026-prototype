@@ -3,11 +3,15 @@
     'badge-delivery-off.png', 'badge-delivery-on.png', 'badge-quantity-off.png', 'badge-quantity-on.png',
     'badge-sale-off.png', 'badge-sale-on.png', 'continue-button.png', 'delivery-discount.png',
     'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png', 'loading-spinner.png', 'question-outline.svg',
-    'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-boots.png',
-    'quantity-discount.png', 'sale-hvatamba.png', 'sale-lovita.png', 'sales-info.png', 'sales-timeline.png',
-    'sheet-delivery-v38.png', 'sheet-hvatamba-v38.png', 'sheet-lovita-v38.png', 'sheet-methods.png',
-    'sheet-promotion.png', 'sheet-quantity-v38.png', 'sheet-views.png', 'status-bar.png', 'toggle-off.png', 'toggle-on.png'
-  ].map(name => `assets/${name}`).concat(Array.from({ length: 15 }, (_, index) => {
+    'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-boots.png', 'heart-balloon.png',
+    'quantity-discount.png', 'sale-hvatamba.png', 'sheet-delivery.png', 'sheet-hvatamba.png', 'sheet-methods.png',
+    'sheet-promotion-v43.png', 'sheet-quantity.png', 'sheet-views.png', 'status-bar.png', 'toggle-off.png', 'toggle-on.png'
+  ].map(name => `assets/${name}`).concat([
+    'score-outline.svg', 'score-heart.svg', 'sheet-attractiveness-v42.png', 'sheet-total-v40.png'
+  ].map(name => `assets/recommendations/${name}`)).concat([
+    '1000-57649.png', '1000-57661.png', '1000-57673.png', '1000-57689.png', '1000-57711.png',
+    '1000-57723.png', '1000-57736.png', '1000-57748.png', '1000-57760.png'
+  ].map(name => `assets/alternative/${name}`)).concat([0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14].map(index => {
     const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
     return `assets/intro/flow-${index}${versions[index] || ''}.png`;
   }));
@@ -16,8 +20,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=54', 'viewer.css?v=2'];
-  const scripts = ['viewer.js?v=1', 'app.js?v=viewer-8', 'intro.js?v=viewer-8', 'confetti.js?v=47'];
+  const styles = ['style.css?v=62', 'alternative.css?v=62', 'viewer.css?v=62'];
+  const scripts = ['viewer.js?v=62', 'recommendation-model.js?v=62', 'recommendations.js?v=62', 'app.js?v=62', 'intro.js?v=62', 'confetti.js?v=62', 'heart-balloon.js?v=62'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();

@@ -1,0 +1,88 @@
+.recommendationsScreen { position: absolute; inset: 0; }
+.recommendationsScreen .header { position: absolute; inset: 0 0 auto; z-index: 5; overflow: hidden; background: transparent; }
+.recommendationsScreen .headerScrolled { background: #fff; }
+.recommendationsScreen .scroll { padding: 54px 0 158px; inset: 0; overflow-x: hidden; }
+.recommendationProduct { display: flex; gap: 12px; height: 127px; margin: 0 14px; padding: 13px 14px; border-radius: 28px; box-shadow: 0 4px 24px #0000001f, 0 1px 3px #0000000d; }
+.recommendationProduct .productInfo { padding-top: 1px; }
+.recommendationProduct .productName { margin-top: 2px; }
+.productCondition { font-size: 15px; line-height: 20px; white-space: nowrap; }
+.scorePhoto { position: relative; width: 100px; height: 100px; flex: 0 0 100px; border-radius: 20px; background: transparent; }
+.scoreProduct { position: absolute; inset: 2.68%; width: 94.64%; height: 94.64%; border-radius: 18px; object-fit: cover; }
+.scoreVector { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.scoreHeart { position: absolute; width: 16px; height: 15px; left: calc(50% - 8px); top: calc(100% - 9px); overflow: visible; opacity: 0; pointer-events: none; }
+.compactProduct .scoreHeart { width: 12px; height: 11px; left: calc(50% - 6px); top: calc(100% - 6px); }
+.scoreButton { display: inline-flex; align-items: center; gap: 3px; background: transparent; border: 0; padding: 0; height: 20px; margin-top: 8px; color: #00aaff; font-size: 15px; line-height: 20px; white-space: nowrap; }
+.scoreButton img { display: none; }
+.scoreButton::after { content: ''; width: 12px; height: 16px; margin-left: 1px; flex: 0 0 12px; background: currentColor; mask: url('assets/question-outline.svg') center / contain no-repeat; -webkit-mask: url('assets/question-outline.svg') center / contain no-repeat; }
+.recommendationHeading { margin: 36px 16px 36px; text-align: center; }
+.recommendationHeading h1 { margin: 0; font-family: 'Avito Text', sans-serif; font-size: 26px; line-height: 30px; font-weight: 700; }
+.recommendationHeading p { margin: 10px 0 0; font-size: 15px; line-height: 20px; }
+.recommendationSection { margin-top: 24px; }
+.recommendationSection h2 { margin: 0 24px 16px; font-size: 16px; line-height: 20px; font-weight: 700; }
+.recommendationSectionTitle { position: relative; }
+.recommendationSectionTitle .help { position: absolute; right: 24px; top: 0; }
+.recommendationCarousel { display: flex; gap: 11px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-left: 10px; scrollbar-width: none; padding: 0 10px; }
+.recommendationCarousel::-webkit-scrollbar { display: none; }
+.recommendationCard { flex: 0 0 339px; min-width: 0; height: 150px; padding: 10px 12px 16px; background: #f2f1f0; border-radius: 28px; scroll-snap-align: start; }
+.recommendationCard .cardHeading { position: relative; font-size: 15px; line-height: 20px; }
+.recommendationCard .cardHeading strong { margin-left: 0; letter-spacing: -0.15px; }
+.recommendationCard .toggle { position: absolute; right: 0; top: -7.5px; }
+.recommendationCard .description { height: 40px; margin: 8px 4px 12px; font-size: 15px; line-height: 20px; }
+.recommendationCard .pill { margin-left: 4px; background: white; padding: 8px 14px; gap: 2px; height: 36px; }
+.recommendationCard .uploadButton { cursor: pointer; position: relative; font: 15px/20px 'Avito Text', sans-serif; }
+.uploadButton input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.uploadButton:focus-within { outline: 2px solid #141414; outline-offset: 3px; }
+.recommendationFooter { height: 142px; border-radius: 24px 24px 0 0; padding: 0 10px; box-shadow: 0 -4px 24px #0000000d; }
+.recommendationTotals { display: flex; align-items: center; width: 100%; height: 70px; padding: 14px 6px 8px; border: 0; background: transparent; text-align: left; gap: 9px; }
+.recommendationTotals:disabled { cursor: default; }
+.totalRows { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.totalRow { display: flex; align-items: center; gap: 4px; height: 20px; font-size: 14px; line-height: 20px; white-space: nowrap; }
+.totalRow strong { font-weight: 400; white-space: nowrap; }
+.totalRow .dots { min-width: 0; border-bottom-color: #c9c9c9; }
+.totalDetails { width: 20px; height: 48px; flex: 0 0 20px; display: grid; place-items: center; border-radius: 4px; background: #f2f1f0; }
+.totalDetails img { width: 8px; height: 16px; }
+.recommendationFooter .continueButton { display: block; background: #141414; color: white; margin-top: 10px; height: 52px; }
+.recommendationsScreen .compactProduct { align-items: center; padding: 0 16px 10px 12px; gap: 10px; }
+.compactProduct .scorePhoto { width: 48px; height: 48px; flex-basis: 48px; border-radius: 12px; }
+.compactProduct .scoreProduct { border-radius: 10px; }
+.compactProduct .scoreButton { margin-top: 4px; }
+.scoreSheet:not(.figmaSheet) .close { position: sticky; float: right; margin-right: 4px; margin-bottom: -44px; top: 10px; opacity: 1; background: white; font-size: 30px; }
+.figmaSheet.sheetCloseAlwaysVisible .close { opacity: 1; }
+@media (max-width: 374px) {
+  .recommendationCard { flex-basis: calc(100vw - 36px); height: auto; min-height: 170px; }
+  .recommendationCard .description { height: auto; min-height: 60px; }
+  .recommendationCard .cardHeading strong { max-width: calc(100% - 74px); white-space: normal; font-size: 13px; line-height: 14px; }
+  .recommendationProduct { margin-inline: 10px; padding-inline: 10px; gap: 8px; }
+  .recommendationProduct .scorePhoto { width: 84px; height: 84px; flex-basis: 84px; }
+  .scoreButton { font-size: 13px; }
+  .totalRow { font-size: 12px; }
+}
+
+.recommendationFooter.withoutPaidServices { height: 114px; }
+.withoutPaidServices .recommendationTotals { height: 42px; padding-top: 10px; padding-bottom: 12px; }
+.withoutPaidServices .totalDetails { height: 28px; }
+
+.scoreButton { color: var(--score-color, #000); transition: color 450ms ease; }
+.recommendationsScreen .headerCompact { height: 109px; }
+.recommendationsScreen .compactProduct { padding: 1px 14px 10px; }
+.totalRow [data-services-label] { overflow: hidden; text-overflow: ellipsis; }
+.scoreExplanation section { background: #f2f1f0; border-radius: 20px; padding: 16px; margin: 12px 0; }
+.scoreExplanation h3 { display: flex; justify-content: space-between; gap: 8px; font-size: 16px; line-height: 22px; margin: 0 0 10px; }
+.scoreExplanation p { font-size: 15px; line-height: 20px; margin: 0; }
+
+.attractivenessSheetCanvas, .totalSheetCanvas { overflow: hidden; }
+.totalFigmaSheet { overflow: hidden; }
+.totalSheetPayout { position: absolute; left: 73px; right: 15px; top: 84px; height: 24px; display: flex; align-items: center; background: white; font-size: 20px; line-height: 24px; font-weight: 700; white-space: nowrap; }
+.totalSheetServices { position: absolute; left: 0; right: 0; top: 143px; bottom: 0; padding: 8px 15px 0; background: white; z-index: 1; }
+.totalSheetServices h3 { margin: 0 0 14px; font-size: 16px; line-height: 20px; }
+.totalSheetRow { display: flex; align-items: center; gap: 5px; height: 20px; margin-bottom: 10px; font-size: 16px; line-height: 20px; white-space: nowrap; }
+.totalSheetRow i { flex: 1; min-width: 4px; margin-top: 8px; border-bottom: 1px dotted #c9c9c9; }
+.totalSheetRow strong { font-weight: 400; }
+.totalSheetPayment span { font-weight: 700; }
+.totalSheetEmpty { margin: 0 !important; color: #757575; font-size: 16px !important; line-height: 20px !important; }
+.totalSheetButton { position: absolute; left: 10px; right: 10px; bottom: 34px; height: 52px; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; appearance: none; -webkit-appearance: none; border: 0; border-radius: 16px; background: #141414; color: white; box-shadow: none; font-size: 16px; line-height: 20px; z-index: 2; }
+.introFixedHeader { position: absolute; inset: 0 0 auto; z-index: 5; height: 52px; overflow: hidden; background: white; }
+.introFixedHeader .save { display: flex; align-items: center; }
+
+.introDescription { align-items: flex-start; padding-top: 8px; }
+.introCopy { align-items: flex-start; border-radius: 0; }
