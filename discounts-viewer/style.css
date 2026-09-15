@@ -86,10 +86,10 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .countLabel { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 15px; }
 .countLabel select { font: inherit; padding: 8px; border: 1px solid #ddd; border-radius: 8px; background: white; }
 .receipt { display: grid; grid-template-columns: 1fr auto; gap: 14px 8px; font-size: 15px; margin: 24px 0; }
-.sheet.totalSheet { display: flex; flex-direction: column; height: min(306px, 92%); max-height: 92%; overflow: hidden; padding: 28px 10px 16px; }
+.sheet.totalSheet { display: flex; flex-direction: column; height: min(var(--total-sheet-height, 306px), 92%); max-height: 92%; overflow: hidden; padding: 28px 10px 16px; }
 .totalSheet #sheetContent { display: flex; flex-direction: column; min-height: 0; height: 100%; }
 .totalSheet #sheetTitle { flex-shrink: 0; margin: 8px 6px 14px; font-size: 21px; line-height: 26px; }
-.totalSheetBody { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 0 6px 12px; }
+.totalSheetBody { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 2px 6px 12px; }
 .totalReceipt, .totalServices { display: grid; gap: 10px; }
 .totalSheet h3 { margin: 20px 0 14px; font: 700 22px/26px 'Avito Display', sans-serif; }
 .totalRow { display: flex; align-items: baseline; gap: 4px; min-height: 20px; font-size: 15px; line-height: 20px; }
@@ -99,6 +99,8 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .totalBaseRow { font-size: 16px; line-height: 20px; font-weight: 700; }
 .totalBaseRow > strong { font-weight: 700; }
 .totalInfoRow { width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; }
+.totalInfoRow > span { display: flex; align-items: center; }
+.totalInfoIcon { width: 8px; height: 11px; margin-left: 2px; }
 .totalResult { align-items: flex-start; margin-top: 2px; }
 .totalResult > i { margin-top: 12px; }
 .totalResult > strong { font-size: 16px; line-height: 20px; }
@@ -253,9 +255,12 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .introTextareaPatch { align-items: flex-start; padding-top: 16px; white-space: normal; }
 .introCopyPatch { align-items: flex-start; border-radius: 0; background: white; white-space: normal; }
 .introPhotoPatch { border-radius: 12px; }
-.introCategoryPatch { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 7px; padding: 7px 4px; background: white; }
-.introCategoryPatch strong { font: 700 26px/30px 'Avito Display', 'Avito Text', sans-serif; }
-.introCategoryPatch span { font: 15px/22px 'Avito Text', sans-serif; }
+.introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionAmountPatch, .introCommissionPayoutPatch { justify-content: flex-end; background: white; white-space: nowrap; }
+.introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionPayoutPatch { font-weight: 700; }
+.introPaymentTotalPatch { font-size: 16px; line-height: 20px; }
+.introPaymentAmountPatch { justify-content: flex-start; font-size: 32px; line-height: 40px; }
+.introCommissionAmountPatch { font-size: 15px; line-height: 20px; }
+.introCommissionPayoutPatch { font-size: 16px; line-height: 20px; }
 
 .introFlow { display: flex; flex-direction: column; overflow: hidden; outline: none; }
 .introViewport { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
@@ -296,10 +301,9 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 
 .publicationSourceCover { position: absolute; left: 0; top: 17%; width: 100%; height: 13%; background: white; }
 .publicationCard { z-index: 9; pointer-events: none; }
-.publicationCardInitial { top: 154px; left: 12px; width: calc(100% - 24px); height: 66px; padding: 9px; border-radius: 20px; }
-.publicationCardInitial > img { width: 48px; height: 48px; border-radius: 12px; }
+.publicationCardInitial { top: 313px; left: 10px; width: calc(100% - 20px); height: 103px; padding: 12px; border-radius: 28px; }
+.publicationCardInitial > img { width: 80px; height: 80px; border-radius: 16px; }
 .publicationCardInitial strong { transform: scale(.888888889); line-height: 22.5px; }
-.publicationCardInitial .publicationDetails { opacity: 0; }
 .confettiCanvas { z-index: 10; }
 .confettiTitle { z-index: 11; }
 
@@ -319,13 +323,11 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .introFixedFooter { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 .publicationNav { height: 52px; }
 .publicationBack { top: 0; }
-.publicationSourceCover { top: 94px; height: 94px; }
-.publicationCardInitial { top: 110px; }
+.publicationSourceCover { top: 258px; height: 126px; }
+.publicationCardInitial { top: 269px; }
 .confettiTitle { top: calc(45.58% - 94px); }
 .confettiTitle { height: 72px; }
-@property --title-reveal { syntax: '<percentage>'; inherits: true; initial-value: -15%; }
-.confettiTitleSource { position: absolute; inset: 0; width: 100%; mask-image: linear-gradient(to right, transparent var(--title-reveal), black calc(var(--title-reveal) + 15%)); -webkit-mask-image: linear-gradient(to right, transparent var(--title-reveal), black calc(var(--title-reveal) + 15%)); }
-.confettiTitleDestination { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mask-image: linear-gradient(to right, black var(--title-reveal), transparent calc(var(--title-reveal) + 15%)); -webkit-mask-image: linear-gradient(to right, black var(--title-reveal), transparent calc(var(--title-reveal) + 15%)); }
+.confettiTitleSource { position: absolute; inset: 0; width: 100%; }
 @media (max-width: 500px) { .phone { height: 100dvh; border-radius: 0; box-shadow: none; } }
 
 .sheet.staticSheet { display: flex; flex-direction: column; overflow: hidden; height: min(762px, 92%); }

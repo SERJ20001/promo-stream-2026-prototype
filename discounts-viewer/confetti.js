@@ -6,7 +6,7 @@
   phone.append(canvas);
   const title = document.createElement('div');
   title.className = 'confettiTitle';
-  title.innerHTML = '<span class="confettiTitleSource">Опубликовали\nобъявление!</span><img class="confettiTitleDestination" src="assets/page-title.png" alt="Привлеките покупателей">';
+  title.innerHTML = '<span class="confettiTitleSource">Опубликовали\nобъявление!</span>';
   phone.append(title);
   const context = canvas.getContext('2d');
   const colors = ['#ff487d', '#ffcf24', '#20ccf6', '#9d59ff', '#74ef31'];
