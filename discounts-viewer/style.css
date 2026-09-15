@@ -85,6 +85,20 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .countLabel { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 15px; }
 .countLabel select { font: inherit; padding: 8px; border: 1px solid #ddd; border-radius: 8px; background: white; }
 .receipt { display: grid; grid-template-columns: 1fr auto; gap: 14px 8px; font-size: 15px; margin: 24px 0; }
+.sheet.totalSheet { display: flex; flex-direction: column; height: min(504px, 92%); max-height: 92%; overflow: hidden; padding: 28px 10px 16px; }
+.totalSheet #sheetTitle { flex-shrink: 0; margin: 8px 6px 14px; font-size: 24px; line-height: 28px; }
+.totalSheetBody { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 0 6px 12px; }
+.totalReceipt, .totalServices { display: grid; gap: 10px; }
+.totalSheet h3 { margin: 20px 0 14px; font: 700 22px/26px 'Avito Display', sans-serif; }
+.totalRow { display: flex; align-items: baseline; gap: 4px; min-height: 20px; font-size: 15px; line-height: 20px; }
+.totalRow > span { flex-shrink: 0; }
+.totalRow > i { flex: 1; min-width: 8px; border-bottom: 1px dotted #ccc; transform: translateY(-3px); }
+.totalRow > strong { flex-shrink: 0; font-weight: 400; white-space: nowrap; }
+.totalResult { align-items: flex-start; margin-top: 2px; }
+.totalResult > i { margin-top: 12px; }
+.totalResult > strong, .totalPayNow > span, .totalPayNow > strong { font-weight: 700; }
+.totalSheetFooter { flex-shrink: 0; padding-top: 8px; background: white; }
+.totalSheet .totalSheetFooter .primary { margin: 0; }
 .muted { color: #757575; font-size: 14px !important; }
 .summaryPhoto { width: 80px; height: 80px; border-radius: 18px; }
 .sheet h3 { margin: 10px 0 4px; }

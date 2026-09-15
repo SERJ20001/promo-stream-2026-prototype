@@ -3,11 +3,22 @@ let state = { ...defaults };
 const money = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const $ = selector => document.querySelector(selector);
 const all = selector => [...document.querySelectorAll(selector)];
-const currentPrice = () => state.hvatamba ? 5000 * (1 - state.hvatambaPercent / 100) : 5000;
+const basePrice = 5000;
+const commissionRate = 2;
+const activeSalePercent = () => state.hvatamba ? state.hvatambaPercent : state.lovita ? state.lovitaPercent : 0;
+const currentPrice = () => basePrice * (1 - activeSalePercent() / 100);
+const commissionAmount = () => basePrice * commissionRate / 100;
+const saleDiscountAmount = () => basePrice - currentPrice();
+const quantityDiscountAmount = () => state.quantity ? currentPrice() * state.quantityPercent / 100 : 0;
+const payoutBounds = () => {
+  const upper = Math.max(0, currentPrice() - commissionAmount());
+  const deliveryDiscount = state.delivery ? state.deliveryAmount : 0;
+  const lower = Math.max(0, upper - deliveryDiscount - quantityDiscountAmount());
+  return { upper, lower };
+};
 const payoutText = () => {
-  const upper = currentPrice();
-  const lower = state.delivery ? Math.max(0, upper - state.deliveryAmount) : upper;
-  return lower === upper ? money(upper) : `${new Intl.NumberFormat('ru-RU').format(upper)}–${money(lower)}`;
+  const { upper, lower } = payoutBounds();
+  return lower === upper ? money(upper) : `от ${new Intl.NumberFormat('ru-RU').format(upper)} до ${money(lower)}`;
 };
 let returnFocus;
 let toastTimer;
@@ -32,8 +43,9 @@ function render() {
   });
   all('[data-old]').forEach(node => {
     node.hidden = false;
-    node.classList.toggle('priceVisible', state.hvatamba);
-    node.setAttribute('aria-hidden', String(!state.hvatamba));
+    const hasActiveSale = activeSalePercent() > 0;
+    node.classList.toggle('priceVisible', hasActiveSale);
+    node.setAttribute('aria-hidden', String(!hasActiveSale));
   });
   const badges = [
     { key: 'sale', enabled: state.hvatamba || state.lovita, label: 'Распродажа', sheet: 'sales' },
@@ -65,7 +77,7 @@ function closeSheet() {
 }
 function sheet(title, body) {
   clearTimeout(toastTimer); $('#toast').classList.remove('shown');
-  $('.sheet').classList.remove('figmaSheet', 'staticSheet');
+  $('.sheet').classList.remove('figmaSheet', 'staticSheet', 'totalSheet');
   returnFocus = document.activeElement;
   $('#sheetContent').innerHTML = `<h2 id="sheetTitle">${title}</h2>${body}`;
   $('#overlay').hidden = false; $('#screen').inert = true;
@@ -105,7 +117,19 @@ function openSheet(name) {
     return;
   }
   if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в распродаже, скидку на доставку или на несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не подключённые преимущества.</p>${done}`);
-  if (name === 'total') return sheet('Вы получите за товар', `<div class="receipt"><span>Цена с текущей скидкой</span><strong>${money(currentPrice())}</strong><span>Скидка на доставку</span><strong>${state.delivery ? `до ${money(state.deliveryAmount)}` : 'Не подключена'}</strong><span>Вы получите</span><strong>${payoutText()}</strong></div><p>${state.delivery ? 'Скидка на доставку может потратиться частично или не потратиться. Первая сумма — если она не расходуется, вторая — если используется полностью.' : 'Скидка на доставку выключена, поэтому показываем одну сумму.'}</p><p class="muted">Будущая Ловита не меняет выплату сейчас.</p>${done}`);
+  if (name === 'total') {
+    const rows = [
+      ['Ваша цена', money(basePrice)],
+      [`Комиссия ${commissionRate}%`, money(commissionAmount())],
+      activeSalePercent() && ['Скидка в распродаже', money(saleDiscountAmount())],
+      state.delivery && ['Скидка на доставку', `до ${money(state.deliveryAmount)}`],
+      state.quantity && ['Скидка за количество', `до ${money(quantityDiscountAmount())}`]
+    ].filter(Boolean);
+    const receiptRows = rows.map(([label, value]) => `<div class="totalRow"><span>${label}</span><i></i><strong>${value}</strong></div>`).join('');
+    sheet('Итого', `<div class="totalSheetBody"><div class="totalReceipt">${receiptRows}<div class="totalRow totalResult"><span>Получите за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></div><h3>Специальные услуги</h3><div class="totalServices"><div class="totalRow"><span>Продвижение на 7 дней</span><i></i><strong>100 ₽</strong></div><div class="totalRow"><span>XL размер объявления</span><i></i><strong>100 ₽</strong></div><div class="totalRow"><span>Выделение цены цветом</span><i></i><strong>100 ₽</strong></div><div class="totalRow totalPayNow"><span>Заплатить сейчас</span><i></i><strong>300 ₽</strong></div></div></div><div class="totalSheetFooter"><button class="primary" data-action="close">Оплатить 300 ₽</button></div>`);
+    $('.sheet').classList.add('totalSheet');
+    return;
+  }
   const sheets = {
     hvatamba: { title: 'Хватамба', height: 762 },
     lovita: { title: 'Ловита', height: 762 },
