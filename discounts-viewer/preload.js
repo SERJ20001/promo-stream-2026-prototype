@@ -20,8 +20,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=62', 'alternative.css?v=62', 'viewer.css?v=62'];
-  const scripts = ['viewer.js?v=62', 'recommendation-model.js?v=62', 'recommendations.js?v=62', 'app.js?v=62', 'intro.js?v=62', 'confetti.js?v=62', 'heart-balloon.js?v=62'];
+  const styles = ['style.css?v=63', 'alternative.css?v=63', 'viewer.css?v=63'];
+  const scripts = ['viewer.js?v=63', 'recommendation-model.js?v=63', 'recommendations.js?v=63', 'app.js?v=63', 'intro.js?v=63', 'confetti.js?v=63', 'heart-balloon.js?v=63'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();

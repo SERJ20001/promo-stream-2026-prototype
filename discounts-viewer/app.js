@@ -220,12 +220,6 @@ $('#scroll').addEventListener('scroll', () => {
   $('#header').classList.toggle('headerScrolled', scrollTop > 0);
   $('#header').classList.toggle('headerCompact', compact); $('.compactWrap').setAttribute('aria-hidden', String(!compact)); $('.compactWrap').inert = !compact;
 }, { passive: true });
-try {
-  const saved = JSON.parse(localStorage.getItem('promo-stream-selection-v1') || 'null');
-  if (saved) for (const key of Object.keys(defaults)) {
-    if (typeof saved[key] === typeof defaults[key] && (typeof saved[key] !== 'number' || Number.isFinite(saved[key]) && saved[key] >= 0 && saved[key] <= (key === 'deliveryAmount' ? 1000 : 50))) state[key] = saved[key];
-  }
-} catch {}
 $('.compactWrap').inert = true;
 render();
 

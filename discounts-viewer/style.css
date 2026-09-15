@@ -339,8 +339,7 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .scroll { top: 52px; padding-bottom: 145px; }
 .footer { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 .introFixedHeader { flex-shrink: 0; height: 52px; background: white; z-index: 2; }
-.introFlow:not([data-step="0"]) .introCanvas { margin-top: -52px; }
-.introFlow[data-step="13"] .introCanvas { margin-top: -76px; }
+.introFlow:not([data-step="0"]) .introCanvas { margin-top: 0; }
 .introFixedFooter { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 .publicationNav { height: 52px; }
 .publicationBack { top: 0; }
