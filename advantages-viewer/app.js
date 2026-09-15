@@ -19,7 +19,7 @@ let toastTimer;
 let hasRendered = false;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let edgeTouch;
-const verticalScrollerSelector = '.fixedSheetBody, .sheet, .introViewport, #scroll';
+const verticalScrollerSelector = '.totalCalculationBody, .fixedSheetBody, .sheet, .introViewport, #scroll';
 document.addEventListener('touchstart', event => {
   if (event.touches.length !== 1) {
     edgeTouch = null;
@@ -108,6 +108,7 @@ function closeSheet() {
 }
 function sheet(title, body) {
   clearTimeout(toastTimer); $('#toast').classList.remove('shown');
+  window.heartBalloonCelebration?.clear();
   $('.sheet').classList.remove('figmaSheet', 'staticSheet', 'scoreSheet', 'totalFigmaSheet', 'totalCalculationSheet', 'fixedFooterSheet', 'sheetScrolled', 'sheetCloseAlwaysVisible');
   returnFocus = document.activeElement;
   $('#sheetContent').innerHTML = `<h2 id="sheetTitle">${title}</h2>${body}`;

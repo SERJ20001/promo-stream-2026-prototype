@@ -77,6 +77,11 @@
     ], { duration: 340, easing: 'cubic-bezier(.2, .7, .2, 1)', fill: 'forwards' });
   }
 
+  function scheduleToastHide(currentRun) {
+    clearTimeout(toastHideTimer);
+    toastHideTimer = setTimeout(() => hideToast(currentRun), 5000);
+  }
+
   function hideToast(currentRun) {
     if (currentRun !== runId) return;
     toastAnimation?.cancel();
@@ -99,11 +104,11 @@
     layer.dataset.state = 'playing';
     layer.dataset.runs = String(Number(layer.dataset.runs || 0) + 1);
     resetScene();
-    toastHideTimer = setTimeout(() => hideToast(currentRun), 5000);
     if (reducedMotion.matches) {
       toast.style.opacity = '1';
       toast.style.transform = 'none';
       layer.dataset.state = 'shown';
+      scheduleToastHide(currentRun);
       return;
     }
     const startedAt = performance.now();
@@ -119,6 +124,7 @@
       if (!toastShown && elapsed >= 780) {
         toastShown = true;
         showToast();
+        scheduleToastHide(currentRun);
       }
       if (heartSpecs.some(spec => elapsed < spec.delay + spec.duration)) animationFrame = requestAnimationFrame(renderFrame);
       else layer.dataset.state = 'shown';

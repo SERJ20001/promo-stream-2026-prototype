@@ -86,8 +86,8 @@ function renderRecommendations() {
   const hasPaidServices = paidServicesTotal(state) > 0;
   document.querySelector('[data-services-row]').hidden = !hasPaidServices;
   document.querySelector('[data-services-label]').textContent = 'Платные услуги';
-  document.querySelector('.recommendationTotals').disabled = false;
-  document.querySelector('.totalDetails').hidden = false;
+  document.querySelector('.recommendationTotals').disabled = !hasPaidServices;
+  document.querySelector('.totalDetails').hidden = !hasPaidServices;
   document.querySelector('.recommendationFooter').classList.toggle('withoutPaidServices', !hasPaidServices);
   const needsPayment = hasPaidServices && !state.paidServicesPaid;
   document.querySelector('.continueButton').textContent = needsPayment ? `Оплатить ${money(paidServicesTotal(state))}` : 'Готово';
@@ -120,7 +120,7 @@ function recommendationSheet(name) {
     const rows = (items, extraClass = '') => items.map(([label, value, type]) => `<div class="totalCalculationRow ${extraClass}"><span>${label}${type === 'commission' ? '<img src="assets/question-outline.svg" alt="">' : ''}</span><i></i><strong>${value}</strong></div>`).join('');
     const needsPayment = payment > 0 && !state.paidServicesPaid;
     const services = serviceRows.length ? `<section class="totalCalculationServices"><strong class="totalCalculationHeading">Специальные услуги</strong>${rows(serviceRows)}<div class="totalCalculationRow totalCalculationPayment"><span>Заплатить сейчас</span><i></i><strong>${money(payment)}</strong></div></section>` : '';
-    sheet('Итого', `<div class="totalCalculation" style="height:${sheetHeight}px"><strong class="totalCalculationTitle" aria-hidden="true">Итого</strong><section class="totalCalculationReceipt"><div class="totalCalculationRow totalCalculationPrice"><span>Ваша цена</span><i></i><strong>${money(basePrice)}</strong></div>${rows(adjustmentRows)}<div class="totalCalculationRow totalCalculationResult"><span>Получите за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></section>${services}<button class="totalSheetButton" data-action="${needsPayment ? 'complete' : 'close'}">${needsPayment ? `Оплатить ${money(payment)}` : 'Готово'}</button></div>`);
+    sheet('Итого', `<div class="totalCalculation" style="height:${sheetHeight}px"><strong class="totalCalculationTitle" aria-hidden="true">Итого</strong><div class="totalCalculationBody"><section class="totalCalculationReceipt"><div class="totalCalculationRow totalCalculationPrice"><span>Ваша цена</span><i></i><strong>${money(basePrice)}</strong></div>${rows(adjustmentRows)}<div class="totalCalculationRow totalCalculationResult"><span>Получите за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></section>${services}</div><button class="totalSheetButton" data-action="${needsPayment ? 'complete' : 'close'}">${needsPayment ? `Оплатить ${money(payment)}` : 'Готово'}</button></div>`);
     document.querySelector('.sheet').classList.add('figmaSheet', 'staticSheet', 'totalCalculationSheet', 'sheetCloseAlwaysVisible');
     document.querySelector('.sheet').style.setProperty('--total-sheet-height', `${sheetHeight}px`);
     document.querySelector('.sheet').scrollTop = 0;
