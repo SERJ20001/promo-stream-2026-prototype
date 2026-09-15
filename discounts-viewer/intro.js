@@ -24,7 +24,10 @@ let introIndex = 0;
 let publicationTimer;
 let publicationRun = 0;
 let publicationBadges;
-const introAsset = index => `assets/intro/flow-${index}${index === 6 ? '-v49' : ''}.png`;
+const introAsset = index => {
+  const versions = { 3: '-v50', 6: '-v49', 13: '-v50' };
+  return `assets/intro/flow-${index}${versions[index] || ''}.png`;
+};
 const introOrder = [0, 1, 2, 3, 4, 5, 6, 14, 8, 9, 10, 11, 12, 13, 7];
 function restorePublicationBadges() {
   if (!publicationBadges) return;
@@ -41,7 +44,7 @@ function introPrefill(index, height) {
   const input = (x, y, width, blockHeight, text, className = '') => field(x, y, width, blockHeight, `<span>${text}</span>`, `introInputPatch ${className}`);
   if (index === 1) return field(16, 172, 208, 208, '<img src="assets/product-boots.png" alt="Ботинки Hermes">', 'introPhotoPatch');
   if (index === 2) return input(16, 117, 343, 52, 'Ботинки Hermes');
-  if (index === 9) return field(296, 179, 46, 26, '<img src="assets/toggle-on.png" alt="XL-объявление включено">', 'introTogglePatch') + field(296, 381, 46, 26, '<img src="assets/toggle-off.png" alt="Выделение цены выключено">', 'introTogglePatch');
+  if (index === 3) return field(12, 58, 351, 94, '<strong>Выберите категорию</strong><span>Важно выбрать верную категорию для вашего товара</span>', 'introCategoryPatch');
   if (index === 5) return input(16, 101, 343, 52, '5 000 ₽');
   if (index === 4) return input(16, 369, 343, 52, 'Новое')
     + input(16, 477, 343, 52, '44')

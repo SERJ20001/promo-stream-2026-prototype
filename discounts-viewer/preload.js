@@ -2,19 +2,22 @@
   const images = [
     'badge-delivery-off.png', 'badge-delivery-on.png', 'badge-quantity-off.png', 'badge-quantity-on.png',
     'badge-sale-off.png', 'badge-sale-on.png', 'continue-button.png', 'delivery-discount.png',
-    'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png', 'loading-spinner.png',
+    'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png', 'loading-spinner.png', 'question-outline.png',
     'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-boots.png',
     'quantity-discount.png', 'sale-hvatamba.png', 'sale-lovita.png', 'sales-info.png', 'sales-timeline.png',
     'sheet-delivery-v38.png', 'sheet-hvatamba-v38.png', 'sheet-lovita-v38.png', 'sheet-methods.png',
     'sheet-promotion.png', 'sheet-quantity-v38.png', 'sheet-views.png', 'status-bar.png', 'toggle-off.png', 'toggle-on.png'
-  ].map(name => `assets/${name}`).concat(Array.from({ length: 15 }, (_, index) => `assets/intro/flow-${index}${index === 6 ? '-v49' : ''}.png`));
+  ].map(name => `assets/${name}`).concat(Array.from({ length: 15 }, (_, index) => {
+    const versions = { 3: '-v50', 6: '-v49', 13: '-v50' };
+    return `assets/intro/flow-${index}${versions[index] || ''}.png`;
+  }));
   const fonts = [
     { path: 'fonts/AvitoSansText-Regular.woff2', family: 'Avito Text', weight: '400' },
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=49', 'viewer.css?v=2'];
-  const scripts = ['viewer.js?v=1', 'app.js?v=viewer-4', 'intro.js?v=viewer-3', 'confetti.js?v=46'];
+  const styles = ['style.css?v=50', 'viewer.css?v=2'];
+  const scripts = ['viewer.js?v=1', 'app.js?v=viewer-5', 'intro.js?v=viewer-4', 'confetti.js?v=46'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();

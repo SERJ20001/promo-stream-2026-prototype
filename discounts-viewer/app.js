@@ -9,8 +9,7 @@ const activeSalePercent = () => state.hvatamba ? state.hvatambaPercent : state.l
 const currentPrice = () => basePrice * (1 - activeSalePercent() / 100);
 const commissionAmount = () => basePrice * commissionRate / 100;
 const saleDiscountAmount = () => basePrice - currentPrice();
-const quantityDiscountAmount = () => state.quantity ? currentPrice() * state.quantityPercent / 100 : 0;
-const payoutAmount = () => Math.max(0, currentPrice() - commissionAmount() - (state.delivery ? state.deliveryAmount : 0) - quantityDiscountAmount());
+const payoutAmount = () => Math.max(0, currentPrice() - commissionAmount() - (state.delivery ? state.deliveryAmount : 0));
 const payoutText = () => money(payoutAmount());
 let returnFocus;
 let toastTimer;
@@ -115,12 +114,11 @@ function openSheet(name) {
   if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в распродаже, скидку на доставку или на несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не подключённые преимущества.</p>${done}`);
   if (name === 'total') {
     const rows = [
-      ['Ваша цена', money(basePrice)],
-      activeSalePercent() && ['Скидка в распродаже', money(saleDiscountAmount())],
-      state.delivery && ['Скидка на доставку', money(state.deliveryAmount), true],
-      state.quantity && ['Скидка за количество', money(quantityDiscountAmount())]
+      { label: 'Ваша цена', value: money(basePrice), className: 'totalBaseRow' },
+      activeSalePercent() && { label: 'Скидка в распродаже', value: money(saleDiscountAmount()) },
+      state.delivery && { label: 'Скидка на доставку', value: money(state.deliveryAmount), interactive: true }
     ].filter(Boolean);
-    const receiptRows = rows.map(([label, value, interactive]) => `<${interactive ? 'button' : 'div'} class="totalRow${interactive ? ' totalInfoRow' : ''}"${interactive ? ' data-action="delivery-info" aria-describedby="deliveryHint"' : ''}><span>${label}</span><i></i><strong>${value}</strong></${interactive ? 'button' : 'div'}>`).join('');
+    const receiptRows = rows.map(({ label, value, interactive, className = '' }) => `<${interactive ? 'button' : 'div'} class="totalRow${interactive ? ' totalInfoRow' : ''}${className ? ` ${className}` : ''}"${interactive ? ' data-action="delivery-info" aria-describedby="deliveryHint"' : ''}><span>${label}</span><i></i><strong>${value}</strong></${interactive ? 'button' : 'div'}>`).join('');
     sheet('Итого', `<div class="totalSheetBody"><div class="totalReceipt">${receiptRows}<div class="totalRow totalResult"><span>Придёт за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></div></div><div class="deliveryHint" id="deliveryHint" role="status" hidden>Вычтем меньше, если доставка выйдет дешевле</div><div class="totalSheetFooter"><button class="primary" data-action="close">Готово</button></div>`);
     $('.sheet').classList.add('totalSheet');
     return;
