@@ -23,6 +23,7 @@ document.querySelector('#app').append(intro);
 let introIndex = 0;
 let publicationTimer;
 let publicationRun = 0;
+let introTransitioning = false;
 const introAsset = index => {
   const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
   return `assets/intro/flow-${index}${versions[index] || ''}.png`;
@@ -119,11 +120,45 @@ function showPublicationCelebration() {
   document.dispatchEvent(new Event('promo:confetti'));
   publicationTimer = setTimeout(showPromotionAfterPublication, reduced ? 800 : 3000);
 }
+function needsCalmTransition(from, to) {
+  return [8, 9].includes(from) || [8, 9].includes(to);
+}
+async function transitionToIntro(index) {
+  if (introTransitioning) return;
+  introTransitioning = true;
+  intro.inert = true;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const outgoing = intro.animate(
+    [{ opacity: 1 }, { opacity: 0 }],
+    { duration: reduced ? 0 : 140, easing: 'ease-out', fill: 'forwards' }
+  );
+  await outgoing.finished.catch(() => {});
+  intro.style.opacity = '0';
+  outgoing.cancel();
+  showIntro(index);
+  intro.inert = true;
+  const incoming = intro.animate(
+    [{ opacity: 0 }, { opacity: 1 }],
+    { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' }
+  );
+  await incoming.finished.catch(() => {});
+  incoming.cancel();
+  intro.style.opacity = '';
+  intro.inert = false;
+  introTransitioning = false;
+}
 intro.addEventListener('click', event => {
-  if (event.target.closest('.introBack')) return showIntro(introOrder[Math.max(0, introOrder.indexOf(introIndex) - 1)]);
+  if (introTransitioning) return;
+  if (event.target.closest('.introBack')) {
+    const previousIndex = introOrder[Math.max(0, introOrder.indexOf(introIndex) - 1)];
+    return needsCalmTransition(introIndex, previousIndex) ? transitionToIntro(previousIndex) : showIntro(previousIndex);
+  }
   if (!event.target.closest('.introNext')) return;
   if (introIndex === 14) return showPublicationCelebration();
-  if (introOrder.indexOf(introIndex) + 1 < introOrder.length) return showIntro(introOrder[introOrder.indexOf(introIndex) + 1]);
+  if (introOrder.indexOf(introIndex) + 1 < introOrder.length) {
+    const nextIndex = introOrder[introOrder.indexOf(introIndex) + 1];
+    return needsCalmTransition(introIndex, nextIndex) ? transitionToIntro(nextIndex) : showIntro(nextIndex);
+  }
   intro.hidden = true;
   const screen = document.querySelector('#screen');
   screen.hidden = false;
@@ -147,10 +182,17 @@ async function showPromotionAfterPublication() {
   card.animate([{ opacity: 1, transform: 'rotate(1deg)' }, { opacity: 0, transform: 'rotate(0deg) scale(.985)' }], { duration, easing: 'ease-in', fill: 'forwards' });
   await fade.finished.catch(() => {});
   if (run !== publicationRun) return;
-  card.remove();
-  celebration.remove();
-  document.dispatchEvent(new Event('promo:confetti-stop'));
+  intro.style.opacity = '0';
   showIntro(8);
+  intro.inert = true;
+  const entrance = intro.animate(
+    [{ opacity: 0 }, { opacity: 1 }],
+    { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' }
+  );
+  await entrance.finished.catch(() => {});
+  entrance.cancel();
+  intro.style.opacity = '';
+  intro.inert = false;
 }
 intro.hidden = true;
 document.querySelector('#screen').hidden = true;
