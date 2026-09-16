@@ -1,7 +1,7 @@
 .recommendationsScreen { position: absolute; inset: 0; }
 .recommendationsScreen::before { content: ''; position: absolute; inset: 0 0 auto; z-index: 4; height: 0; background: #fff; pointer-events: none; transition: height 240ms ease; }
 .recommendationsScreen.headerIsScrolled::before { height: 0; }
-.recommendationsScreen.headerIsCompact::before { height: 60px; }
+.recommendationsScreen.headerIsCompact::before { height: 76px; }
 .recommendationsScreen .header { position: absolute; inset: 0 0 auto; z-index: 5; height: 0; overflow: hidden; background: transparent; }
 .recommendationsScreen .nav { display: none; }
 .recommendationsScreen .headerScrolled { height: 0; background: transparent; }
@@ -9,7 +9,7 @@
 .recommendationsScreen .header:not(.headerCompact) .compactWrap { visibility: hidden; }
 .recommendationsScreen .scroll { padding: 20px 0 158px; inset: 0; overflow-x: hidden; }
 .recommendationsScreen.headerIsScrolled .scroll { clip-path: none; }
-.recommendationsScreen.headerIsCompact .scroll { clip-path: inset(60px 0 0); }
+.recommendationsScreen.headerIsCompact .scroll { clip-path: inset(76px 0 0); }
 .recommendationProduct { display: flex; gap: 12px; height: 127px; margin: 0 14px; padding: 13px 14px; border-radius: 28px; box-shadow: 0 4px 24px #0000001f, 0 1px 3px #0000000d; }
 .recommendationProduct .productInfo { padding-top: 1px; }
 .recommendationProduct .productName { margin-top: 2px; }
@@ -58,8 +58,8 @@
 .totalDetails img { width: 8px; height: 16px; }
 .recommendationFooter .continueButton { display: block; background: #141414; color: white; margin-top: 8px; height: 52px; }
 .recommendationsScreen .compactProduct { align-items: center; padding: 0 16px 10px 12px; gap: 10px; }
-.compactProduct .scorePhoto { width: 48px; height: 48px; flex-basis: 48px; border-radius: 12px; }
-.compactProduct .scoreProduct { border-radius: 10px; }
+.compactProduct .scorePhoto { width: 48px; height: 48px; flex-basis: 48px; border-radius: 20%; }
+.compactProduct .scoreProduct { border-radius: 19%; }
 .compactProduct .scoreButton { margin-top: 4px; }
 .scoreSheet:not(.figmaSheet) .close { position: sticky; float: right; margin-right: 4px; margin-bottom: -44px; top: 10px; opacity: 1; background: white; font-size: 30px; }
 .figmaSheet.sheetCloseAlwaysVisible .close { opacity: 1; }
@@ -80,8 +80,8 @@
 .withoutPaidServices .totalDetails { height: 28px; }
 
 .scoreButton { color: var(--score-color, #000); transition: color 450ms ease; }
-.recommendationsScreen .headerCompact { height: 60px; background: #fff; }
-.recommendationsScreen .compactProduct { padding: 1px 14px 10px; }
+.recommendationsScreen .headerCompact { height: 76px; background: #fff; }
+.recommendationsScreen .compactProduct { height: 76px; padding: 17px 14px 10px; }
 .totalRow [data-services-label] { overflow: hidden; text-overflow: ellipsis; }
 .scoreExplanation section { background: #f2f1f0; border-radius: 20px; padding: 16px; margin: 12px 0; }
 .scoreExplanation h3 { display: flex; justify-content: space-between; gap: 8px; font-size: 16px; line-height: 22px; margin: 0 0 10px; }
