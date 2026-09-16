@@ -21,9 +21,9 @@
 .scoreButton { display: inline-flex; align-items: center; gap: 3px; background: transparent; border: 0; padding: 0; height: 20px; margin-top: 8px; color: #00aaff; font-size: 15px; line-height: 20px; white-space: nowrap; }
 .scoreButton img { display: none; }
 .scoreButton::after { content: ''; width: 12px; height: 16px; margin-left: 1px; flex: 0 0 12px; background: currentColor; mask: url('assets/question-outline.svg') center / contain no-repeat; -webkit-mask: url('assets/question-outline.svg') center / contain no-repeat; }
-.recommendationHeading { margin: 36px 16px 36px; text-align: center; }
-.recommendationHeading h1 { margin: 0; font-family: 'Avito Text', sans-serif; font-size: 26px; line-height: 30px; font-weight: 700; }
-.recommendationHeading p { margin: 10px 0 0; font-size: 15px; line-height: 20px; }
+.recommendationHeading { margin: 36px 24px 36px; text-align: left; }
+.recommendationHeading h1 { margin: 0; font-family: 'Avito Text', sans-serif; font-size: 26px; line-height: 30px; font-weight: 700; letter-spacing: -0.6px; white-space: nowrap; }
+.recommendationHeading p { margin: 10px 0 0; font-size: 15px; line-height: 20px; text-align: center; }
 .recommendationSection { margin-top: 24px; }
 .recommendationSection h2 { margin: 0 24px 16px; font-size: 16px; line-height: 20px; font-weight: 700; }
 .recommendationSectionTitle { position: relative; }
@@ -33,6 +33,11 @@
 .recommendationCard { flex: 0 0 339px; min-width: 0; height: 150px; padding: 10px 12px 16px; background: #f2f1f0; border-radius: 28px; scroll-snap-align: start; }
 .recommendationCard .cardHeading { position: relative; font-size: 15px; line-height: 20px; }
 .recommendationCard .cardHeading strong { margin-left: 0; letter-spacing: -0.15px; }
+.cardIcon { display: grid; width: 28px; height: 28px; flex: 0 0 28px; place-items: center; border-radius: 50%; }
+.cardIcon img { display: block; width: 28px; height: 28px; }
+.cardIcon-1000-57711, .cardIcon-1000-57748 { background: #00d66f; }
+.cardIcon-1000-57723, .cardIcon-1000-57736, .cardIcon-1000-57760 { background: #9654f5; }
+.cardIcon-1000-57711 img, .cardIcon-1000-57723 img, .cardIcon-1000-57736 img, .cardIcon-1000-57748 img, .cardIcon-1000-57760 img { width: 16px; height: 16px; }
 .recommendationCard .toggle { position: absolute; right: 0; top: -7.5px; }
 .recommendationCard .description { height: 40px; margin: 8px 4px 12px; font-size: 15px; line-height: 20px; }
 .recommendationCard .pill { margin-left: 4px; background: white; padding: 8px 14px; gap: 2px; height: 36px; }
@@ -44,6 +49,7 @@
 .recommendationTotals:disabled { cursor: default; }
 .totalRows { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
 .totalRow { display: flex; align-items: center; gap: 4px; height: 20px; font-size: 15px; line-height: 20px; white-space: nowrap; }
+.totalRow:has([data-payout-label] br) { height: 40px; align-items: flex-start; }
 .totalRow strong { font-weight: 400; white-space: nowrap; }
 .totalRow .dots { min-width: 0; border-bottom-color: #c9c9c9; }
 .totalDetails { width: 20px; height: 48px; flex: 0 0 20px; display: grid; place-items: center; border-radius: 4px; background: #f2f1f0; }
@@ -79,6 +85,7 @@
 
 .attractivenessSheetCanvas { overflow: hidden; }
 .totalCalculationSheet { height: min(var(--total-sheet-height), 92%); max-height: 92%; overflow: hidden; }
+.totalCalculationSheet .handle { display: block; z-index: 4; }
 .totalCalculationSheet .close { position: absolute; top: 12px; right: 8px; width: 42px; height: 42px; margin: 0; background: transparent; opacity: 1; }
 .totalCalculation { position: relative; display: flex; height: 100%; flex-direction: column; padding: 44px 16px 84px; overflow: hidden; }
 .totalCalculationTitle { flex: none; margin-bottom: 16px; font: 700 21px/26px 'Avito Text', sans-serif; }
@@ -90,15 +97,121 @@
 .totalCalculationRow { display: flex; align-items: baseline; gap: 5px; min-height: 20px; font-size: 15px; line-height: 20px; white-space: nowrap; }
 .totalCalculationRow > span { display: inline-flex; align-items: center; flex-shrink: 0; }
 .totalCalculationRow > span img { width: 12px; height: 16px; margin-left: 2px; }
+.commissionInfo { display: inline-flex; align-items: center; flex-shrink: 0; gap: 2px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; }
+.commissionInfo img { width: 12px; height: 16px; }
 .totalCalculationRow i { flex: 1; min-width: 4px; border-bottom: 1px dotted #c9c9c9; transform: translateY(-3px); }
 .totalCalculationRow strong { flex-shrink: 0; font-weight: 400; }
-.totalCalculationPrice, .totalCalculationPayment { font-size: 16px; }
-.totalCalculationPrice span, .totalCalculationPrice strong, .totalCalculationResult strong, .totalCalculationPayment span, .totalCalculationPayment strong { font-weight: 700; }
+.totalCalculationPrice, .totalCalculationPayment { font-size: 15px; }
+.totalCalculationPayment span, .totalCalculationPayment strong { font-weight: 700; }
 .totalCalculationPayment { margin-top: 2px; }
 .totalCalculationResult { align-items: flex-start; }
 .totalCalculationResult i { margin-top: 12px; }
 .totalCalculationResult strong { font-size: 16px; }
 .totalSheetButton { position: absolute; left: 10px; right: 10px; bottom: 16px; height: 52px; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; appearance: none; -webkit-appearance: none; border: 0; border-radius: 16px; background: #141414; color: white; box-shadow: none; font-size: 16px; line-height: 20px; z-index: 2; }
+.commissionTooltip { position: absolute; z-index: 5; top: 38px; left: 34px; width: 270px; padding: 16px 20px; border-radius: 26px; background: #141414; color: white; font-size: 15px; line-height: 20px; opacity: 0; transform: translateY(4px); pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; }
+.commissionTooltip.shown { opacity: 1; transform: none; }
+.scoreSheet { height: min(953px, 100%); overflow: hidden; }
+.scoreSheet #sheetContent, .scoreSheetLayout, .scoreSheetBody { height: 100%; min-height: 0; }
+.scoreSheetBody { overflow-y: auto; overscroll-behavior-y: none; scrollbar-width: none; }
+.scoreSheetBody::-webkit-scrollbar { display: none; }
+.scoreSheet .close { position: absolute; top: 12px; right: 8px; margin: 0; opacity: 1; background: transparent; z-index: 5; }
+.sheetPersistentHeader { position: sticky; top: 0; z-index: 3; display: flex; align-items: flex-start; height: 96px; margin-bottom: -96px; padding: 46px 52px 0 16px; background: white; font: 700 30px/34px 'Avito Text', sans-serif; }
+.sheetPersistentHeader::before { content: ''; position: absolute; top: 8px; left: calc(50% - 18px); width: 36px; height: 4px; border-radius: 4px; background: #d6d6d6; }
+.sheetPersistentHeaderMultiline { height: 106px; margin-bottom: -106px; padding-top: 32px; font-size: 26px; line-height: 30px; }
 .introFixedHeader { position: absolute; inset: 0 0 auto; z-index: 5; height: 52px; overflow: hidden; background: white; }
 .introDescription { align-items: flex-start; padding-top: 8px; }
 .introCopy { align-items: flex-start; border-radius: 0; }
+
+.codedSheetShell { display: flex; height: min(var(--sheet-height), 100%); max-height: 100%; flex-direction: column; overflow: hidden; padding: 0; border-radius: 32px 32px 0 0; }
+.codedSheetShell .handle { z-index: 8; }
+.codedSheetShell .close, .scoreSheet:not(.figmaSheet) .close { position: absolute; z-index: 9; top: 12px; right: 8px; float: none; width: 42px; height: 42px; margin: 0; padding: 12px; background: transparent; opacity: 1; }
+.codedSheetShell .close img { display: block; width: 18px; height: 18px; }
+.codedSheetShell #sheetContent { display: flex; width: 100%; min-height: 0; flex: 1; }
+.codedSheetShell #sheetTitle { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); }
+.codedSheet { display: flex; width: 100%; min-width: 0; min-height: 0; flex: 1; flex-direction: column; background: white; }
+.codedSheetMain { min-height: 0; flex: 1; overflow: hidden; }
+.codedHero { display: block; width: 100%; height: 185px; object-fit: cover; }
+[data-coded-sheet="hvatamba"] .codedHero { height: 60px; }
+.codedSheetShell:has([data-coded-sheet="hvatamba"]) .close { top: 1px; width: 50px; height: 50px; padding: 16px; border-radius: 50%; background: white; }
+.codedSheetCopy { padding: 20px 16px 16px; }
+.codedSheetCopy h3 { margin: 0 0 4px; font: 700 28px/32px 'Avito Display', sans-serif; letter-spacing: -.35px; }
+.codedSheetCopy h4 { margin: 22px 0 12px; font: 700 16px/20px 'Avito Text', sans-serif; }
+.codedSheetCopy p { margin: 0 0 14px; font-size: 16px; line-height: 22px; }
+.inlineLink { border: 0; padding: 0; background: transparent; color: #00aaff; font: inherit; }
+.codedInput { display: grid; height: 52px; grid-template-columns: minmax(0, 1fr) auto 34px; align-items: center; margin-top: 12px; padding: 0 9px 0 12px; border-radius: 12px; background: #f2f1f0; }
+.codedInput input { min-width: 0; border: 0; outline: 0; background: transparent; color: #141414; font: 20px/24px 'Avito Text', sans-serif; appearance: textfield; }
+.codedInput input::-webkit-inner-spin-button { appearance: none; }
+.codedInput > span { font: 700 18px/22px 'Avito Text', sans-serif; }
+.codedInput button { display: grid; width: 34px; height: 40px; place-items: center; border: 0; padding: 0; background: transparent; }
+.codedInput button img { width: 16px; height: 16px; }
+.codedChoices { display: flex; gap: 8px; margin-top: 10px; }
+.codedChoicesScrollable { overflow-x: auto; scrollbar-width: none; }
+.codedChoicesScrollable::-webkit-scrollbar { display: none; }
+.codedChoice { height: 40px; min-width: 55px; flex: 1 0 auto; border: 0; border-radius: 12px; padding: 0 13px; background: #f2f1f0; font: 16px/20px 'Avito Text', sans-serif; white-space: nowrap; }
+.codedChoice.selected { background: #141414; color: white; }
+.codedRange { display: grid; grid-template-columns: 1fr 1fr; margin: 14px 0 0; color: #757575; font-size: 13px; line-height: 16px; }
+.codedRange input { grid-column: 1 / -1; width: 100%; margin: 0 0 6px; accent-color: #141414; }
+.codedRange span:last-child { text-align: right; }
+.codedHint { margin-top: 16px; padding: 12px; border-radius: 12px; background: #f2f1f0; font-size: 14px; line-height: 18px; }
+.scopeChoices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.scopeChoice { display: flex; height: 48px; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 14px; background: #f2f1f0; font: 15px/20px 'Avito Text', sans-serif; }
+.scopeChoice.selected { border-color: #141414; background: white; }
+.scopeChoice img { width: 8px; height: 16px; }
+.codedSheetFooter { position: relative; z-index: 4; flex: 0 0 138px; padding: 10px; background: white; box-shadow: 0 -8px 28px rgb(0 0 0 / 8%); }
+.codedSheetFooter .primary { height: 52px; min-height: 52px; margin: 8px 0 0; }
+.codedSheetFooterButtonOnly { flex-basis: 72px; }
+.codedSheetFooterButtonOnly .primary { margin-top: 0; }
+.sheetProductSnippet { display: flex; height: 58px; align-items: center; gap: 10px; padding: 4px 6px; }
+.sheetProductSnippet > img { width: 44px; height: 44px; border-radius: 10px; }
+.sheetProductSnippet > div { min-width: 0; }
+.sheetProductSnippet span { display: block; font-size: 15px; line-height: 20px; }
+.sheetProductPrice { display: flex; align-items: baseline; gap: 8px; font-size: 16px; line-height: 20px; }
+.sheetProductPrice del { color: #141414; font-size: 15px; text-decoration-color: #ff4053; text-decoration-thickness: 2px; }
+.codedSheetScrollable { overflow: hidden; }
+.codedSheetScroll { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: none; }
+.codedSheetScroll::-webkit-scrollbar { display: none; }
+.codedStickyTitle { position: sticky; z-index: 6; top: 0; display: flex; min-height: 84px; align-items: flex-end; padding: 32px 54px 12px 16px; background: white; }
+.codedStickyTitle h3 { margin: 0; font: 700 30px/34px 'Avito Display', sans-serif; letter-spacing: -.4px; }
+.promotionCopy { padding-top: 0; }
+.budgetCards { display: grid; gap: 8px; }
+.budgetCard { position: relative; height: 144px; overflow: hidden; border: 2px solid transparent; border-radius: 20px; padding: 18px; background: #f2f1f0; text-align: left; }
+.budgetCard.selected { border-color: #141414; }
+.budgetCard span { position: relative; z-index: 1; display: flex; flex-direction: column; }
+.budgetCard strong { font-size: 22px; line-height: 26px; }
+.budgetCard small { margin-top: 18px; font-size: 13px; line-height: 16px; }
+.budgetCard b { margin-top: 2px; font-size: 15px; line-height: 20px; }
+.budgetCard img { position: absolute; right: 0; bottom: 0; width: 108px; height: 144px; object-fit: contain; }
+.otherBudget { width: 100%; height: 54px; margin: 8px 0 10px; border: 1px dashed #949494; border-radius: 16px; background: white; font: 16px/20px 'Avito Text', sans-serif; }
+.methodsCopy { padding-top: 0; }
+.methodsCopy > h3 { margin: 28px 0 14px; font-size: 24px; line-height: 28px; }
+.dataRow { display: flex; width: 100%; min-height: 64px; align-items: center; justify-content: space-between; border: 0; border-bottom: 1px solid #e5e5e5; padding: 10px 0; background: white; text-align: left; }
+.dataRow span { display: flex; flex-direction: column; }
+.dataRow strong { font-size: 16px; line-height: 20px; }
+.dataRow small { margin-top: 3px; color: #757575; font-size: 14px; line-height: 18px; }
+.dataRow img { width: 8px; height: 16px; }
+.methodCard { display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: 4px 12px; margin-bottom: 10px; padding: 16px; border-radius: 20px; background: #f2f1f0; }
+.methodCard h4 { margin: 0 0 4px; }
+.methodCard p { margin: 0; font-size: 14px; line-height: 18px; }
+.methodCard .methodDetails { grid-column: 1 / -1; margin-top: 8px; color: #757575; }
+.methodSetup { grid-column: 1 / -1; width: max-content; border: 0; border-radius: 20px; padding: 8px 14px; background: white; font: 14px/18px 'Avito Text', sans-serif; }
+.codedToggle { display: grid; width: 40px; height: 40px; place-items: center; border: 0; padding: 0; background: transparent; }
+.codedToggle span { position: relative; width: 40px; height: 21px; border-radius: 20px; background: #dedede; }
+.codedToggle span::after { content: ''; position: absolute; top: 2.5px; left: 2.5px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform 180ms ease; }
+.codedToggle.selected span { background: #141414; }
+.codedToggle.selected span::after { transform: translateX(19px); }
+.codedStickyTitleMultiline { min-height: 112px; align-items: flex-end; padding-top: 30px; }
+.codedStickyTitleMultiline h3 { font-size: 28px; line-height: 31px; }
+.scoreExplanationSections { padding: 6px 16px 32px; }
+.scoreExplanationSections section { margin-bottom: 18px; padding: 16px; border-radius: 22px; background: #f2f1f0; }
+.scoreExplanationSections h4 { margin: 0 0 14px; font: 700 18px/22px 'Avito Text', sans-serif; }
+.scoreExplanationRow { display: flex; min-height: 42px; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #dedede; padding: 10px 0; font-size: 15px; line-height: 20px; }
+.scoreExplanationRow:first-of-type { border-top: 0; padding-top: 0; }
+.scoreExplanationRow span:first-child { display: flex; min-width: 0; flex-direction: column; }
+.scoreExplanationRow small { margin-top: 5px; color: #757575; font-size: 13px; line-height: 17px; }
+.scoreExplanationRing { width: 28px; height: 28px; flex: 0 0 28px; }
+.scorePosition { width: 88px; height: 28px; flex: 0 0 88px; }
+.scoreExplanationIcon { display: grid; width: 30px; height: 30px; flex: 0 0 30px; place-items: center; border-radius: 50%; }
+.scoreExplanationIcon img { width: 18px; height: 18px; object-fit: contain; }
+.scoreExplanationPurple { background: #9654f5; }
+.scoreExplanationGreen { background: #00b755; }
+.scoreExplanationPurple img[src$="score-hvatamba.svg"] { width: 29px; height: 29px; border-radius: 50%; }

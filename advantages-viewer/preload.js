@@ -4,13 +4,14 @@
     'badge-sale-off.png', 'badge-sale-on.png', 'continue-button.png', 'delivery-discount.png',
     'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png', 'loading-spinner.png', 'question-outline.svg',
     'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-boots.png', 'heart-balloon.png',
-    'quantity-discount.png', 'sale-hvatamba.png', 'sheet-delivery.png', 'sheet-hvatamba.png', 'sheet-methods.png',
-    'sheet-promotion-v43.png', 'sheet-quantity.png', 'sheet-views.png', 'status-bar.png', 'toggle-off.png', 'toggle-on.png'
+    'quantity-discount.png', 'sale-hvatamba.png', 'status-bar.png'
   ].map(name => `assets/${name}`).concat([
-    'sheet-attractiveness-v42.png', 'sheet-total-v40.png'
-  ].map(name => `assets/recommendations/${name}`)).concat([
-    '1000-57649.png', '1000-57661.png', '1000-57673.png', '1000-57689.png', '1000-57711.png',
-    '1000-57723.png', '1000-57736.png', '1000-57748.png', '1000-57760.png'
+    'close.svg', 'chevron.svg', 'camera.svg', 'video.svg', 'delivery.svg', 'hvatamba-hero.png', 'delivery-hero.png',
+    'quantity-hero.png', 'promotion-balloon.png', 'promotion-plane.png', 'promotion-rocket.png', 'product-44.png',
+    'score-position.png', 'score-ring-50.png', 'score-ring-25-benefit.png', 'score-ring-25-content.png', 'score-hvatamba.svg'
+  ].map(name => `assets/sheets/${name}`)).concat([
+    '1000-57649.svg', '1000-57661.svg', '1000-57673.svg', '1000-57689.svg', '1000-57711.svg',
+    '1000-57723.svg', '1000-57736.svg', '1000-57748.svg', '1000-57760.svg'
   ].map(name => `assets/alternative/${name}`)).concat([0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14].map(index => {
     const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
     return `assets/intro/flow-${index}${versions[index] || ''}.png`;
@@ -20,8 +21,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=75', 'alternative.css?v=75', 'viewer.css?v=75'];
-  const scripts = ['viewer.js?v=75', 'recommendation-model.js?v=75', 'recommendations.js?v=75', 'app.js?v=75', 'intro.js?v=75', 'confetti.js?v=75', 'heart-balloon.js?v=75'];
+  const styles = ['style.css?v=77', 'alternative.css?v=77', 'viewer.css?v=77'];
+  const scripts = ['viewer.js?v=77', 'recommendation-model.js?v=77', 'recommendations.js?v=77', 'app.js?v=77', 'intro.js?v=77', 'confetti.js?v=77', 'heart-balloon.js?v=77'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();

@@ -1,20 +1,23 @@
-const defaults = { ...recommendationDefaults, hvatamba: false, delivery: false, quantity: false, hvatambaPercent: 20, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3, paidServicesPaid: false };
+const defaults = { ...recommendationDefaults, hvatamba: false, delivery: false, quantity: false, hvatambaPercent: 20, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3, quantityScope: 'all', promotionDays: 7, promotionBudget: 200, pickup: false, saleDelivery: false, paidServicesPaid: false };
 let state = { ...defaults };
-const money = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
+const formatAmount = value => new Intl.NumberFormat('ru-RU').format(value);
+const money = value => `${formatAmount(value)} ₽`;
 const $ = selector => document.querySelector(selector);
 const all = selector => [...document.querySelectorAll(selector)];
 const basePrice = 5000;
 const commissionRate = 3;
 const currentPrice = () => state.hvatamba ? basePrice * (1 - state.hvatambaPercent / 100) : basePrice;
-const commissionAmount = () => Math.floor(currentPrice() * commissionRate / 100 / 100) * 100;
+const commissionAmount = () => Math.round(basePrice * commissionRate / 100);
 const saleDiscountAmount = () => basePrice - currentPrice();
 const discountKeys = ['hvatamba', 'delivery', 'quantity'];
 const paidServiceKeys = ['promotion', 'xl', 'highlight'];
 const enabledDiscountsCount = () => discountKeys.filter(key => state[key]).length;
-const payoutAmount = () => Math.max(0, currentPrice() - commissionAmount() - (state.delivery ? state.deliveryAmount : 0));
-const payoutText = () => money(payoutAmount());
+const payoutBeforeDelivery = () => Math.max(0, currentPrice() - commissionAmount());
+const payoutAmount = () => Math.max(0, payoutBeforeDelivery() - (state.delivery ? state.deliveryAmount : 0));
+const payoutText = () => state.delivery ? `${formatAmount(payoutBeforeDelivery())} – ${money(payoutAmount())}` : money(payoutBeforeDelivery());
 let returnFocus;
 let toastTimer;
+let commissionTooltipTimer;
 let hasRendered = false;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let edgeTouch;
@@ -57,7 +60,7 @@ function render() {
   all('[data-toggle]').forEach(button => {
     const enabled = state[button.dataset.toggle];
     button.setAttribute('aria-checked', String(enabled));
-    button.querySelector('img').src = `assets/toggle-${enabled ? 'on' : 'off'}.png`;
+    button.classList.toggle('toggleEnabled', enabled);
   });
   all('[data-price]').forEach(node => {
     const nextPrice = money(currentPrice());
@@ -100,6 +103,7 @@ function toast(message) {
   toastTimer = setTimeout(() => $('#toast').classList.remove('shown'), 2400);
 }
 function closeSheet() {
+  clearTimeout(commissionTooltipTimer);
   $('#overlay').hidden = true; $('#screen').inert = false; $('.sheet').classList.remove('sheetScrolled');
   $('.phone').classList.remove('sheetOpen');
   $('.viewerDisplay')?.classList.remove('sheetOpen');
@@ -107,9 +111,10 @@ function closeSheet() {
 }
 function sheet(title, body) {
   clearTimeout(toastTimer); $('#toast').classList.remove('shown');
+  clearTimeout(commissionTooltipTimer);
   window.heartBalloonCelebration?.clear();
-  $('.sheet').classList.remove('figmaSheet', 'staticSheet', 'scoreSheet', 'totalFigmaSheet', 'totalCalculationSheet', 'fixedFooterSheet', 'sheetScrolled', 'sheetCloseAlwaysVisible');
-  returnFocus = document.activeElement;
+  $('.sheet').classList.remove('figmaSheet', 'staticSheet', 'scoreSheet', 'totalFigmaSheet', 'totalCalculationSheet', 'fixedFooterSheet', 'codedSheetShell', 'sheetScrolled', 'sheetCloseAlwaysVisible');
+  if ($('#overlay').hidden) returnFocus = document.activeElement;
   $('#sheetContent').innerHTML = `<h2 id="sheetTitle">${title}</h2>${body}`;
   $('#overlay').hidden = false; $('#screen').inert = true;
   $('.phone').classList.add('sheetOpen');
@@ -117,57 +122,103 @@ function sheet(title, body) {
   $('.sheet').focus({ preventScroll: true });
 }
 const done = '<button class="primary" data-action="close">Понятно</button>';
-function sheetSelection(name) {
-  const patch = (x, y, width, height, content, extra = '') => `<div class="sheetValuePatch ${extra}" style="left:${x / 375 * 100}%;top:${y / 762 * 100}%;width:${width / 375 * 100}%;height:${height / 762 * 100}%">${content}</div>`;
-  const chips = (values, selected, suffix) => values.map(value => `<span class="sheetChoice ${value === selected ? 'selected' : ''}">${value}${suffix}</span>`).join('');
+function choiceButtons(values, selected, suffix, field) {
+  return values.map(value => `<button type="button" class="codedChoice ${value === selected ? 'selected' : ''}" data-sheet-choice="${field}" data-value="${value}">${value}${suffix}</button>`).join('');
+}
+function sheetProductSnippet(price, showOldPrice) {
+  return `<div class="sheetProductSnippet"><img src="assets/sheets/product-44.png" alt="Ботинки Hermes"><div><div class="sheetProductPrice"><strong>${money(price)}</strong>${showOldPrice ? '<del>5 000 ₽</del>' : ''}</div><span>Ботинки Hermes</span></div></div>`;
+}
+function codedSheet(name) {
   if (name === 'hvatamba') {
-    const percent = state[`${name}Percent`];
-    return patch(25, 326, 280, 30, `${percent}%`, 'fieldPatch')
-      + patch(16, 373, 343, 36, chips([5, 10, 20, 30, 40], percent, '%'), 'chipsPatch')
-      + patch(70, 612, 69, 24, money(5000 * (1 - percent / 100)), 'previewPricePatch');
+    const price = basePrice * (1 - state.hvatambaPercent / 100);
+    return {
+      title: 'Хватамба',
+      height: 762,
+      body: `<div class="codedSheet" data-coded-sheet="hvatamba"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/hvatamba-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Хватамба</h3><p>Объявление станет заметнее — появится<br>значок «Скидка» и перечёркнутая цена.<br>Скидку проверим <button class="inlineLink" type="button">по правилам</button></p><label class="codedInput"><input type="number" min="5" max="40" step="5" value="${state.hvatambaPercent}" data-sheet-input="hvatambaPercent" inputmode="numeric" aria-label="Размер скидки в процентах"><span>%</span><button type="button" data-sheet-clear="hvatambaPercent" aria-label="Сбросить размер скидки"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedChoices">${choiceButtons([5, 10, 20, 30, 40], state.hvatambaPercent, '%', 'hvatambaPercent')}</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(price, true)}<button class="primary" data-action="close">Готово</button></footer></div>`
+    };
   }
   if (name === 'delivery') {
-    const position = Math.min(100, Math.max(0, (state.deliveryAmount - 50) / 1450 * 100));
-    return patch(25, 337, 280, 36, money(state.deliveryAmount), 'fieldPatch')
-      + patch(28, 373, 319, 18, `<span class="sheetSliderTrack"><span style="width:${position}%"></span><i style="left:${position}%"></i></span>`, 'sliderPatch')
-      + patch(70, 612, 69, 24, money(currentPrice()), 'previewPricePatch')
-      + (!state.hvatamba ? patch(139, 612, 70, 24, '') : '');
+    return {
+      title: 'Скидка на доставку',
+      height: 762,
+      body: `<div class="codedSheet" data-coded-sheet="delivery"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/delivery-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Скидка на доставку</h3><p>Чем выше скидка, тем дешевле доставка<br>для покупателя</p><h4>Выберите сумму</h4><label class="codedInput"><input type="number" min="50" max="1500" step="50" value="${state.deliveryAmount}" data-sheet-input="deliveryAmount" inputmode="numeric" aria-label="Скидка на доставку в рублях"><span>₽</span><button type="button" data-sheet-clear="deliveryAmount" aria-label="Сбросить скидку на доставку"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedRange"><input type="range" min="50" max="1500" step="50" value="${state.deliveryAmount}" data-sheet-input="deliveryAmount" aria-label="Скидка на доставку от 50 до 1500 рублей"><span>50</span><span>1 500</span></div><div class="codedHint"><strong>Оптимально — 200 ₽.</strong> Для 50% покупателей<br>доставка будет бесплатной, остальным скидка.</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(currentPrice(), state.hvatamba)}<button class="primary" data-action="close">Готово</button></footer></div>`
+    };
   }
   if (name === 'quantity') {
-    return patch(16, 287, 343, 38, chips([5, 10, 15, 20, 30], state.quantityPercent, '%'), 'chipsPatch')
-      + patch(16, 375, 359, 36, chips([2, 3, 5, 8, 10], state.quantityCount, ' товаров'), 'chipsPatch countPatch');
+    return {
+      title: 'Скидка за количество',
+      height: 762,
+      body: `<div class="codedSheet" data-coded-sheet="quantity"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/quantity-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Скидка за количество</h3><h4>Размер скидки</h4><div class="codedChoices">${choiceButtons([5, 10, 15, 20, 30], state.quantityPercent, '%', 'quantityPercent')}</div><h4>При заказе от</h4><div class="codedChoices codedChoicesScrollable">${choiceButtons([2, 3, 5, 8, 10], state.quantityCount, ' товаров', 'quantityCount')}</div><h4>Будет применяться</h4><p>Скидка действует при покупке нескольких<br>товаров. Выберите товары для акции</p><div class="scopeChoices"><button type="button" class="scopeChoice ${state.quantityScope === 'all' ? 'selected' : ''}" data-string-choice="quantityScope" data-value="all">На все товары</button><button type="button" class="scopeChoice ${state.quantityScope === 'selected' ? 'selected' : ''}" data-string-choice="quantityScope" data-value="selected">На некоторые <img src="assets/sheets/chevron.svg" alt=""></button></div></div></div><footer class="codedSheetFooter codedSheetFooterButtonOnly"><button class="primary" data-action="close">Сохранить</button></footer></div>`
+    };
   }
-  return '';
+  if (name === 'promotion') {
+    const budgets = [[123, 'promotion-balloon.png'], [200, 'promotion-plane.png'], [600, 'promotion-rocket.png']];
+    return {
+      title: 'Продвижение',
+      height: 948,
+      body: `<div class="codedSheet codedSheetScrollable" data-coded-sheet="promotion"><div class="codedSheetScroll"><div class="codedStickyTitle"><h3>Продвижение</h3></div><div class="codedSheetCopy promotionCopy"><p>Чем больше бюджет, тем чаще объявление<br>попадает в топ поиска и рекомендаций.</p><h4>Количество дней</h4><div class="codedChoices codedChoicesScrollable">${choiceButtons([1, 5, 7, 14, 30], state.promotionDays, '', 'promotionDays')}<button type="button" class="codedChoice">Другой</button></div><h4>Бюджет</h4><div class="budgetCards">${budgets.map(([value, image]) => `<button type="button" class="budgetCard ${state.promotionBudget === value ? 'selected' : ''}" data-sheet-choice="promotionBudget" data-value="${value}"><span><strong>${money(value)}</strong><small>Прирост просмотров</small><b>~42–333</b></span><img src="assets/sheets/${image}" alt=""></button>`).join('')}</div><button type="button" class="otherBudget">Другой бюджет</button></div></div><footer class="codedSheetFooter codedSheetFooterButtonOnly"><button class="primary" data-action="close">Готово</button></footer></div>`
+    };
+  }
+  if (name === 'methods') {
+    const methodCard = (key, title, description, details) => `<article class="methodCard"><div><h4>${title}</h4><p>${description}</p></div><button type="button" class="codedToggle ${state[key] ? 'selected' : ''}" role="switch" aria-checked="${state[key]}" data-method-toggle="${key}" aria-label="${title}"><span></span></button><p class="methodDetails">${details}</p><button type="button" class="methodSetup">Настроить</button></article>`;
+    return {
+      title: 'Способы продажи',
+      height: 862,
+      body: `<div class="codedSheet codedSheetScrollable" data-coded-sheet="methods"><div class="codedSheetScroll"><div class="codedStickyTitle"><h3>Ваши данные</h3></div><div class="codedSheetCopy methodsCopy"><button type="button" class="dataRow"><span><strong>Зубовский бульвар., 11А</strong><small>Москва</small></span><img src="assets/sheets/chevron.svg" alt=""></button><button type="button" class="dataRow"><span><strong>+7 999 909 00 99</strong><small>Звонки и сообщения · Показ отключён</small></span><img src="assets/sheets/chevron.svg" alt=""></button><h3>Способы продажи</h3>${methodCard('pickup', 'Самовывоз', 'Заказ заберут по вашему адресу', 'Подготовка от 1 дня · Бронь 5 дней')} ${methodCard('saleDelivery', 'Доставка', 'Товар смогут заказать по всей России', 'Пункты выдачи, Курьер, Постаматы')}</div></div><footer class="codedSheetFooter codedSheetFooterButtonOnly"><button class="primary" data-action="close">Готово</button></footer></div>`
+    };
+  }
+  return null;
+}
+function updateSheetValue(field, rawValue) {
+  const limits = {
+    hvatambaPercent: [5, 40, 5],
+    deliveryAmount: [50, 1500, 50],
+    quantityPercent: [5, 30, 5],
+    quantityCount: [2, 10, 1],
+    promotionDays: [1, 30, 1],
+    promotionBudget: [123, 600, 1]
+  };
+  const [minimum, maximum, step] = limits[field];
+  const numericValue = Number(rawValue);
+  if (!Number.isFinite(numericValue)) return;
+  state[field] = Math.min(maximum, Math.max(minimum, Math.round(numericValue / step) * step));
+  render();
+}
+function refreshCodedSheetControls(field) {
+  const value = state[field];
+  all(`[data-sheet-choice="${field}"]`).forEach(button => button.classList.toggle('selected', Number(button.dataset.value) === value));
+  all(`[data-sheet-input="${field}"]`).forEach(input => { input.value = value; });
+  if (field === 'hvatambaPercent') {
+    const price = $('.sheetProductPrice strong');
+    if (price) price.textContent = money(basePrice * (1 - state.hvatambaPercent / 100));
+  }
+}
+function showCommissionTooltip(button) {
+  clearTimeout(commissionTooltipTimer);
+  const calculation = button.closest('.totalCalculation');
+  if (!calculation) return;
+  let tooltip = calculation.querySelector('.commissionTooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.className = 'commissionTooltip';
+    tooltip.setAttribute('role', 'tooltip');
+    tooltip.textContent = 'Комиссия, если товар купят с доставкой или самовывозом';
+    calculation.append(tooltip);
+  }
+  requestAnimationFrame(() => tooltip.classList.add('shown'));
+  commissionTooltipTimer = setTimeout(() => tooltip.classList.remove('shown'), 4000);
 }
 function openSheet(name) {
   if (recommendationSheet(name)) return;
+  const coded = codedSheet(name);
+  if (coded) {
+    sheet(coded.title, coded.body);
+    $('.sheet').style.setProperty('--sheet-height', `${coded.height}px`);
+    $('.sheet').classList.add('codedSheetShell', 'staticSheet', 'sheetCloseAlwaysVisible');
+    return;
+  }
   if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в распродаже, скидку на доставку или на несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не подключённые преимущества.</p>${done}`);
   if (name === 'total') return sheet('Вы получите за товар', `<div class="receipt"><span>Цена с текущей скидкой</span><strong>${money(currentPrice())}</strong><span>Скидка на доставку</span><strong>${state.delivery ? `до ${money(state.deliveryAmount)}` : 'Не подключена'}</strong><span>Вы получите</span><strong>${payoutText()}</strong></div><p>${state.delivery ? 'Скидка на доставку может потратиться частично или не потратиться. Первая сумма — если она не расходуется, вторая — если используется полностью.' : 'Скидка на доставку выключена, поэтому показываем одну сумму.'}</p>${done}`);
-  const sheets = {
-    hvatamba: { title: 'Хватамба', height: 762, footerTop: 590, actionTop: 668, actionHeight: 52 },
-    delivery: { title: 'Скидка на доставку', height: 762, footerTop: 590, actionTop: 668, actionHeight: 52 },
-    quantity: { title: 'Скидка за количество', height: 762, footerTop: 648, actionTop: 668, actionHeight: 52 },
-    methods: { title: 'Способы продажи', height: 862, footerTop: 750, actionTop: 766, actionHeight: 52 },
-    views: { title: 'Цена просмотра', height: 756, footerTop: 604, actionTop: 614, actionHeight: 110 },
-    promotion: { title: 'Продвижение', height: 948, footerTop: 844, actionTop: 854, actionHeight: 52 }
-  };
-  const preview = sheets[name];
-  if (!preview) return;
-  const imageSource = name === 'promotion' ? 'assets/sheet-promotion-v43.png' : `assets/sheet-${name}.png`;
-  const footerHeight = preview.height - preview.footerTop;
-  const footerOffset = preview.footerTop / preview.height * 100;
-  const actionOffset = (preview.actionTop - preview.footerTop) / footerHeight * 100;
-  const actionHeight = preview.actionHeight / footerHeight * 100;
-  sheet(preview.title, `<div class="fixedSheetLayout"><div class="fixedSheetBody"><div class="fixedSheetBodyCrop" style="aspect-ratio:375/${preview.footerTop}"><div class="figmaSheetCanvas fixedSheetCanvas" style="aspect-ratio:375/${preview.height}"><img class="figmaSheetImage" src="${imageSource}" width="375" height="${preview.height}" alt="${preview.title}. Статичный макет настроек.">${sheetSelection(name)}</div></div></div><div class="fixedSheetFooter" style="aspect-ratio:375/${footerHeight}"><div class="figmaSheetCanvas fixedSheetFooterSource" style="aspect-ratio:375/${preview.height}"><img class="figmaSheetImage" src="${imageSource}" width="375" height="${preview.height}" alt="">${sheetSelection(name)}</div><button class="sheetDoneHotspot" data-action="close" aria-label="Закрыть шторку" style="top:${actionOffset}%;height:${actionHeight}%"></button></div></div>`);
-  $('.fixedSheetFooterSource').style.transform = `translateY(-${footerOffset}%)`;
-  $('.sheet').style.setProperty('--sheet-height', `${preview.height}px`);
-  $('.sheet').classList.add('figmaSheet', 'staticSheet', 'fixedFooterSheet');
-  if (name === 'methods' || name === 'views') $('.sheet').classList.add('sheetCloseAlwaysVisible');
-  const bodyScroller = $('.fixedSheetBody');
-  bodyScroller.scrollTop = 0;
-  bodyScroller.addEventListener('scroll', () => {
-    $('.sheet').classList.toggle('sheetScrolled', bodyScroller.scrollTop > 24);
-  }, { passive: true });
 }
 function summary() {
   const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.delivery && `Скидка на доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от ${state.quantityCount} товаров`].filter(Boolean);
@@ -179,6 +230,29 @@ function summary() {
 }
 document.addEventListener('click', event => {
   const button = event.target.closest('button, [data-action]'); if (!button) return;
+  if (button.dataset.commissionInfo !== undefined) return showCommissionTooltip(button);
+  if (button.dataset.sheetChoice) {
+    updateSheetValue(button.dataset.sheetChoice, button.dataset.value);
+    refreshCodedSheetControls(button.dataset.sheetChoice);
+    return;
+  }
+  if (button.dataset.sheetClear) {
+    updateSheetValue(button.dataset.sheetClear, button.dataset.sheetClear === 'deliveryAmount' ? 200 : 10);
+    refreshCodedSheetControls(button.dataset.sheetClear);
+    return;
+  }
+  if (button.dataset.stringChoice) {
+    state[button.dataset.stringChoice] = button.dataset.value;
+    all(`[data-string-choice="${button.dataset.stringChoice}"]`).forEach(choice => choice.classList.toggle('selected', choice === button));
+    return;
+  }
+  if (button.dataset.methodToggle) {
+    const key = button.dataset.methodToggle;
+    state[key] = !state[key];
+    button.classList.toggle('selected', state[key]);
+    button.setAttribute('aria-checked', String(state[key]));
+    return;
+  }
   if (button.dataset.toggle) {
     const previousDiscountsCount = enabledDiscountsCount();
     const wasEnabled = state[button.dataset.toggle];
@@ -197,14 +271,27 @@ document.addEventListener('click', event => {
       if (paidServicesTotal(state) > 0 && !state.paidServicesPaid) return window.startPaymentFlow?.(paidServicesTotal(state));
       return summary();
     case 'reset': state = { ...defaults }; photoFiles.clear(); try { localStorage.removeItem('promo-stream-selection-v1'); } catch {} closeSheet(); render(); $('#scroll').scrollTo({ top: 0, behavior: 'smooth' }); all('.recommendationCarousel').forEach(carousel => carousel.scrollTo({ left: 0 })); return;
+    case 'save-exit': return toast('Изменения сохранены');
     case 'back': if ($('#scroll').scrollTop > 0) $('#scroll').scrollTo({ top: 0, behavior: 'smooth' }); else sheet('Вернуться назад?', `<p>Вы можете продолжить настройку или начать выбор скидок заново.</p><button class="primary" data-action="close">Остаться</button><button class="textButton" data-action="reset">Начать заново</button>`);
   }
+});
+document.addEventListener('input', event => {
+  const input = event.target.closest('[data-sheet-input]');
+  if (!input) return;
+  updateSheetValue(input.dataset.sheetInput, input.value);
+  refreshCodedSheetControls(input.dataset.sheetInput);
+});
+document.addEventListener('change', event => {
+  const input = event.target.closest('[data-sheet-input]');
+  if (!input) return;
+  updateSheetValue(input.dataset.sheetInput, input.value);
+  refreshCodedSheetControls(input.dataset.sheetInput);
 });
 document.addEventListener('keydown', event => {
   if ($('#overlay').hidden) return;
   if (event.key === 'Escape') closeSheet();
   if (event.key === 'Tab') {
-    const controls = [...$('.sheet').querySelectorAll('button, input:checked, select')];
+    const controls = [...$('.sheet').querySelectorAll('button, input, select')].filter(control => !control.closest('[inert]'));
     const first = controls[0], last = controls.at(-1);
     if (event.shiftKey && (document.activeElement === first || document.activeElement === $('.sheet'))) { event.preventDefault(); last.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }

@@ -1,6 +1,6 @@
 const recommendationCards = {
   promotion: [
-    { title: 'Поднятие в поиске', icon: '1000-57649', toggle: 'promotion', description: 'Прирост просмотров ~42–333.<br>Лимит 35 контактов', button: '7 дней · 100 ₽', sheet: 'promotion' },
+    { title: 'Продвижение', icon: '1000-57649', toggle: 'promotion', description: 'Прирост просмотров ~42–333.<br>Лимит 35 контактов', button: '7 дней · 100 ₽', sheet: 'promotion' },
     { title: 'Большой размер объявления', icon: '1000-57661', toggle: 'xl', description: 'Большая карточка в результатах поиска по сравнению с конкурентами', button: '7 дней · 100 ₽' },
     { title: 'Выделение цены цветом', icon: '1000-57673', toggle: 'highlight', description: 'Привлечёт внимание к цене объявления. Ваше конкурентное преимущество', button: '7 дней · 100 ₽' }
   ],
@@ -10,21 +10,21 @@ const recommendationCards = {
     { title: 'Скидка за количество', icon: '1000-57723', toggle: 'quantity', description: 'Выгодно купить сразу несколько товаров. Увеличивает средний чек', button: '<span id="quantityValue">10% от 3 товаров</span>', sheet: 'quantity' },
   ],
   content: [
-    { title: 'Загрузите ещё 5 фото', icon: '1000-57736', description: 'Они помогают больше узнать о товаре<br>и повысить доверие', upload: 'photo' },
-    { title: 'Добавьте короткое видео', icon: '1000-57748', description: 'Оно помогает больше узнать о товаре<br>и повысить доверие', upload: 'video' },
+    { title: 'Загрузите еще 5 фото', icon: '1000-57736', description: 'Они помогают больше узнать о товаре<br>и повысить доверие', upload: 'photo' },
+    { title: 'Добавьте короткое видео', icon: '1000-57748', description: 'Они помогают больше узнать о товаре<br>и повысить доверие', upload: 'video' },
     { title: 'Способы связи', icon: '1000-57760', toggle: 'contacts', description: 'Сейчас вам можно только написать.<br>Многим это не подходит', button: 'Звонки и сообщения', sheet: 'methods' }
   ]
 };
 
 document.querySelectorAll('[data-card-group]').forEach(group => {
   group.innerHTML = recommendationCards[group.dataset.cardGroup].map(card => {
-    const toggle = card.toggle ? `<button class="toggle" role="switch" aria-checked="false" aria-label="${card.title}" data-toggle="${card.toggle}"><img src="assets/toggle-off.png" alt=""></button>` : '';
+    const toggle = card.toggle ? `<button class="toggle" role="switch" aria-checked="false" aria-label="${card.title}" data-toggle="${card.toggle}"><span aria-hidden="true"></span></button>` : '';
     const button = card.upload
       ? `<label class="pill uploadButton"><span data-${card.upload}-action>Загрузить</span><span aria-hidden="true">+</span><input id="${card.upload}Upload" type="file" accept="${card.upload === 'photo' ? 'image/*' : 'video/*'}" ${card.upload === 'photo' ? 'multiple' : ''} aria-label="${card.title}"></label>`
       : card.sheet
         ? `<button class="pill" data-sheet="${card.sheet}">${card.button}<img class="chevron" src="assets/icon-chevron.png" alt=""></button>`
         : `<span class="pill fixedPill">${card.button}</span>`;
-    return `<article class="recommendationCard"><div class="cardHeading"><img src="assets/alternative/${card.icon}.png" alt=""><strong>${card.title}</strong>${toggle}</div><p class="description">${card.description}</p>${button}${card.price ? `<span id="${card.price}" hidden></span>` : ''}</article>`;
+    return `<article class="recommendationCard"><div class="cardHeading"><span class="cardIcon cardIcon-${card.icon}"><img src="assets/alternative/${card.icon}.svg" alt=""></span><strong>${card.title}</strong>${toggle}</div><p class="description">${card.description}</p>${button}${card.price ? `<span id="${card.price}" hidden></span>` : ''}</article>`;
   }).join('');
 });
 
@@ -84,8 +84,11 @@ function renderRecommendations() {
   document.querySelectorAll('.scoreButton').forEach(button => button.setAttribute('aria-label', `Привлекательность ${score}%. Как рассчитывается показатель`));
   document.querySelectorAll('[data-payment]').forEach(node => { node.textContent = money(paidServicesTotal(state)); });
   const hasPaidServices = paidServicesTotal(state) > 0;
+  const selectedServices = [state.promotion && 'Продвижение', state.xl && 'XL размер', state.highlight && 'Выделение цены цветом'].filter(Boolean);
+  const servicesLabel = selectedServices.length > 2 ? `${selectedServices.slice(0, 2).join(', ')}, +${selectedServices.length - 2}` : selectedServices.join(', ');
   document.querySelector('[data-services-row]').hidden = !hasPaidServices;
-  document.querySelector('[data-services-label]').textContent = 'Платные услуги';
+  document.querySelector('[data-services-label]').textContent = servicesLabel;
+  document.querySelector('[data-payout-label]').innerHTML = hasPaidServices ? 'Вы получите за товар<br>с доставкой' : 'Вы получите за товар';
   document.querySelector('.recommendationTotals').disabled = false;
   document.querySelector('.totalDetails').hidden = false;
   document.querySelector('.recommendationFooter').classList.toggle('withoutPaidServices', !hasPaidServices);
@@ -100,9 +103,14 @@ function renderRecommendations() {
 
 function recommendationSheet(name) {
   if (name === 'attractiveness') {
-    sheet('Как мы оцениваем привлекательность?', '<div class="figmaSheetCanvas attractivenessSheetCanvas"><img class="figmaSheetImage" src="assets/recommendations/sheet-attractiveness-v42.png" width="375" height="953" alt="Как мы оцениваем привлекательность: позиция товара, выгода на товар, контент и условия"></div>');
-    document.querySelector('.sheet').classList.add('figmaSheet', 'staticSheet', 'scoreSheet');
-    document.querySelector('.sheet').scrollTop = 0;
+    const scoreRow = (copy, visual, muted = '') => `<div class="scoreExplanationRow"><span>${copy}${muted ? `<small>${muted}</small>` : ''}</span>${visual}</div>`;
+    const ring = (asset, label) => `<img class="scoreExplanationRing" src="assets/sheets/${asset}" alt="${label}">`;
+    const icon = (className, asset, label) => `<span class="scoreExplanationIcon ${className}"><img src="assets/sheets/${asset}" alt="${label}"></span>`;
+    const body = `<div class="codedSheet codedSheetScrollable scoreCodedSheet" data-coded-sheet="attractiveness"><div class="codedSheetScroll"><div class="codedStickyTitle codedStickyTitleMultiline"><h3>Как мы оцениваем<br>привлекательность?</h3></div><div class="scoreExplanationSections"><section><h4>Позиция товара</h4>${scoreRow('Составляет 50% оценки', ring('score-ring-50.png', '50%'))}${scoreRow('Помогает поднять объявление<br>выше в результатах поиска', '<img class="scorePosition" src="assets/sheets/score-position.png" alt="Позиции объявления в поиске">', 'Включите продвижение, большой размер<br>объявления или выделение цены')}</section><section><h4>Выгода на товар</h4>${scoreRow('Составляет 25% оценки', ring('score-ring-25-benefit.png', '25%'))}${scoreRow('Хватамба', icon('scoreExplanationPurple', 'score-hvatamba.svg', 'Хватамба'))}${scoreRow('Скидка на доставку', icon('scoreExplanationGreen', 'delivery.svg', 'Доставка'))}</section><section><h4>Контент и условия</h4>${scoreRow('Составляют 25% оценки', ring('score-ring-25-content.png', '25%'))}${scoreRow('Добавьте ещё 5 фото', icon('scoreExplanationPurple', 'camera.svg', 'Фото'))}${scoreRow('Добавьте короткое видео', icon('scoreExplanationGreen', 'video.svg', 'Видео'))}</section></div></div></div>`;
+    sheet('Как мы оцениваем привлекательность?', body);
+    document.querySelector('.sheet').style.setProperty('--sheet-height', '953px');
+    document.querySelector('.sheet').classList.add('codedSheetShell', 'staticSheet', 'scoreSheet', 'sheetCloseAlwaysVisible');
+    document.querySelector('.codedSheetScroll').scrollTop = 0;
     return true;
   }
   if (name === 'total') {
@@ -111,13 +119,13 @@ function recommendationSheet(name) {
       if (state[key]) serviceRows.push([label, money(100)]);
     }
     const payment = paidServicesTotal(state);
-    const adjustmentRows = [
-      ['Комиссия 3%', money(commissionAmount()), 'commission'],
+    const discountRows = [
       state.hvatamba && ['Скидка в распродаже', money(saleDiscountAmount())],
       state.delivery && ['Скидка на доставку', money(state.deliveryAmount)]
     ].filter(Boolean);
-    const sheetHeight = Math.min(516, 336 + (adjustmentRows.length + serviceRows.length) * 30);
-    const rows = (items, extraClass = '') => items.map(([label, value, type]) => `<div class="totalCalculationRow ${extraClass}"><span>${label}${type === 'commission' ? '<img src="assets/question-outline.svg" alt="">' : ''}</span><i></i><strong>${value}</strong></div>`).join('');
+    const adjustmentRows = [['Комиссия 3%', money(commissionAmount()), 'commission'], ...discountRows];
+    const sheetHeight = Math.min(580, 278 + discountRows.length * 30 + (serviceRows.length ? 86 + serviceRows.length * 32 : 0));
+    const rows = (items, extraClass = '') => items.map(([label, value, type]) => `<div class="totalCalculationRow ${extraClass}">${type === 'commission' ? `<button type="button" class="commissionInfo" data-commission-info aria-label="${label}. Подробнее о комиссии">${label}<img src="assets/question-outline.svg" alt=""></button>` : `<span>${label}</span>`}<i></i><strong>${value}</strong></div>`).join('');
     const needsPayment = payment > 0 && !state.paidServicesPaid;
     const services = serviceRows.length ? `<section class="totalCalculationServices"><strong class="totalCalculationHeading">Специальные услуги</strong>${rows(serviceRows)}<div class="totalCalculationRow totalCalculationPayment"><span>Заплатить сейчас</span><i></i><strong>${money(payment)}</strong></div></section>` : '';
     sheet('Итого', `<div class="totalCalculation" style="height:${sheetHeight}px"><strong class="totalCalculationTitle" aria-hidden="true">Итого</strong><div class="totalCalculationBody"><section class="totalCalculationReceipt"><div class="totalCalculationRow totalCalculationPrice"><span>Ваша цена</span><i></i><strong>${money(basePrice)}</strong></div>${rows(adjustmentRows)}<div class="totalCalculationRow totalCalculationResult"><span>Получите за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></section>${services}</div><button class="totalSheetButton" data-action="${needsPayment ? 'complete' : 'close'}">${needsPayment ? `Оплатить ${money(payment)}` : 'Готово'}</button></div>`);

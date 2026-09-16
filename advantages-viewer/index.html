@@ -8,9 +8,9 @@
   <title>Промо-стрим 2026 — все преимущества</title>
   <link rel="icon" type="image/png" href="assets/icon-eye.png">
   <style>[hidden]{display:none!important}html,body{margin:0}#assetGate{position:fixed;inset:0;z-index:100;background:white;display:grid;place-items:center}</style>
-  <link rel="stylesheet" href="style.css?v=75">
-  <link rel="stylesheet" href="alternative.css?v=75">
-  <link rel="stylesheet" href="viewer.css?v=75">
+  <link rel="stylesheet" href="style.css?v=77">
+  <link rel="stylesheet" href="alternative.css?v=77">
+  <link rel="stylesheet" href="viewer.css?v=77">
   <link rel="preload" as="image" href="assets/product-boots.png">
 </head>
 <body>
@@ -42,6 +42,7 @@
             <header class="header" id="header">
               <nav class="nav">
                 <button class="back" aria-label="Назад" data-action="back"><img src="assets/icon-back.png" alt=""></button>
+                <button class="save" data-action="save-exit">Сохранить и выйти</button>
               </nav>
               <div class="compactWrap" aria-hidden="true"><div class="compactProduct" data-product-preview="compact"></div></div>
             </header>
@@ -49,7 +50,7 @@
               <section class="recommendationIntro">
                 <div class="recommendationProduct" data-product-preview="full"></div>
                 <div class="recommendationHeading">
-                  <h1>А ещё можно привлечь<br>покупателей</h1>
+                  <h1>Привлеките покупателей</h1>
                   <p>Преимущества помогут выделить ваш товар<br>среди других и продать быстрее</p>
                 </div>
               </section>
@@ -70,7 +71,7 @@
               <button class="recommendationTotals" data-sheet="total" aria-label="Показать детализацию итогов">
                 <span class="totalRows">
                   <span class="totalRow" data-services-row hidden><span data-services-label>Платные услуги</span><span class="dots"></span><strong data-payment>0 ₽</strong></span>
-                  <span class="totalRow"><span>Вы получите за товар</span><span class="dots"></span><strong data-payout aria-live="polite">4 900 ₽</strong></span>
+                  <span class="totalRow"><span data-payout-label>Вы получите за товар</span><span class="dots"></span><strong data-payout aria-live="polite">4 850 ₽</strong></span>
                 </span>
                 <span class="totalDetails"><img src="assets/icon-chevron.png" alt=""></span>
               </button>
@@ -81,7 +82,7 @@
             <div class="scrim" data-action="close"></div>
             <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1">
               <div class="handle"></div>
-              <button class="close" aria-label="Закрыть" data-action="close">×</button>
+              <button class="close" aria-label="Закрыть" data-action="close"><img src="assets/sheets/close.svg" alt=""></button>
               <div id="sheetContent"></div>
             </section>
           </div>
@@ -91,6 +92,6 @@
       </div>
     </div>
   </div>
-  <script src="preload.js?v=75"></script>
+  <script src="preload.js?v=77"></script>
 </body>
 </html>

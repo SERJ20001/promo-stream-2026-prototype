@@ -138,7 +138,10 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .deliveryBadge img[src$="-on.png"] { width: 129px; }
 .quantityBadge img[src$="-on.png"] { width: 33px; }
 .toggle { display: flex; align-items: center; justify-content: center; position: relative; flex: 0 0 40px; width: 40px; height: 40px; padding: 0; border: 0; background: transparent; }
-.toggle img { width: 40px; height: 21px; }
+.toggle span { position: relative; display: block; width: 40px; height: 21px; border-radius: 999px; background: #dedede; transition: background 180ms ease; }
+.toggle span::after { content: ''; position: absolute; top: 2.5px; left: 2.5px; width: 16px; height: 16px; border-radius: 50%; background: white; box-shadow: 0 1px 3px #0002; transition: transform 180ms ease; }
+.toggle.toggleEnabled span { background: #141414; }
+.toggle.toggleEnabled span::after { transform: translateX(19px); }
 .help { display: grid; place-items: center; width: 20px; height: 20px; }
 .help img { width: 20px; height: 20px; }
 .visibility > img:first-child { width: 14px; height: 16px; }
@@ -227,7 +230,7 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .sheetDoneHotspot { position: absolute; bottom: 0; left: 0; width: 100%; border: 0; padding: 0; background: transparent; }
 .sheetDoneHotspot:focus-visible { outline: 2px solid #141414; outline-offset: -4px; }
 
-.fixedFooterSheet { display: flex; height: min(var(--sheet-height), 92%); max-height: 92%; overflow: hidden; flex-direction: column; }
+.fixedFooterSheet { display: flex; height: min(var(--sheet-height), 100%); max-height: 100%; overflow: hidden; flex-direction: column; }
 .fixedFooterSheet .close { position: absolute; top: 6px; right: 6px; float: none; margin: 0; }
 .fixedFooterSheet #sheetContent { display: flex; flex: 1; min-height: 0; }
 .fixedSheetLayout { display: flex; width: 100%; min-height: 0; flex: 1; flex-direction: column; }
@@ -237,12 +240,22 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .fixedSheetCanvas { margin: 0; clip-path: none; }
 .fixedSheetFooter { position: relative; z-index: 3; width: 100%; flex: none; overflow: hidden; background: white; box-shadow: 0 -6px 24px rgb(0 0 0 / 8%); }
 .fixedSheetFooterSource { position: absolute; top: 0; left: 0; margin: 0; clip-path: none; }
+.fixedSheetFooterSource { pointer-events: none; }
 
 .sheetValuePatch { position: absolute; display: flex; align-items: center; background: white; font-family: 'Avito Text', sans-serif; font-size: 16px; line-height: 20px; pointer-events: none; }
 .fieldPatch { background: #f2f1f0; }
 .chipsPatch { gap: 8px; background: white; overflow: hidden; }
 .sheetChoice { display: flex; align-items: center; justify-content: center; height: 36px; padding: 0 16px; border-radius: 12px; background: #f2f1f0; color: #141414; white-space: nowrap; font-size: 14px; flex-shrink: 0; }
 .sheetChoice.selected { background: #141414; color: white; }
+.sheetChoice { border: 0; font-family: inherit; }
+.sheetSelectionLayer { display: contents; }
+.sheetSelectionLayer[data-interactive='true'] .sheetValuePatch { pointer-events: auto; }
+.editableFieldPatch { gap: 4px; }
+.editableFieldPatch input[type='number'] { min-width: 0; flex: 1; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; color: #141414; font: inherit; appearance: textfield; }
+.editableFieldPatch input[type='number']::-webkit-inner-spin-button, .editableFieldPatch input[type='number']::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.editableFieldPatch > span { flex: 0 0 auto; }
+.editableFieldPatch > button { flex: 0 0 36px; height: 36px; margin-left: auto; padding: 0; border: 0; background: transparent; font-size: 28px; font-weight: 300; line-height: 32px; }
+.sheetRange { width: 100%; height: 18px; margin: 0; accent-color: #141414; cursor: pointer; }
 .countPatch { align-items: center; }
 .previewPricePatch { font-weight: 700; font-size: 16px; white-space: nowrap; }
 .sliderPatch { background: linear-gradient(#f2f1f0 50%, white 50%); }
@@ -251,6 +264,7 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .sheetSliderTrack i { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; border-radius: 50%; background: #141414; }
 
 .introFlow { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; background: white; }
+.introFlow[data-step='14'], .introFlow[data-step='14'] .introViewport { overflow: hidden; }
 .introFlow[hidden], #screen[hidden] { display: none; }
 .introCanvas { position: relative; width: 100%; }
 .introCanvas > img { display: block; width: 100%; height: auto; }
