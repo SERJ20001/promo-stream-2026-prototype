@@ -341,7 +341,7 @@ $('.sheet').addEventListener('scroll', event => {
 }, { passive: true });
 $('#scroll').addEventListener('scroll', () => {
   const scrollTop = $('#scroll').scrollTop;
-  const compact = scrollTop > 205;
+  const compact = scrollTop >= 80;
   $('#header').classList.toggle('headerScrolled', scrollTop > 0);
   $('#screen').classList.toggle('headerIsScrolled', scrollTop > 0);
   $('#header').classList.toggle('headerCompact', compact); $('#screen').classList.toggle('headerIsCompact', compact); $('.compactWrap').setAttribute('aria-hidden', String(!compact)); $('.compactWrap').inert = !compact;
