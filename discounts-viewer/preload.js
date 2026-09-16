@@ -24,6 +24,7 @@
   const progress = document.querySelector('#assetGateProgress');
   const status = document.querySelector('#assetGateStatus');
   const retry = document.querySelector('#assetGateRetry');
+  const localFile = location.protocol === 'file:';
   let running = false;
   let retrying = false;
   let scriptFailed = false;
@@ -39,6 +40,7 @@
   }
 
   async function fetchResource(path) {
+    if (localFile) return path;
     const controller = new AbortController();
     return timed((async () => {
       const response = await fetch(path, { signal: controller.signal, cache: retrying ? 'reload' : 'default' });
@@ -137,10 +139,13 @@
       document.body.dataset.assets = 'ready';
       document.dispatchEvent(new Event('promo:assets-ready'));
       return true;
-    } catch {
+    } catch (error) {
+      window.__prototypeAssetError = error instanceof Error ? error.message : String(error);
       document.body.dataset.assets = 'error';
       document.querySelector('.assetGateTitle').textContent = 'Не удалось загрузить прототип';
-      status.textContent = 'Проверьте соединение и повторите загрузку.';
+      status.textContent = localFile
+        ? 'Проверьте, что папка прототипа распакована полностью.'
+        : 'Проверьте соединение и повторите загрузку.';
       retry.hidden = false;
       retry.focus();
       return false;
