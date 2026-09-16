@@ -5,7 +5,7 @@ const recommendationCards = {
     { title: 'Выделение цены цветом', icon: '1000-57673', toggle: 'highlight', description: 'Привлечёт внимание к цене объявления. Ваше конкурентное преимущество', button: '7 дней · 100 ₽' }
   ],
   discounts: [
-    { title: 'Хватамба', icon: '1000-57689', iconVersion: '2', toggle: 'hvatamba', description: 'Покажем красную скидку и старую цену<br>12 авг – 20 сен · ещё 7 дней', button: 'Скидка <span data-percent="hvatamba">20</span>%', sheet: 'hvatamba', price: 'hvatambaPrice' },
+    { title: 'Хватамба', icon: '1000-57689', toggle: 'hvatamba', description: 'Покажем красную скидку и старую цену<br>12 авг – 20 сен · ещё 7 дней', button: 'Скидка <span data-percent="hvatamba">20</span>%', sheet: 'hvatamba', price: 'hvatambaPrice' },
     { title: 'Скидка на доставку', icon: '1000-57711', toggle: 'delivery', description: 'До 2,5 раз больше шансов на продажу. Привлеките покупателей из регионов', button: '<span id="deliveryValue">350 ₽</span>', sheet: 'delivery' },
     { title: 'Скидка за количество', icon: '1000-57723', toggle: 'quantity', description: 'Выгодно купить сразу несколько товаров. Увеличивает средний чек', button: '<span id="quantityValue">10% от 3 товаров</span>', sheet: 'quantity' },
   ],
@@ -24,8 +24,8 @@ document.querySelectorAll('[data-card-group]').forEach(group => {
       : card.sheet
         ? `<button class="pill" data-sheet="${card.sheet}">${card.button}<img class="chevron" src="assets/icon-chevron.png" alt=""></button>`
         : `<span class="pill fixedPill">${card.button}</span>`;
-    const iconUrl = `assets/alternative/${card.icon}.svg${card.iconVersion ? `?v=${card.iconVersion}` : ''}`;
-    return `<article class="recommendationCard"><div class="cardHeading"><span class="cardIcon cardIcon-${card.icon}"><img src="${iconUrl}" alt=""></span><strong>${card.title}</strong>${toggle}</div><p class="description">${card.description}</p>${button}${card.price ? `<span id="${card.price}" hidden></span>` : ''}</article>`;
+    const iconUrl = `assets/alternative/${card.icon}.png?v=3`;
+    return `<article class="recommendationCard"><div class="cardHeading"><span class="cardIcon cardIcon-${card.icon}"><img src="${iconUrl}" width="28" height="28" alt=""></span><strong>${card.title}</strong>${toggle}</div><p class="description">${card.description}</p>${button}${card.price ? `<span id="${card.price}" hidden></span>` : ''}</article>`;
   }).join('');
 });
 

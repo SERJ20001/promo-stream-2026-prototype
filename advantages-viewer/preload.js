@@ -12,8 +12,8 @@
   ].map(name => `assets/sheets/${name}`)).concat([
     'sheet-attractiveness-v42.png'
   ].map(name => `assets/recommendations/${name}`)).concat([
-    '1000-57649.svg', '1000-57661.svg', '1000-57673.svg', '1000-57689.svg?v=2', '1000-57711.svg',
-    '1000-57723.svg', '1000-57736.svg', '1000-57748.svg', '1000-57760.svg'
+    '1000-57649.png?v=3', '1000-57661.png?v=3', '1000-57673.png?v=3', '1000-57689.png?v=3', '1000-57711.png?v=3',
+    '1000-57723.png?v=3', '1000-57736.png?v=3', '1000-57748.png?v=3', '1000-57760.png?v=3'
   ].map(name => `assets/alternative/${name}`)).concat([0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14].map(index => {
     const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
     return `assets/intro/flow-${index}${versions[index] || ''}.png`;
@@ -23,8 +23,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=89', 'alternative.css?v=93', 'viewer.css?v=89'];
-  const scripts = ['viewer.js?v=84', 'recommendation-model.js?v=84', 'recommendations.js?v=93', 'app.js?v=89', 'intro.js?v=84', 'confetti.js?v=84', 'heart-balloon.js?v=84'];
+  const styles = ['style.css?v=89', 'alternative.css?v=94', 'viewer.css?v=89'];
+  const scripts = ['viewer.js?v=84', 'recommendation-model.js?v=84', 'recommendations.js?v=94', 'app.js?v=89', 'intro.js?v=84', 'confetti.js?v=84', 'heart-balloon.js?v=84'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();

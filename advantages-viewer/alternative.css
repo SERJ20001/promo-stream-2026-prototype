@@ -39,10 +39,7 @@
 .recommendationCard .cardHeading { position: relative; font-size: 15px; line-height: 20px; }
 .recommendationCard .cardHeading strong { margin-left: 0; letter-spacing: -0.15px; }
 .cardIcon { display: grid; width: 28px; height: 28px; flex: 0 0 28px; place-items: center; border-radius: 50%; }
-.cardIcon img { display: block; width: 28px; height: 28px; }
-.cardIcon-1000-57711, .cardIcon-1000-57748 { background: #00d66f; }
-.cardIcon-1000-57723, .cardIcon-1000-57736, .cardIcon-1000-57760 { background: #9654f5; }
-.cardIcon-1000-57711 img, .cardIcon-1000-57723 img, .cardIcon-1000-57736 img, .cardIcon-1000-57748 img, .cardIcon-1000-57760 img { width: 16px; height: 16px; object-fit: contain; image-rendering: auto; }
+.cardIcon img { display: block; width: 28px; height: 28px; object-fit: contain; image-rendering: auto; }
 .recommendationCard .toggle { position: absolute; right: 0; top: -7.5px; }
 .recommendationCard .description { height: 40px; margin: 8px 4px 12px; font-size: 15px; line-height: 20px; }
 .recommendationCard .pill { margin-left: 4px; background: white; padding: 8px 14px; gap: 2px; height: 36px; }
