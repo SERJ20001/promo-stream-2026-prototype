@@ -29,36 +29,23 @@ document.querySelectorAll('[data-card-group]').forEach(group => {
 });
 
 document.querySelectorAll('[data-product-preview]').forEach(preview => {
-  preview.innerHTML = `<div class="scorePhoto"><svg class="scoreVector" viewBox="0 0 100 100" aria-hidden="true"><rect class="scoreVectorBase" x="0.892857" y="0.892857" width="98.2143" height="98.2143" rx="18.75" pathLength="100"></rect><rect class="scoreVectorProgress" x="0.892857" y="0.892857" width="98.2143" height="98.2143" rx="18.75" pathLength="100"></rect></svg><img class="scoreProduct" src="assets/product-boots.png" alt="Ботинки Hermes"><object class="scoreHeart" data="assets/recommendations/score-heart.svg" type="image/svg+xml" tabindex="-1" aria-hidden="true"></object></div><div class="productInfo"><div class="price"><strong data-price>5 000 ₽</strong><del data-old aria-label="5 000 ₽"><img class="oldPriceImage" src="assets/old-price-header.png" alt="5 000 ₽"></del></div>${preview.dataset.productPreview === 'full' ? '<div class="productName">Ботинки Hermes</div><div class="productCondition">Новое, 44 размер</div>' : ''}<button class="scoreButton" data-sheet="attractiveness">Привлекательность <span data-score>0%</span></button></div>`;
+  preview.innerHTML = `<div class="scorePhoto"><svg class="attractivenessMeter" viewBox="0 0 100 100" aria-hidden="true"><path class="attractivenessTrack" d="M50 99.107 H19.643 A18.75 18.75 0 0 1 .893 80.357 V19.643 A18.75 18.75 0 0 1 19.643 .893 H80.357 A18.75 18.75 0 0 1 99.107 19.643 V80.357 A18.75 18.75 0 0 1 80.357 99.107 H50" pathLength="100"></path><path class="attractivenessProgress" d="M50 99.107 H19.643 A18.75 18.75 0 0 1 .893 80.357 V19.643 A18.75 18.75 0 0 1 19.643 .893 H80.357 A18.75 18.75 0 0 1 99.107 19.643 V80.357 A18.75 18.75 0 0 1 80.357 99.107 H50" pathLength="100"></path></svg><img class="scoreProduct" src="assets/product-boots.png" alt="Ботинки Hermes"><svg class="attractivenessHeart" viewBox="0 0 16 15" aria-hidden="true"><path d="M7.95703 1.78125C9.71224 0.583458 12.1231 0.764064 13.6797 2.32422H13.6807C15.44 4.08816 15.4391 6.94608 13.6797 8.70996L13.6807 8.71094L8.69629 13.7061C8.5088 13.8939 8.25467 13.9999 7.98926 14C7.72367 14 7.46885 13.8941 7.28125 13.7061L2.31836 8.73145C2.31199 8.72506 2.30695 8.71746 2.30078 8.71094C0.562482 6.95213 0.56717 4.11583 2.31543 2.36328L2.48242 2.20312C4.01629 0.813935 6.27588 0.673894 7.95703 1.78125Z"></path></svg></div><div class="productInfo"><div class="price"><strong data-price>5 000 ₽</strong><del data-old aria-label="5 000 ₽"><img class="oldPriceImage" src="assets/old-price-header.png" alt="5 000 ₽"></del></div>${preview.dataset.productPreview === 'full' ? '<div class="productName">Ботинки Hermes</div><div class="productCondition">Новое, 44 размер</div>' : ''}<button class="scoreButton" data-sheet="attractiveness">Привлекательность <span data-score>0%</span></button></div>`;
 });
 
 const photoFiles = new Map();
 
-function withSvg(object, callback) {
-  const apply = () => {
-    const svg = object.contentDocument?.documentElement;
-    if (svg) callback(svg);
-  };
-  if (object.contentDocument?.documentElement) apply();
-  else object.addEventListener('load', apply, { once: true });
-}
-
-function renderScoreVector(svg, percent, color) {
-  const progress = svg.querySelector('.scoreVectorProgress');
-  if (!progress) return;
-  progress.style.transition = reducedMotion.matches ? 'none' : 'stroke-dasharray 450ms ease, stroke 450ms ease';
+function renderAttractivenessMeter(meter, percent, color) {
+  const progress = meter.querySelector('.attractivenessProgress');
+  const heart = meter.parentElement.querySelector('.attractivenessHeart');
+  const transition = reducedMotion.matches ? 'none' : 'stroke-dasharray 450ms ease, stroke 450ms ease';
+  progress.style.transition = transition;
   progress.style.stroke = color;
   progress.style.strokeDasharray = `${percent} ${100 - percent}`;
-  svg.style.opacity = '1';
-}
-
-function renderScoreHeart(object, color) {
-  withSvg(object, svg => {
-    const heart = svg.querySelector('path');
-    if (!heart) return;
-    heart.setAttribute('fill', color);
-    object.style.opacity = '1';
-  });
+  heart.style.transition = reducedMotion.matches ? 'none' : 'fill 450ms ease';
+  heart.style.fill = color;
+  meter.dataset.progress = String(percent);
+  meter.style.opacity = '1';
+  heart.style.opacity = '1';
 }
 
 function renderRecommendations() {
@@ -66,8 +53,7 @@ function renderRecommendations() {
   const colors = attractivenessColors(score);
   document.querySelectorAll('[data-product-preview]').forEach(node => { node.style.setProperty('--score-color', colors.text); node.style.setProperty('--score-ring-color', colors.ring); });
   document.querySelectorAll('[data-score]').forEach(node => { node.textContent = `${score}%`; });
-  document.querySelectorAll('.scoreVector').forEach(object => renderScoreVector(object, score, colors.ring));
-  document.querySelectorAll('.scoreHeart').forEach(object => renderScoreHeart(object, colors.ring));
+  document.querySelectorAll('.attractivenessMeter').forEach(meter => renderAttractivenessMeter(meter, score, colors.ring));
   document.querySelectorAll('.scoreButton').forEach(button => button.setAttribute('aria-label', `Привлекательность ${score}%. Как рассчитывается показатель`));
   document.querySelectorAll('[data-payment]').forEach(node => { node.textContent = money(paidServicesTotal(state)); });
   const hasPaidServices = paidServicesTotal(state) > 0;
