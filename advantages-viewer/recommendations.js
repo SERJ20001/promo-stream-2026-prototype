@@ -29,7 +29,7 @@ document.querySelectorAll('[data-card-group]').forEach(group => {
 });
 
 document.querySelectorAll('[data-product-preview]').forEach(preview => {
-  preview.innerHTML = `<div class="scorePhoto"><object class="scoreVector" data="assets/recommendations/score-outline.svg" type="image/svg+xml" tabindex="-1" aria-hidden="true"></object><img class="scoreProduct" src="assets/product-boots.png" alt="Ботинки Hermes"><object class="scoreHeart" data="assets/recommendations/score-heart.svg" type="image/svg+xml" tabindex="-1" aria-hidden="true"></object></div><div class="productInfo"><div class="price"><strong data-price>5 000 ₽</strong><del data-old aria-label="5 000 ₽"><img class="oldPriceImage" src="assets/old-price-header.png" alt="5 000 ₽"></del></div>${preview.dataset.productPreview === 'full' ? '<div class="productName">Ботинки Hermes</div><div class="productCondition">Новое, 44 размер</div>' : ''}<button class="scoreButton" data-sheet="attractiveness">Привлекательность <span data-score>0%</span></button></div>`;
+  preview.innerHTML = `<div class="scorePhoto"><svg class="scoreVector" viewBox="0 0 100 100" aria-hidden="true"><rect class="scoreVectorBase" x="0.892857" y="0.892857" width="98.2143" height="98.2143" rx="18.75" pathLength="100"></rect><rect class="scoreVectorProgress" x="0.892857" y="0.892857" width="98.2143" height="98.2143" rx="18.75" pathLength="100"></rect></svg><img class="scoreProduct" src="assets/product-boots.png" alt="Ботинки Hermes"><object class="scoreHeart" data="assets/recommendations/score-heart.svg" type="image/svg+xml" tabindex="-1" aria-hidden="true"></object></div><div class="productInfo"><div class="price"><strong data-price>5 000 ₽</strong><del data-old aria-label="5 000 ₽"><img class="oldPriceImage" src="assets/old-price-header.png" alt="5 000 ₽"></del></div>${preview.dataset.productPreview === 'full' ? '<div class="productName">Ботинки Hermes</div><div class="productCondition">Новое, 44 размер</div>' : ''}<button class="scoreButton" data-sheet="attractiveness">Привлекательность <span data-score>0%</span></button></div>`;
 });
 
 const photoFiles = new Map();
@@ -43,26 +43,13 @@ function withSvg(object, callback) {
   else object.addEventListener('load', apply, { once: true });
 }
 
-function renderScoreVector(object, percent, color) {
-  withSvg(object, svg => {
-    const base = svg.querySelector('rect');
-    if (!base) return;
-    base.setAttribute('fill', 'none');
-    base.setAttribute('stroke', '#e6e6e6');
-    base.setAttribute('stroke-linecap', 'round');
-    let progress = svg.querySelector('[data-score-progress]');
-    if (!progress) {
-      progress = base.cloneNode();
-      progress.dataset.scoreProgress = '';
-      progress.style.transition = reducedMotion.matches ? 'none' : 'stroke-dasharray 450ms ease, stroke 450ms ease';
-      svg.append(progress);
-    }
-    const length = progress.getTotalLength();
-    progress.setAttribute('stroke', color);
-    progress.setAttribute('stroke-dasharray', `${length * percent / 100} ${length}`);
-    progress.setAttribute('stroke-dashoffset', String(-length * 0.6));
-    object.style.opacity = '1';
-  });
+function renderScoreVector(svg, percent, color) {
+  const progress = svg.querySelector('.scoreVectorProgress');
+  if (!progress) return;
+  progress.style.transition = reducedMotion.matches ? 'none' : 'stroke-dasharray 450ms ease, stroke 450ms ease';
+  progress.setAttribute('stroke', color);
+  progress.setAttribute('stroke-dasharray', `${percent} ${100 - percent}`);
+  svg.style.opacity = '1';
 }
 
 function renderScoreHeart(object, color) {
@@ -103,15 +90,10 @@ function renderRecommendations() {
 
 function recommendationSheet(name) {
   if (name === 'attractiveness') {
-    const scoreRow = (copy, visual, tall = false) => `<div class="scoreExplanationRow ${tall ? 'scoreExplanationRowTall' : ''}"><span>${copy}</span>${visual}</div>`;
-    const ring = (asset, label) => `<img class="scoreExplanationRing" src="assets/sheets/${asset}" alt="${label}">`;
-    const icon = (className, asset, label) => `<span class="scoreExplanationIcon ${className}"><img src="assets/sheets/${asset}" alt="${label}"></span>`;
-    const iconGroup = (...icons) => `<span class="scoreExplanationIcons">${icons.join('')}</span>`;
-    const body = `<div class="codedSheet codedSheetScrollable scoreCodedSheet" data-coded-sheet="attractiveness"><div class="codedSheetScroll"><div class="codedStickyTitle codedStickyTitleMultiline"><h3>Как мы оцениваем<br>привлекательность?</h3></div><div class="scoreExplanationSections"><section><h4>Позиция товара</h4>${scoreRow('Составляет 50% привлекательности', ring('score-ring-50.png', '50%'))}${scoreRow('Помогает продвижение, XL<br>размер и выделение цены', '<img class="scorePosition" src="assets/sheets/score-position.png" alt="Продвижение, XL и выделение цены">', true)}<p class="scoreExplanationMuted">Чем выше товар в поиске и больше его<br>размер, тем больше его замечают</p></section><section><h4>Выгода на товар</h4>${scoreRow('Составляет 25% привлекательности', ring('score-ring-25-benefit.png', '25%'))}${scoreRow('Помогает участие в Хватамбе,<br>скидка на доставку', iconGroup(icon('scoreExplanationPurple', 'score-hvatamba.svg', 'Хватамба'), icon('scoreExplanationGreen', 'delivery.svg', 'Доставка')), true)}<p class="scoreExplanationMuted">Чем выгоднее цена и условия доставки,<br>тем привлекательнее товар</p></section><section><h4>Контент и условия</h4>${scoreRow('Составляет 25% привлекательности', ring('score-ring-25-content.png', '25%'))}${scoreRow('Добавьте больше фото и видео<br>а так же усильте описание', iconGroup(icon('scoreExplanationPurple', 'camera.svg', 'Фото'), icon('scoreExplanationGreen', 'video.svg', 'Видео')), true)}<p class="scoreExplanationMuted">Качественный контент помогает<br>покупателям лучше понять товар</p></section></div></div></div>`;
+    const body = '<div class="figmaSheetCanvas attractivenessSheetCanvas"><img class="figmaSheetImage" src="assets/recommendations/sheet-attractiveness-v42.png" width="1125" height="2859" alt="Как мы оцениваем привлекательность"></div>';
     sheet('Как мы оцениваем привлекательность?', body);
-    document.querySelector('.sheet').style.setProperty('--sheet-height', '953px');
-    document.querySelector('.sheet').classList.add('codedSheetShell', 'staticSheet', 'scoreSheet', 'sheetCloseAlwaysVisible');
-    document.querySelector('.codedSheetScroll').scrollTop = 0;
+    document.querySelector('.sheet').classList.add('figmaSheet', 'staticSheet', 'scoreImageSheet');
+    document.querySelector('.sheet').scrollTop = 0;
     return true;
   }
   if (name === 'total') {

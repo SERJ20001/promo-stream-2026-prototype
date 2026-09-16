@@ -15,7 +15,10 @@
 .productCondition { font-size: 15px; line-height: 20px; white-space: nowrap; }
 .scorePhoto { position: relative; width: 100px; height: 100px; flex: 0 0 100px; border-radius: 20px; background: transparent; }
 .scoreProduct { position: absolute; inset: 2.68%; width: 94.64%; height: 94.64%; border-radius: 18px; object-fit: cover; }
-.scoreVector { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.scoreVector { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; overflow: visible; pointer-events: none; }
+.scoreVector rect { fill: none; stroke-width: 1.8; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.scoreVectorBase { stroke: #e6e6e6; }
+.scoreVectorProgress { stroke-dasharray: 10 90; stroke-dashoffset: -60; }
 .scoreHeart { position: absolute; width: 16px; height: 15px; left: calc(50% - 8px); top: calc(100% - 9px); overflow: visible; opacity: 0; pointer-events: none; }
 .compactProduct .scoreHeart { width: 12px; height: 11px; left: calc(50% - 6px); top: calc(100% - 6px); }
 .scoreButton { display: inline-flex; align-items: center; gap: 3px; background: transparent; border: 0; padding: 0; height: 20px; margin-top: 8px; color: #00aaff; font-size: 15px; line-height: 20px; white-space: nowrap; }
@@ -37,7 +40,7 @@
 .cardIcon img { display: block; width: 28px; height: 28px; }
 .cardIcon-1000-57711, .cardIcon-1000-57748 { background: #00d66f; }
 .cardIcon-1000-57723, .cardIcon-1000-57736, .cardIcon-1000-57760 { background: #9654f5; }
-.cardIcon-1000-57711 img, .cardIcon-1000-57723 img, .cardIcon-1000-57736 img, .cardIcon-1000-57748 img, .cardIcon-1000-57760 img { width: 16px; height: 16px; }
+.cardIcon-1000-57711 img, .cardIcon-1000-57723 img, .cardIcon-1000-57736 img, .cardIcon-1000-57748 img, .cardIcon-1000-57760 img { width: 16px; height: 16px; object-fit: contain; image-rendering: auto; }
 .recommendationCard .toggle { position: absolute; right: 0; top: -7.5px; }
 .recommendationCard .description { height: 40px; margin: 8px 4px 12px; font-size: 15px; line-height: 20px; }
 .recommendationCard .pill { margin-left: 4px; background: white; padding: 8px 14px; gap: 2px; height: 36px; }
@@ -61,6 +64,8 @@
 .compactProduct .scoreButton { margin-top: 4px; }
 .scoreSheet:not(.figmaSheet) .close { position: sticky; float: right; margin-right: 4px; margin-bottom: -44px; top: 10px; opacity: 1; background: white; font-size: 30px; }
 .figmaSheet.sheetCloseAlwaysVisible .close { opacity: 1; }
+.scoreImageSheet { height: min(953px, 100%); max-height: 100%; overflow-y: auto; }
+.scoreImageSheet .close { pointer-events: auto; }
 @media (max-width: 374px) {
   .recommendationCard { flex-basis: calc(100vw - 36px); height: auto; min-height: 170px; }
   .recommendationCard .description { height: auto; min-height: 60px; }
@@ -136,17 +141,18 @@
 .codedSheetCopy h4 { margin: 20px 0 12px; font: 700 16px/20px 'Avito Text', sans-serif; }
 .codedSheetCopy p { margin: 0 0 14px; font-size: 15px; line-height: 22px; }
 .inlineLink { border: 0; padding: 0; background: transparent; color: #00aaff; font: inherit; }
-.codedInput { display: grid; height: 52px; grid-template-columns: max-content minmax(0, 1fr) 34px; column-gap: 4px; align-items: center; margin-top: 12px; padding: 0 9px 0 16px; border-radius: 12px; background: #f2f1f0; }
-.codedInput input { width: auto; min-width: 0; field-sizing: content; border: 0; outline: 0; background: transparent; color: #141414; font: 15px/20px 'Avito Text', sans-serif; appearance: textfield; }
+.codedInput { display: grid; height: 52px; grid-template-columns: minmax(0, 1fr) 34px; column-gap: 4px; align-items: center; margin-top: 12px; padding: 0 9px 0 16px; border-radius: 12px; background: #f2f1f0; }
+.codedInputValue { display: flex; min-width: 0; align-items: center; gap: 4px; }
+.codedInput input { min-width: 0; padding: 0; border: 0; outline: 0; background: transparent; color: #141414; font: 15px/20px 'Avito Text', sans-serif; appearance: textfield; }
 .codedInput input::-webkit-inner-spin-button { appearance: none; }
-.codedInput > span { font: 400 15px/20px 'Avito Text', sans-serif; }
+.codedInputValue > span { font: 400 15px/20px 'Avito Text', sans-serif; }
 .codedInput button { display: grid; width: 34px; height: 40px; place-items: center; border: 0; padding: 0; background: transparent; }
 .codedInput button img { width: 16px; height: 16px; }
 [data-coded-sheet="hvatamba"] .codedInput { height: 44px; }
-[data-coded-sheet="hvatamba"] .codedInput input { width: 2ch; }
-[data-coded-sheet="delivery"] .codedInput input { width: 4ch; }
+[data-coded-sheet="hvatamba"] .codedInput input { width: 34px; flex: 0 0 34px; }
+[data-coded-sheet="delivery"] .codedInput input { width: 58px; flex: 0 0 58px; }
 [data-coded-sheet="hvatamba"] .codedInput input,
-[data-coded-sheet="hvatamba"] .codedInput > span { font: 15px/20px 'Avito Text', sans-serif; }
+[data-coded-sheet="hvatamba"] .codedInputValue > span { font: 15px/20px 'Avito Text', sans-serif; }
 [data-coded-sheet="delivery"] .codedSheetCopy h4 { margin-top: 16px; }
 .codedChoices { display: flex; gap: 8px; margin-top: 10px; }
 .codedChoicesScrollable { overflow-x: auto; scrollbar-width: none; }

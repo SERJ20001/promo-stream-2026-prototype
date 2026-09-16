@@ -197,7 +197,8 @@ document.addEventListener('promo:viewer-start', () => {
   const search = new URLSearchParams(location.search);
   const requestedScreen = search.get('screen');
   const requestedSheet = search.get('sheet');
-  if (requestedScreen === 'recommendations' || requestedSheet) {
+  const qaMode = search.get('qa') === '1';
+  if (qaMode && (requestedScreen === 'recommendations' || requestedSheet)) {
     showRecommendations();
     if (requestedSheet) openSheet(requestedSheet);
     return;
