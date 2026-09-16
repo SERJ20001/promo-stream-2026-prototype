@@ -12,7 +12,7 @@
   ].map(name => `assets/sheets/${name}`)).concat([
     'sheet-attractiveness-v42.png'
   ].map(name => `assets/recommendations/${name}`)).concat([
-    '1000-57649.svg', '1000-57661.svg', '1000-57673.svg', '1000-57689.svg', '1000-57711.svg',
+    '1000-57649.svg', '1000-57661.svg', '1000-57673.svg', '1000-57689.svg?v=2', '1000-57711.svg',
     '1000-57723.svg', '1000-57736.svg', '1000-57748.svg', '1000-57760.svg'
   ].map(name => `assets/alternative/${name}`)).concat([0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14].map(index => {
     const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
@@ -23,8 +23,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=83', 'alternative.css?v=83', 'viewer.css?v=83'];
-  const scripts = ['viewer.js?v=83', 'recommendation-model.js?v=83', 'recommendations.js?v=83', 'app.js?v=83', 'intro.js?v=83', 'confetti.js?v=83', 'heart-balloon.js?v=83'];
+  const styles = ['style.css?v=84', 'alternative.css?v=84', 'viewer.css?v=84'];
+  const scripts = ['viewer.js?v=84', 'recommendation-model.js?v=84', 'recommendations.js?v=86', 'app.js?v=84', 'intro.js?v=84', 'confetti.js?v=84', 'heart-balloon.js?v=84'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();
@@ -34,6 +34,7 @@
   let running = false;
   let retrying = false;
   let scriptFailed = false;
+  const usesLocalFiles = location.protocol === 'file:';
 
   function timed(promise, path, cleanup = () => {}) {
     let timer;
@@ -46,6 +47,7 @@
   }
 
   async function fetchResource(path) {
+    if (usesLocalFiles) return path;
     const controller = new AbortController();
     return timed((async () => {
       const response = await fetch(path, { signal: controller.signal, cache: retrying ? 'reload' : 'default' });
@@ -147,7 +149,9 @@
     } catch {
       document.body.dataset.assets = 'error';
       document.querySelector('.assetGateTitle').textContent = 'Не удалось загрузить прототип';
-      status.textContent = 'Проверьте соединение и повторите загрузку.';
+      status.textContent = usesLocalFiles
+        ? 'Не удалось прочитать файлы прототипа. Обновите страницу.'
+        : 'Проверьте соединение и повторите загрузку.';
       retry.hidden = false;
       retry.focus();
       return false;

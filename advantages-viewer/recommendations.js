@@ -5,7 +5,7 @@ const recommendationCards = {
     { title: 'Выделение цены цветом', icon: '1000-57673', toggle: 'highlight', description: 'Привлечёт внимание к цене объявления. Ваше конкурентное преимущество', button: '7 дней · 100 ₽' }
   ],
   discounts: [
-    { title: 'Хватамба', icon: '1000-57689', toggle: 'hvatamba', description: 'Покажем красную скидку и старую цену<br>12 авг – 20 сен · ещё 7 дней', button: 'Скидка <span data-percent="hvatamba">20</span>%', sheet: 'hvatamba', price: 'hvatambaPrice' },
+    { title: 'Хватамба', icon: '1000-57689', iconVersion: '2', toggle: 'hvatamba', description: 'Покажем красную скидку и старую цену<br>12 авг – 20 сен · ещё 7 дней', button: 'Скидка <span data-percent="hvatamba">20</span>%', sheet: 'hvatamba', price: 'hvatambaPrice' },
     { title: 'Скидка на доставку', icon: '1000-57711', toggle: 'delivery', description: 'До 2,5 раз больше шансов на продажу. Привлеките покупателей из регионов', button: '<span id="deliveryValue">350 ₽</span>', sheet: 'delivery' },
     { title: 'Скидка за количество', icon: '1000-57723', toggle: 'quantity', description: 'Выгодно купить сразу несколько товаров. Увеличивает средний чек', button: '<span id="quantityValue">10% от 3 товаров</span>', sheet: 'quantity' },
   ],
@@ -24,7 +24,8 @@ document.querySelectorAll('[data-card-group]').forEach(group => {
       : card.sheet
         ? `<button class="pill" data-sheet="${card.sheet}">${card.button}<img class="chevron" src="assets/icon-chevron.png" alt=""></button>`
         : `<span class="pill fixedPill">${card.button}</span>`;
-    return `<article class="recommendationCard"><div class="cardHeading"><span class="cardIcon cardIcon-${card.icon}"><img src="assets/alternative/${card.icon}.svg" alt=""></span><strong>${card.title}</strong>${toggle}</div><p class="description">${card.description}</p>${button}${card.price ? `<span id="${card.price}" hidden></span>` : ''}</article>`;
+    const iconUrl = `assets/alternative/${card.icon}.svg${card.iconVersion ? `?v=${card.iconVersion}` : ''}`;
+    return `<article class="recommendationCard"><div class="cardHeading"><span class="cardIcon cardIcon-${card.icon}"><img src="${iconUrl}" alt=""></span><strong>${card.title}</strong>${toggle}</div><p class="description">${card.description}</p>${button}${card.price ? `<span id="${card.price}" hidden></span>` : ''}</article>`;
   }).join('');
 });
 
@@ -33,11 +34,37 @@ document.querySelectorAll('[data-product-preview]').forEach(preview => {
 });
 
 const photoFiles = new Map();
+const attractivenessHeartAnimations = new WeakMap();
+const attractivenessGrowthDuration = 900;
+
+function stopAttractivenessHeartPulse(heart) {
+  attractivenessHeartAnimations.get(heart)?.cancel();
+  attractivenessHeartAnimations.delete(heart);
+}
+
+function pulseAttractivenessHeart(heart) {
+  stopAttractivenessHeartPulse(heart);
+  const animation = heart.animate([
+    { transform: 'scale(1)', offset: 0 },
+    { transform: 'scale(1.6)', offset: .45 },
+    { transform: 'scale(.98)', offset: .74 },
+    { transform: 'scale(1)', offset: 1 }
+  ], {
+    duration: attractivenessGrowthDuration,
+    easing: 'cubic-bezier(.2,.8,.2,1)'
+  });
+  attractivenessHeartAnimations.set(heart, animation);
+  animation.finished.finally(() => {
+    if (attractivenessHeartAnimations.get(heart) === animation) attractivenessHeartAnimations.delete(heart);
+  }).catch(() => {});
+}
 
 function renderAttractivenessMeter(meter, percent, color) {
   const progress = meter.querySelector('.attractivenessProgress');
   const heart = meter.parentElement.querySelector('.attractivenessHeart');
-  const transition = reducedMotion.matches ? 'none' : 'stroke-dasharray 450ms ease, stroke 450ms ease';
+  const previousPercent = Number(meter.dataset.progress);
+  const scoreIncreased = Number.isFinite(previousPercent) && percent > previousPercent;
+  const transition = reducedMotion.matches ? 'none' : `stroke-dasharray ${attractivenessGrowthDuration}ms cubic-bezier(.25,.1,.25,1), stroke 450ms ease`;
   progress.style.transition = transition;
   progress.style.stroke = color;
   progress.style.strokeDasharray = `${percent} ${100 - percent}`;
@@ -46,6 +73,8 @@ function renderAttractivenessMeter(meter, percent, color) {
   meter.dataset.progress = String(percent);
   meter.style.opacity = '1';
   heart.style.opacity = '1';
+  if (scoreIncreased && !reducedMotion.matches) pulseAttractivenessHeart(heart);
+  else stopAttractivenessHeartPulse(heart);
 }
 
 function renderRecommendations() {
