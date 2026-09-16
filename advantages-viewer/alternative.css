@@ -20,6 +20,7 @@
 .attractivenessTrack { stroke: #e6e6e6; }
 .attractivenessHeart { position: absolute; width: 16px; height: 15px; left: calc(50% - 8px); top: calc(100% - 9px); overflow: visible; opacity: 0; pointer-events: none; }
 .attractivenessHeart path { stroke: white; stroke-width: 2; stroke-linejoin: round; }
+.compactProduct .attractivenessMeter path { vector-effect: none; }
 .compactProduct .attractivenessHeart { width: 12px; height: 11px; left: calc(50% - 6px); top: calc(100% - 6px); }
 .scoreButton { display: inline-flex; align-items: center; gap: 3px; background: transparent; border: 0; padding: 0; height: 20px; margin-top: 8px; color: #00aaff; font-size: 15px; line-height: 20px; white-space: nowrap; }
 .scoreButton img { display: none; }
