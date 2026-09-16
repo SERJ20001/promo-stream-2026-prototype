@@ -47,8 +47,8 @@ function renderScoreVector(svg, percent, color) {
   const progress = svg.querySelector('.scoreVectorProgress');
   if (!progress) return;
   progress.style.transition = reducedMotion.matches ? 'none' : 'stroke-dasharray 450ms ease, stroke 450ms ease';
-  progress.setAttribute('stroke', color);
-  progress.setAttribute('stroke-dasharray', `${percent} ${100 - percent}`);
+  progress.style.stroke = color;
+  progress.style.strokeDasharray = `${percent} ${100 - percent}`;
   svg.style.opacity = '1';
 }
 

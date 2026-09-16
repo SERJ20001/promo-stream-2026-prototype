@@ -18,7 +18,7 @@
 .scoreVector { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; overflow: visible; pointer-events: none; }
 .scoreVector rect { fill: none; stroke-width: 1.8; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .scoreVectorBase { stroke: #e6e6e6; }
-.scoreVectorProgress { stroke-dasharray: 10 90; stroke-dashoffset: -60; }
+.scoreVectorProgress { stroke-dashoffset: -60; }
 .scoreHeart { position: absolute; width: 16px; height: 15px; left: calc(50% - 8px); top: calc(100% - 9px); overflow: visible; opacity: 0; pointer-events: none; }
 .compactProduct .scoreHeart { width: 12px; height: 11px; left: calc(50% - 6px); top: calc(100% - 6px); }
 .scoreButton { display: inline-flex; align-items: center; gap: 3px; background: transparent; border: 0; padding: 0; height: 20px; margin-top: 8px; color: #00aaff; font-size: 15px; line-height: 20px; white-space: nowrap; }
