@@ -22,7 +22,7 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
 .viewerStage[data-viewer='phone'] { display: grid; background: #fff; }
 .viewerStage[data-viewer='phone'] .viewerDevice, .viewerStage[data-viewer='phone'] .viewerDisplay { width: 100%; height: 100%; }
 .viewerStage[data-viewer='phone'] .phone { width: 100%; height: 100%; }
-.viewerStage[data-viewer='phone'] .sheet { max-height: calc(100% - max(16px, env(safe-area-inset-top))); }
+.viewerStage[data-viewer='phone'] .sheet { max-height: calc(100% - max(48px, env(safe-area-inset-top))); }
 .viewerStage[data-viewer='phone'] .attractivenessSheetCanvas::after,
 .viewerStage[data-viewer='phone'] .totalSheetCanvas::after,
 .viewerStage[data-viewer='phone'] .fixedSheetFooter::after { content: ''; position: absolute; inset: auto 0 0; z-index: 4; height: 34px; background: white; }

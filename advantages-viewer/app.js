@@ -162,7 +162,7 @@ function codedSheet(name) {
     return {
       title: 'Хватамба',
       height: 762,
-      body: `<div class="codedSheet" data-coded-sheet="hvatamba"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/hvatamba-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Хватамба</h3><p>Объявление станет заметнее — появится<br>значок «Скидка» и перечёркнутая цена.<br>Скидку проверим <button class="inlineLink" type="button">по правилам</button></p><label class="codedInput"><span class="codedInputValue"><input type="number" min="5" max="40" step="5" value="${hvatambaPercent}" data-sheet-input="hvatambaPercent" inputmode="numeric" aria-label="Размер скидки в процентах"><span>%</span></span><button type="button" data-sheet-clear="hvatambaPercent" aria-label="Сбросить размер скидки"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedChoices">${choiceButtons([5, 10, 20, 30, 40], hvatambaPercent, '%', 'hvatambaPercent')}</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(price, true)}<button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
+      body: `<div class="codedSheet" data-coded-sheet="hvatamba"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/hvatamba-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Хватамба</h3><p>Объявление станет заметнее — появится<br>значок «Скидка» и перечёркнутая цена.<br>Скидку проверим <button class="inlineLink" type="button">по правилам</button></p><label class="codedInput"><span class="codedInputValue"><input type="number" min="5" max="40" step="5" value="${hvatambaPercent}" style="--coded-input-size:${String(hvatambaPercent).length}ch" data-sheet-input="hvatambaPercent" inputmode="numeric" aria-label="Размер скидки в процентах"><span>%</span></span><button type="button" data-sheet-clear="hvatambaPercent" aria-label="Сбросить размер скидки"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedChoices">${choiceButtons([5, 10, 20, 30, 40], hvatambaPercent, '%', 'hvatambaPercent')}</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(price, true)}<button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
     };
   }
   if (name === 'delivery') {
@@ -170,7 +170,7 @@ function codedSheet(name) {
     return {
       title: 'Скидка на доставку',
       height: 762,
-      body: `<div class="codedSheet" data-coded-sheet="delivery"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/delivery-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Скидка на доставку</h3><p>Чем выше скидка, тем дешевле доставка<br>для покупателя</p><h4>Выберите сумму</h4><label class="codedInput"><span class="codedInputValue"><input type="number" min="50" max="1500" step="50" value="${deliveryAmount}" data-sheet-input="deliveryAmount" inputmode="numeric" aria-label="Скидка на доставку в рублях"><span>₽</span></span><button type="button" data-sheet-clear="deliveryAmount" aria-label="Сбросить скидку на доставку"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedRange"><input type="range" min="50" max="1500" step="50" value="${deliveryAmount}" data-sheet-input="deliveryAmount" aria-label="Скидка на доставку от 50 до 1500 рублей"><span>50</span><span>1 500</span></div><div class="codedHint"><strong>Оптимально — 200 ₽.</strong> Для 50% покупателей<br>доставка будет бесплатной, остальным скидка.</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(currentPrice(), state.hvatamba)}<button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
+      body: `<div class="codedSheet" data-coded-sheet="delivery"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/delivery-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Скидка на доставку</h3><p>Чем выше скидка, тем дешевле доставка<br>для покупателя</p><h4>Выберите сумму</h4><label class="codedInput"><span class="codedInputValue"><input type="number" min="50" max="1500" step="50" value="${deliveryAmount}" style="--coded-input-size:${String(deliveryAmount).length}ch" data-sheet-input="deliveryAmount" inputmode="numeric" aria-label="Скидка на доставку в рублях"><span>₽</span></span><button type="button" data-sheet-clear="deliveryAmount" aria-label="Сбросить скидку на доставку"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedRange"><input type="range" min="50" max="1500" step="50" value="${deliveryAmount}" data-sheet-input="deliveryAmount" aria-label="Скидка на доставку от 50 до 1500 рублей"><span>50</span><span>1 500</span></div><div class="codedHint"><strong>Оптимально — 200 ₽.</strong> Для 50% покупателей<br>доставка будет бесплатной, остальным скидка.</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(currentPrice(), state.hvatamba)}<button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
     };
   }
   if (name === 'quantity') {
@@ -221,7 +221,10 @@ function updateSheetValue(field, rawValue) {
 function refreshCodedSheetControls(field) {
   const value = sheetValue(field);
   all(`[data-sheet-choice="${field}"]`).forEach(button => button.classList.toggle('selected', Number(button.dataset.value) === value));
-  all(`[data-sheet-input="${field}"]`).forEach(input => { input.value = value; });
+  all(`[data-sheet-input="${field}"]`).forEach(input => {
+    input.value = value;
+    if (input.type === 'number') input.style.setProperty('--coded-input-size', `${String(value).length}ch`);
+  });
   if (field === 'hvatambaPercent') {
     const price = $('.sheetProductPrice strong');
     if (price) price.textContent = money(basePrice * (1 - value / 100));

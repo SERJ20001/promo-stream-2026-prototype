@@ -94,6 +94,7 @@ function renderRecommendations() {
   document.querySelector('.recommendationTotals').disabled = false;
   document.querySelector('.totalDetails').hidden = false;
   document.querySelector('.recommendationFooter').classList.toggle('withoutPaidServices', !hasPaidServices);
+  document.querySelector('#app').style.setProperty('--recommendation-footer-height', hasPaidServices ? '142px' : '114px');
   const needsPayment = hasPaidServices && !state.paidServicesPaid;
   document.querySelector('.continueButton').textContent = needsPayment ? `Оплатить ${money(paidServicesTotal(state))}` : 'Готово';
   document.querySelector('[data-photo-action]').textContent = state.photos ? 'Фото добавлены' : 'Загрузить';

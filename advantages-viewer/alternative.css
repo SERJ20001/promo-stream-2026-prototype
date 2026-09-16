@@ -1,14 +1,15 @@
 .recommendationsScreen { position: absolute; inset: 0; }
-.recommendationsScreen::before { content: ''; position: absolute; inset: 0 0 auto; z-index: 4; height: 52px; background: #fff; pointer-events: none; transition: height 240ms ease; }
-.recommendationsScreen.headerIsScrolled::before { height: 96px; }
-.recommendationsScreen.headerIsCompact::before { height: 109px; }
-.recommendationsScreen .header { position: absolute; inset: 0 0 auto; z-index: 5; overflow: hidden; background: transparent; }
-.recommendationsScreen .headerScrolled { height: 96px; background: #fff; }
-.recommendationsScreen .headerScrolled:not(.headerCompact)::after { content: ''; position: absolute; inset: 52px 0 0; z-index: 2; background: #fff; }
+.recommendationsScreen::before { content: ''; position: absolute; inset: 0 0 auto; z-index: 4; height: 0; background: #fff; pointer-events: none; transition: height 240ms ease; }
+.recommendationsScreen.headerIsScrolled::before { height: 0; }
+.recommendationsScreen.headerIsCompact::before { height: 60px; }
+.recommendationsScreen .header { position: absolute; inset: 0 0 auto; z-index: 5; height: 0; overflow: hidden; background: transparent; }
+.recommendationsScreen .nav { display: none; }
+.recommendationsScreen .headerScrolled { height: 0; background: transparent; }
+.recommendationsScreen .headerScrolled:not(.headerCompact)::after { display: none; }
 .recommendationsScreen .header:not(.headerCompact) .compactWrap { visibility: hidden; }
-.recommendationsScreen .scroll { padding: 54px 0 158px; inset: 0; overflow-x: hidden; }
-.recommendationsScreen.headerIsScrolled .scroll { clip-path: inset(96px 0 0); }
-.recommendationsScreen.headerIsCompact .scroll { clip-path: inset(109px 0 0); }
+.recommendationsScreen .scroll { padding: 20px 0 158px; inset: 0; overflow-x: hidden; }
+.recommendationsScreen.headerIsScrolled .scroll { clip-path: none; }
+.recommendationsScreen.headerIsCompact .scroll { clip-path: inset(60px 0 0); }
 .recommendationProduct { display: flex; gap: 12px; height: 127px; margin: 0 14px; padding: 13px 14px; border-radius: 28px; box-shadow: 0 4px 24px #0000001f, 0 1px 3px #0000000d; }
 .recommendationProduct .productInfo { padding-top: 1px; }
 .recommendationProduct .productName { margin-top: 2px; }
@@ -83,7 +84,7 @@
 .withoutPaidServices .totalDetails { height: 28px; }
 
 .scoreButton { color: var(--score-color, #000); transition: color 450ms ease; }
-.recommendationsScreen .headerCompact { height: 109px; }
+.recommendationsScreen .headerCompact { height: 60px; background: #fff; }
 .recommendationsScreen .compactProduct { padding: 1px 14px 10px; }
 .totalRow [data-services-label] { overflow: hidden; text-overflow: ellipsis; }
 .scoreExplanation section { background: #f2f1f0; border-radius: 20px; padding: 16px; margin: 12px 0; }
@@ -130,13 +131,15 @@
 .introCopy { align-items: flex-start; border-radius: 0; }
 
 .codedSheetShell { display: flex; height: min(var(--sheet-height), 100%); max-height: 100%; flex-direction: column; overflow: hidden; padding: 0; border-radius: 32px 32px 0 0; }
+.codedSheetShell, .scoreSheet, .scoreImageSheet, .fixedFooterSheet { max-height: calc(100% - 48px); }
 .codedSheetShell .handle { z-index: 8; }
 .codedSheetShell .close, .scoreSheet:not(.figmaSheet) .close { position: absolute; z-index: 9; top: 12px; right: 8px; float: none; width: 42px; height: 42px; margin: 0; padding: 12px; background: transparent; opacity: 1; }
 .codedSheetShell .close img { display: block; width: 18px; height: 18px; }
 .codedSheetShell #sheetContent { display: flex; width: 100%; min-height: 0; flex: 1; }
 .codedSheetShell #sheetTitle { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); }
 .codedSheet { display: flex; width: 100%; min-width: 0; min-height: 0; flex: 1; flex-direction: column; background: white; }
-.codedSheetMain { min-height: 0; flex: 1; overflow: hidden; }
+.codedSheetMain { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: none; }
+.codedSheetMain::-webkit-scrollbar { display: none; }
 .codedHero { display: block; width: 100%; height: 185px; object-fit: cover; }
 .codedSheetCopy { padding: 20px 16px 16px; }
 .codedSheetCopy h3 { margin: 0 0 4px; font: 700 26px/30px 'Avito Text', sans-serif; letter-spacing: 0; }
@@ -144,15 +147,15 @@
 .codedSheetCopy p { margin: 0 0 14px; font-size: 15px; line-height: 22px; }
 .inlineLink { border: 0; padding: 0; background: transparent; color: #00aaff; font: inherit; }
 .codedInput { display: grid; height: 52px; grid-template-columns: minmax(0, 1fr) 34px; column-gap: 4px; align-items: center; margin-top: 12px; padding: 0 9px 0 16px; border-radius: 12px; background: #f2f1f0; }
-.codedInputValue { display: flex; min-width: 0; align-items: center; gap: 4px; }
-.codedInput input { min-width: 0; padding: 0; border: 0; outline: 0; background: transparent; color: #141414; font: 15px/20px 'Avito Text', sans-serif; appearance: textfield; }
+.codedInputValue { display: flex; width: max-content; min-width: 0; align-items: center; gap: 2px; }
+.codedInput input { width: var(--coded-input-size, 3ch); min-width: 0; flex: 0 0 var(--coded-input-size, 3ch); padding: 0; border: 0; outline: 0; background: transparent; color: #141414; font: 15px/20px 'Avito Text', sans-serif; appearance: textfield; }
 .codedInput input::-webkit-inner-spin-button { appearance: none; }
 .codedInputValue > span { font: 400 15px/20px 'Avito Text', sans-serif; }
 .codedInput button { display: grid; width: 34px; height: 40px; place-items: center; border: 0; padding: 0; background: transparent; }
 .codedInput button img { width: 16px; height: 16px; }
 [data-coded-sheet="hvatamba"] .codedInput { height: 44px; }
-[data-coded-sheet="hvatamba"] .codedInput input { width: 34px; flex: 0 0 34px; }
-[data-coded-sheet="delivery"] .codedInput input { width: 58px; flex: 0 0 58px; }
+[data-coded-sheet="hvatamba"] .codedInput input,
+[data-coded-sheet="delivery"] .codedInput input { width: var(--coded-input-size); flex-basis: var(--coded-input-size); }
 [data-coded-sheet="hvatamba"] .codedInput input,
 [data-coded-sheet="hvatamba"] .codedInputValue > span { font: 15px/20px 'Avito Text', sans-serif; }
 [data-coded-sheet="delivery"] .codedSheetCopy h4 { margin-top: 16px; }
@@ -167,7 +170,7 @@
 .codedHint { margin-top: 12px; min-height: 66px; padding: 12px 18px; border-radius: 18px; background: #d6f5ff; font-size: 13px; line-height: 18px; }
 .scopeChoices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .scopeChoice { display: flex; height: 48px; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 14px; background: #f2f1f0; font: 15px/20px 'Avito Text', sans-serif; }
-.scopeChoice.selected { border-color: #141414; background: white; }
+.scopeChoice.selected { border-color: #141414; background: #f2f1f0; }
 .scopeChoice img { width: 8px; height: 16px; }
 [data-coded-sheet="quantity"] .codedChoices:not(.codedChoicesScrollable) .codedChoice { min-width: 0; padding-inline: 10px; }
 [data-coded-sheet="quantity"] .codedSheetCopy h4 + p { margin-top: -6px; }
