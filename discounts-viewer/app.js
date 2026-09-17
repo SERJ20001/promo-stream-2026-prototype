@@ -204,7 +204,6 @@ document.addEventListener('click', event => {
       try { localStorage.setItem('promo-stream-selection-v1', JSON.stringify(state)); summary(true); } catch { toast('Не удалось сохранить настройки в браузере'); }
       return;
     case 'reset': state = { ...defaults }; try { localStorage.removeItem('promo-stream-selection-v1'); } catch {} closeSheet(); render(); $('#scroll').scrollTo({ top: 0, behavior: smoothScrollBehavior() }); $('#carousel').scrollTo({ left: 0 }); return;
-    case 'back': if ($('#scroll').scrollTop > 0) $('#scroll').scrollTo({ top: 0, behavior: smoothScrollBehavior() }); else sheet('Вернуться назад?', `<p>Вы можете продолжить настройку или начать выбор скидок заново.</p><button class="primary" data-action="close">Остаться</button><button class="textButton" data-action="reset">Начать заново</button>`);
   }
 });
 document.addEventListener('keydown', event => {

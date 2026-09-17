@@ -245,6 +245,8 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .introHit { position: absolute; border: 0; background: transparent; padding: 0; }
 .introNext { left: 0; width: 100%; }
 .introBack { left: 0; width: 48px; }
+.introImageHeader .introBack, .introExit { top: 0; width: 48px; height: 52px; z-index: 3; }
+.introExit { left: 0; }
 .introHit:focus-visible { outline: 2px solid #141414; outline-offset: -4px; border-radius: 12px; }
 
 .introContinueLabel { display: flex; align-items: center; justify-content: center; margin: 8px; height: 52px; border-radius: 16px; background: #141414; color: white; font-size: 16px; }
@@ -259,6 +261,7 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionPayoutPatch { font-weight: 700; }
 .introPaymentTotalPatch { font-size: 16px; line-height: 20px; }
 .introPaymentAmountPatch { justify-content: flex-start; font-size: 32px; line-height: 40px; }
+.introPaymentStatusPatch { justify-content: center; background: white; font-size: 32px; font-weight: 700; line-height: 40px; white-space: nowrap; }
 .introCommissionAmountPatch { font-size: 15px; line-height: 20px; }
 .introCommissionPayoutPatch { font-size: 16px; line-height: 20px; }
 
@@ -320,6 +323,7 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .footer { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 .introFixedHeader { flex-shrink: 0; height: 52px; background: white; z-index: 2; }
 .introFlow:not([data-step="0"]) .introCanvas { margin-top: -52px; }
+.introFlow[data-step="8"] .introCanvas { margin-top: -104px; }
 .introFlow[data-step="13"] .introCanvas { margin-top: -76px; }
 .introFixedFooter { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 .publicationNav { height: 52px; }

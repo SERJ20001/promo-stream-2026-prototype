@@ -8,7 +8,7 @@
     'sheet-delivery-v38.png', 'sheet-hvatamba-v38.png', 'sheet-lovita-v38.png', 'sheet-methods.png',
     'sheet-promotion.png', 'sheet-quantity-v38.png', 'sheet-views.png', 'status-bar.png', 'toggle-off.png', 'toggle-on.png'
   ].map(name => `assets/${name}`).concat(Array.from({ length: 15 }, (_, index) => {
-    const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
+    const versions = { 3: '-v51', 6: '-v49', 8: '-v61', 10: '-v61', 13: '-v50', 14: '-v51' };
     return `assets/intro/flow-${index}${versions[index] || ''}.png`;
   }));
   const fonts = [
@@ -16,8 +16,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=58', 'viewer.css?v=2'];
-  const scripts = ['viewer.js?v=1', 'app.js?v=viewer-12', 'intro.js?v=viewer-11', 'confetti.js?v=48'];
+  const styles = ['style.css?v=60', 'viewer.css?v=2'];
+  const scripts = ['viewer.js?v=2', 'app.js?v=viewer-13', 'intro.js?v=viewer-13', 'confetti.js?v=48'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();

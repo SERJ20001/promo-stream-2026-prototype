@@ -24,7 +24,7 @@ let introIndex = 0;
 let publicationTimer;
 let introTransitioning = false;
 const introAsset = index => {
-  const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
+  const versions = { 3: '-v51', 6: '-v49', 8: '-v61', 10: '-v61', 13: '-v50', 14: '-v51' };
   return `assets/intro/flow-${index}${versions[index] || ''}.png`;
 };
 const introOrder = [0, 1, 2, 3, 4, 5, 6, 14, 8, 9, 10, 11, 12, 13];
@@ -34,8 +34,8 @@ function introPrefill(index, height) {
   if (index === 1) return field(16, 172, 208, 208, '<img src="assets/product-boots.png" alt="Ботинки Hermes">', 'introPhotoPatch');
   if (index === 2) return input(16, 117, 343, 52, 'Ботинки Hermes');
   if (index === 5) return input(16, 101, 343, 52, '5 000 ₽');
-  if (index === 10) return field(306, 180, 54, 28, '300 ₽', 'introPaymentTotalPatch');
-  if (index === 11) return field(16, 67, 128, 40, '300 ₽', 'introPaymentAmountPatch');
+  if (index === 11) return field(16, 67, 128, 40, '339 ₽', 'introPaymentAmountPatch');
+  if (index === 12) return field(75, 430, 225, 52, 'Оплата 339 ₽', 'introPaymentStatusPatch');
   if (index === 14) return field(300, 386, 60, 24, '−150 ₽', 'introCommissionAmountPatch')
     + field(286, 432, 74, 24, '4 850 ₽', 'introCommissionPayoutPatch');
   if (index === 4) return input(16, 369, 343, 52, 'Новое')
@@ -64,11 +64,12 @@ function showIntro(index) {
   document.querySelector('#screen').hidden = true;
   intro.hidden = false;
   intro.dataset.step = String(index);
-  const contentHeight = [812, 680, 311, 680, 1540, 680, 738, 680, 920, 680, 680, 680, 812, 680, 680][index];
+  const contentHeight = [812, 680, 311, 680, 1540, 680, 738, 680, 955, 680, 680, 680, 812, 680, 680][index];
   const imageHeader = index >= 10 && index <= 13;
   const header = index ? imageHeader
-    ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""></header>`
-    : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>' : '';
+    ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""><button class="introHit introBack" aria-label="Назад"></button></header>`
+    : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>'
+    : '<button class="introHit introExit" aria-label="Назад к выбору режима"></button>';
   const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к публикации' };
   const footerLabel = footerLabels[index] || 'Продолжить';
   const hasFooter = index > 0 && index !== 12;
@@ -151,6 +152,10 @@ async function transitionToIntro(index) {
 }
 intro.addEventListener('click', event => {
   if (introTransitioning) return;
+  if (event.target.closest('.introExit')) {
+    document.dispatchEvent(new Event('promo:viewer-back'));
+    return;
+  }
   if (event.target.closest('.introBack')) {
     const previousIndex = introOrder[Math.max(0, introOrder.indexOf(introIndex) - 1)];
     return transitionToIntro(previousIndex);
@@ -164,7 +169,6 @@ intro.addEventListener('click', event => {
   transitionToDiscounts();
 });
 document.querySelector('.back').addEventListener('click', event => {
-  if (document.querySelector('#scroll').scrollTop > 0) return;
   event.stopPropagation();
   transitionFromDiscounts(13);
 });
@@ -236,4 +240,4 @@ async function transitionFromDiscounts(index) {
 }
 intro.hidden = true;
 document.querySelector('#screen').hidden = true;
-document.addEventListener('promo:viewer-start', () => showIntro(0), { once: true });
+document.addEventListener('promo:viewer-start', () => showIntro(0));

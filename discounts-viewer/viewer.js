@@ -24,11 +24,24 @@
     document.dispatchEvent(new Event('promo:viewer-start'));
   }
 
+  function returnToChoice() {
+    if (!selected) return;
+    selected = false;
+    stage.inert = true;
+    stage.hidden = true;
+    delete stage.dataset.viewer;
+    app.inert = true;
+    choice.hidden = false;
+    choice.inert = false;
+    document.querySelector('#viewerChoiceTitle').focus();
+  }
+
   new ResizeObserver(fitDevice).observe(stage);
   choice.addEventListener('click', event => {
     const button = event.target.closest('[data-viewer]');
     if (button) selectMode(button.dataset.viewer);
   });
+  document.addEventListener('promo:viewer-back', returnToChoice);
   document.addEventListener('promo:assets-ready', () => {
     ready = true;
     document.querySelector('#assetGate').hidden = true;
