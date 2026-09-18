@@ -38,11 +38,13 @@ function introPrefill(index, height) {
   if (index === 12) return field(75, 430, 225, 52, 'Оплата 339 ₽', 'introPaymentStatusPatch');
   if (index === 14) return field(300, 386, 60, 24, '−150 ₽', 'introCommissionAmountPatch')
     + field(286, 432, 74, 24, '4 850 ₽', 'introCommissionPayoutPatch');
+  if (index === 9) return field(34, 274, 307, 44, 'Покупатели увидят большую карточку<br>в&nbsp;результатах поиска', 'introEditorialPatch')
+    + field(34, 476, 307, 44, 'Подключайте, если цена&nbsp;— ваше<br>конкурентное преимущество', 'introEditorialPatch');
   if (index === 4) return input(16, 369, 343, 52, 'Новое')
     + input(16, 477, 343, 52, '44')
     + input(16, 611, 343, 52, 'Nike')
-    + field(16, 750, 343, 44, 'Можно добавить — так у покупателей будет меньше вопросов', 'introCopyPatch')
-    + field(16, 920, 343, 60, 'Старайтесь использовать меньше эмодзи и не пишите большими буквами: многих это отталкивает.', 'introCopyPatch')
+    + field(16, 750, 343, 44, 'Можно добавить — так у&nbsp;покупателей будет меньше вопросов', 'introCopyPatch')
+    + field(16, 920, 343, 60, 'Старайтесь использовать меньше эмодзи и&nbsp;не&nbsp;пишите большими буквами: многих это отталкивает.', 'introCopyPatch')
     + input(16, 1000, 343, 158, 'Кроссовки Nike. Новые, размер 44. Без дефектов.', 'introTextareaPatch');
   return '';
 }
@@ -70,7 +72,7 @@ function showIntro(index) {
     ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""><button class="introHit introBack" aria-label="Назад"></button></header>`
     : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>'
     : '<button class="introHit introExit" aria-label="Назад к выбору сценария"></button>';
-  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к объявлению' };
+  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к\u00A0оплате', 10: 'Оплатить', 11: 'Оплатить с\u00A0кошелька', 13: 'Вернуться к\u00A0объявлению' };
   const footerLabel = footerLabels[index] || 'Продолжить';
   const hasFooter = index > 0 && index !== 12;
   const footer = hasFooter ? `<footer class="introFixedFooter"><button class="introNext introFixedNext" aria-label="${footerLabel}">${footerLabels[index] ? `<span>${footerLabel}</span>` : '<img src="assets/continue-button.png" alt="Продолжить">'}</button></footer>` : '';
