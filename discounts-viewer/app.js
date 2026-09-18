@@ -1,6 +1,7 @@
 const defaults = { hvatamba: false, lovita: false, delivery: false, quantity: false, hvatambaPercent: 10, lovitaPercent: 20, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3 };
 let scenarioDefaults = { ...defaults };
 let state = { ...scenarioDefaults };
+let selectedScenario = 'free-d-minus';
 const money = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const $ = selector => document.querySelector(selector);
 const all = selector => [...document.querySelectorAll(selector)];
@@ -67,7 +68,10 @@ function render() {
   }
   $('[data-payout]').textContent = payoutText();
   $('#deliveryValue').textContent = money(state.deliveryAmount);
-  $('#quantityValue').textContent = `${state.quantityPercent}% от ${state.quantityCount} товаров`;
+  $('#deliveryDescription').textContent = selectedScenario === 'free-d-plus' && state.delivery
+    ? 'Активировали скидку в\u00A0соответствии с\u00A0настройкой скидки в\u00A0профиле'
+    : 'До\u00A02,5 раз больше шансов на\u00A0продажу. Привлеките покупателей из\u00A0регионов';
+  $('#quantityValue').textContent = `${state.quantityPercent}% от\u00A0${state.quantityCount} товаров`;
   hasRendered = true;
 }
 function toast(message) {
@@ -135,23 +139,36 @@ function sheetSelection(name) {
 function openSheet(name) {
   if (name === 'sales') {
     const timeline = state.hvatamba && state.lovita;
+    const canvasHeight = timeline ? 456 : 398;
+    const textPatch = (x, y, width, height, content, className = '') => `<span class="salesTextPatch ${className}" style="left:${x / 375 * 100}%;top:${y / canvasHeight * 100}%;width:${width / 375 * 100}%;height:${height / canvasHeight * 100}%">${content}</span>`;
     const description = timeline
-      ? `Цена с учётом подключённых скидок: Хватамба с 12 августа — ${money(5000 * (1 - state.hvatambaPercent / 100))}; Ловита с 20 сентября — ${money(5000 * (1 - state.lovitaPercent / 100))}; с 12 декабря — 5 000 ₽. Скидки действуют последовательно, цена меняется автоматически.`
-      : 'Чем больше распродаж вы подключите, тем дольше будем выделять ваш товар как распродажный. Вступайте во все доступные распродажи. Когда одна закончится, активируется скидка в следующей. Ваш товар получит максимум возможностей от всех распродаж.';
-    sheet('Больше распродаж, чтобы скидки не заканчивались', `<div class="figmaSheetCanvas"><img class="figmaSheetImage" src="assets/sales-${timeline ? 'timeline' : 'info'}.png" alt="${description}">${timeline ? `<span class="timelinePrice firstPrice">${money(5000 * (1 - state.hvatambaPercent / 100))}</span><span class="timelinePrice secondPrice">${money(5000 * (1 - state.lovitaPercent / 100))}</span>` : ''}</div>`);
+      ? `Присоединяйтесь к\u00A0распродажам: так ваше объявление будет долго выделяться в\u00A0поиске. Цена с\u00A0учётом подключённых скидок: Хватамба с\u00A012 августа — ${money(5000 * (1 - state.hvatambaPercent / 100))}; Ловита с\u00A020 сентября — ${money(5000 * (1 - state.lovitaPercent / 100))}; с\u00A012 декабря — 5 000 ₽. Покупатель увидит вашу наибольшую скидку, если даты распродаж пересекаются. Цена поменяется, когда распродажа закончится.`
+      : 'Товары со\u00A0скидкой продаются быстрее почти на\u00A041%, а\u00A0сделок становится до\u00A085% больше. Вступайте в\u00A0распродажи, и\u00A0ваши товары попадут в\u00A0раздел со\u00A0скидками. Выделим объявления ярким значком и\u00A0перечеркнутой ценой. Когда одна распродажа закончится, активируется скидка на\u00A0следующей.';
+    const textPatches = timeline
+      ? textPatch(16, 32, 270, 60, 'Чтобы скидки<br>не&nbsp;заканчивались', 'salesTitlePatch')
+        + textPatch(16, 104, 343, 40, 'Присоединяйтесь к&nbsp;распродажам: так ваше<br>объявление будет долго выделяться в&nbsp;поиске.')
+        + textPatch(16, 162, 343, 20, 'Цена с&nbsp;учётом подключённых скидок', 'salesHeadingPatch')
+        + textPatch(16, 346, 343, 60, 'Покупатель увидит вашу наибольшую скидку,<br>если даты распродаж пересекаются. Цена<br>поменяется, когда распродажа закончится.')
+      : textPatch(16, 32, 270, 60, 'Больше заказов<br>с&nbsp;распродажей', 'salesTitlePatch')
+        + textPatch(16, 102, 343, 40, 'Товары со&nbsp;скидкой продаются быстрее почти<br>на&nbsp;41%, а&nbsp;сделок становится до&nbsp;85% больше.')
+        + textPatch(76, 168, 283, 40, 'Вступайте в&nbsp;распродажи, и&nbsp;ваши<br>товары попадут в&nbsp;раздел со&nbsp;скидками')
+        + textPatch(76, 238, 283, 40, 'Выделим объявления ярким значком<br>и&nbsp;перечеркнутой ценой')
+        + textPatch(76, 308, 283, 40, 'Когда одна распродажа закончится,<br>активируется скидка на&nbsp;следующей');
+    const prices = timeline ? `<span class="timelinePrice firstPrice">${money(5000 * (1 - state.hvatambaPercent / 100))}</span><span class="timelinePrice secondPrice">${money(5000 * (1 - state.lovitaPercent / 100))}</span>` : '';
+    sheet(timeline ? 'Чтобы скидки не заканчивались' : 'Больше заказов с распродажей', `<div class="figmaSheetCanvas"><img class="figmaSheetImage" src="assets/sales-${timeline ? 'timeline' : 'info'}-v66.png" alt="${description}">${textPatches}${prices}</div>`);
     $('.sheet').classList.add('figmaSheet');
     return;
   }
-  if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в распродаже, скидку на доставку или на несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не подключённые преимущества.</p>${done}`);
+  if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в&nbsp;распродаже, скидку на&nbsp;доставку или на&nbsp;несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не&nbsp;подключённые преимущества.</p>${done}`);
   if (name === 'total') {
     const rows = [
       { label: 'Ваша цена', value: money(basePrice), className: 'totalBaseRow' },
-      { label: `Комиссия за продажу<br>с доставкой ${commissionRate}%`, value: money(commissionAmount()) },
-      activeSalePercent() && { label: 'Скидка в распродаже', value: money(saleDiscountAmount()) },
-      state.delivery && { label: 'Скидка на доставку', value: money(state.deliveryAmount), interactive: true }
+      { label: `Комиссия за&nbsp;продажу<br>с&nbsp;доставкой ${commissionRate}%`, value: money(commissionAmount()) },
+      activeSalePercent() && { label: 'Скидка в&nbsp;распродаже', value: money(saleDiscountAmount()) },
+      state.delivery && { label: 'Скидка на&nbsp;доставку', value: money(state.deliveryAmount), interactive: true }
     ].filter(Boolean);
     const receiptRows = rows.map(({ label, value, interactive, className = '' }) => `<${interactive ? 'button' : 'div'} class="totalRow${interactive ? ' totalInfoRow' : ''}${className ? ` ${className}` : ''}"${interactive ? ' data-action="delivery-info" aria-describedby="deliveryHint"' : ''}><span>${label}${interactive ? '<img class="totalInfoIcon" src="assets/question-outline.svg" alt="">' : ''}</span><i></i><strong>${value}</strong></${interactive ? 'button' : 'div'}>`).join('');
-    sheet('Итого', `<div class="totalSheetBody"><div class="totalReceipt">${receiptRows}<div class="totalRow totalResult"><span>Придёт за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></div></div><div class="deliveryHint" id="deliveryHint" role="status" hidden>Вычтем меньше, если доставка выйдет дешевле</div><div class="totalSheetFooter"><button class="primary" data-action="close">Готово</button></div>`);
+    sheet('Итого', `<div class="totalSheetBody"><div class="totalReceipt">${receiptRows}<div class="totalRow totalResult"><span>Вы получите</span><i></i><strong>${payoutText()}</strong></div></div></div><div class="deliveryHint" id="deliveryHint" role="status" hidden>Вычтем меньше, если доставка выйдет дешевле</div><div class="totalSheetFooter"><button class="primary" data-action="close">Готово</button></div>`);
     $('.sheet').classList.add('totalSheet');
     $('.sheet').style.setProperty('--total-sheet-height', `${230 + rows.length * 30}px`);
     $('.totalSheetBody').scrollTop = 0;
@@ -176,7 +193,7 @@ function openSheet(name) {
   $('.sheet').scrollTop = 0;
 }
 function summary(saved = false) {
-  const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.lovita && `Ловита — ${state.lovitaPercent}% после Хватамбы`, state.delivery && `Скидка на доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от ${state.quantityCount} товаров`].filter(Boolean);
+  const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.lovita && `Ловита — ${state.lovitaPercent}% после Хватамбы`, state.delivery && `Скидка на&nbsp;доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от&nbsp;${state.quantityCount} товаров`].filter(Boolean);
   sheet(saved ? 'Настройки сохранены' : 'Всё готово', `<img class="summaryPhoto" src="assets/product-sneakers-v64.png" alt="Кроссовки Nike"><h3>Кроссовки Nike</h3><div class="summaryPrice">${money(currentPrice())}</div><ul class="summaryList">${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>Без дополнительных скидок</li>'}</ul><p class="muted">${saved ? 'Выбор сохранён в этом браузере.' : 'Предпросмотр настроек. Реальное объявление не изменено.'}</p><button class="primary" data-action="close">Вернуться к настройкам</button><button class="textButton" data-action="reset">Начать заново</button>`);
 }
 document.addEventListener('click', event => {
@@ -237,6 +254,7 @@ $('#carousel').addEventListener('keydown', event => {
 $('.compactWrap').inert = true;
 render();
 document.addEventListener('promo:scenario-selected', event => {
+  selectedScenario = event.detail?.scenario === 'free-d-plus' ? 'free-d-plus' : 'free-d-minus';
   scenarioDefaults = { ...defaults, delivery: Boolean(event.detail?.delivery) };
   state = { ...scenarioDefaults };
   render();

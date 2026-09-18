@@ -214,7 +214,10 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .figmaSheet h2 { position: absolute; width: 1px; height: 1px; padding: 0; margin: 0; overflow: hidden; clip-path: inset(50%); }
 .figmaSheetCanvas { position: relative; width: 100%; }
 .figmaSheetImage { display: block; width: 100%; height: auto; }
-.timelinePrice { position: absolute; top: 48.67%; height: 4.57%; display: flex; align-items: center; width: 22%; background: white; font-size: 16px; line-height: 24px; white-space: nowrap; }
+.salesTextPatch { position: absolute; display: block; overflow: hidden; background: white; color: #141414; font: 400 15px/20px 'Avito Text', sans-serif; }
+.salesTitlePatch { font: 700 26px/30px 'Avito Display', 'Avito Text', sans-serif; }
+.salesHeadingPatch { font-weight: 700; }
+.timelinePrice { position: absolute; top: 44.96%; height: 4.39%; display: flex; align-items: center; width: 22%; background: white; font-size: 15px; line-height: 20px; white-space: nowrap; }
 .firstPrice { left: 9.87%; color: #9654f5; }
 .secondPrice { left: 38.4%; color: #00b755; }
 
@@ -256,6 +259,7 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .introInputPatch { justify-content: flex-start; padding: 0 18px; border-radius: 12px; background: #f2f1f0; }
 .introTextareaPatch { align-items: flex-start; padding-top: 16px; white-space: normal; }
 .introCopyPatch { align-items: flex-start; border-radius: 0; background: white; white-space: normal; }
+.introEditorialPatch { align-items: flex-start; background: #f2f1f0; font-size: 15px; line-height: 22px; white-space: normal; }
 .introPhotoPatch { border-radius: 12px; }
 .introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionAmountPatch, .introCommissionPayoutPatch { justify-content: flex-end; background: white; white-space: nowrap; }
 .introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionPayoutPatch { font-weight: 700; }
