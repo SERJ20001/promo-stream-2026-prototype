@@ -1,26 +1,23 @@
 (() => {
   const stage = document.querySelector('#viewerStage');
-  const choice = document.querySelector('#viewerChoice');
+  const choice = document.querySelector('#scenarioChoice');
   const app = document.querySelector('#app');
   let ready = false;
   let selected = false;
 
-  function fitDevice() {
-    const scale = Math.min(1, Math.max(1, stage.clientWidth - 32) / 395, Math.max(1, stage.clientHeight - 32) / 832);
-    stage.style.setProperty('--viewer-scale', String(scale));
-  }
-
-  function selectMode(mode) {
-    if (!ready || selected || !['phone', 'desktop'].includes(mode)) return;
+  function selectScenario(scenario) {
+    if (!ready || selected || !['free-d-plus', 'free-d-minus'].includes(scenario)) return;
     selected = true;
-    stage.dataset.viewer = mode;
+    stage.dataset.scenario = scenario;
     stage.hidden = false;
-    fitDevice();
     choice.inert = true;
     choice.hidden = true;
     stage.inert = false;
     app.inert = false;
     app.removeAttribute('aria-busy');
+    document.dispatchEvent(new CustomEvent('promo:scenario-selected', {
+      detail: { delivery: scenario === 'free-d-plus', scenario }
+    }));
     document.dispatchEvent(new Event('promo:viewer-start'));
   }
 
@@ -29,28 +26,23 @@
     selected = false;
     stage.inert = true;
     stage.hidden = true;
-    delete stage.dataset.viewer;
+    delete stage.dataset.scenario;
     app.inert = true;
     choice.hidden = false;
     choice.inert = false;
-    document.querySelector('#viewerChoiceTitle').focus();
+    choice.focus();
   }
 
-  new ResizeObserver(fitDevice).observe(stage);
   choice.addEventListener('click', event => {
-    const button = event.target.closest('[data-viewer]');
-    if (button) selectMode(button.dataset.viewer);
+    const button = event.target.closest('[data-scenario]');
+    if (button) selectScenario(button.dataset.scenario);
   });
   document.addEventListener('promo:viewer-back', returnToChoice);
   document.addEventListener('promo:assets-ready', () => {
     ready = true;
     document.querySelector('#assetGate').hidden = true;
-    const requestedMode = new URLSearchParams(location.search).get('viewer');
-    if (['phone', 'desktop'].includes(requestedMode)) selectMode(requestedMode);
-    else {
-      choice.hidden = false;
-      choice.inert = false;
-      document.querySelector('#viewerChoiceTitle').focus();
-    }
+    choice.hidden = false;
+    choice.inert = false;
+    choice.focus();
   }, { once: true });
 })();

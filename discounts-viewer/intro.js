@@ -69,7 +69,7 @@ function showIntro(index) {
   const header = index ? imageHeader
     ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""><button class="introHit introBack" aria-label="Назад"></button></header>`
     : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>'
-    : '<button class="introHit introExit" aria-label="Назад к выбору режима"></button>';
+    : '<button class="introHit introExit" aria-label="Назад к выбору сценария"></button>';
   const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к объявлению' };
   const footerLabel = footerLabels[index] || 'Продолжить';
   const hasFooter = index > 0 && index !== 12;

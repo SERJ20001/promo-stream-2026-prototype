@@ -1,5 +1,6 @@
 const defaults = { hvatamba: false, lovita: false, delivery: false, quantity: false, hvatambaPercent: 10, lovitaPercent: 20, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3 };
-let state = { ...defaults };
+let scenarioDefaults = { ...defaults };
+let state = { ...scenarioDefaults };
 const money = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const $ = selector => document.querySelector(selector);
 const all = selector => [...document.querySelectorAll(selector)];
@@ -203,7 +204,7 @@ document.addEventListener('click', event => {
     case 'save':
       try { localStorage.setItem('promo-stream-selection-v1', JSON.stringify(state)); summary(true); } catch { toast('Не удалось сохранить настройки в браузере'); }
       return;
-    case 'reset': state = { ...defaults }; try { localStorage.removeItem('promo-stream-selection-v1'); } catch {} closeSheet(); render(); $('#scroll').scrollTo({ top: 0, behavior: smoothScrollBehavior() }); $('#carousel').scrollTo({ left: 0 }); return;
+    case 'reset': state = { ...scenarioDefaults }; try { localStorage.removeItem('promo-stream-selection-v1'); } catch {} closeSheet(); render(); $('#scroll').scrollTo({ top: 0, behavior: smoothScrollBehavior() }); $('#carousel').scrollTo({ left: 0 }); return;
   }
 });
 document.addEventListener('keydown', event => {
@@ -235,6 +236,11 @@ $('#carousel').addEventListener('keydown', event => {
 });
 $('.compactWrap').inert = true;
 render();
+document.addEventListener('promo:scenario-selected', event => {
+  scenarioDefaults = { ...defaults, delivery: Boolean(event.detail?.delivery) };
+  state = { ...scenarioDefaults };
+  render();
+});
 for (const name of ['badge-sale', 'badge-delivery', 'badge-quantity', 'toggle']) {
   for (const variant of ['on', 'off']) {
     const image = new Image();
