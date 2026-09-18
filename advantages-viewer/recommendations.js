@@ -104,6 +104,12 @@ function renderRecommendations() {
   document.querySelectorAll('[data-toggle]').forEach(button => {
     button.closest('.recommendationCard')?.classList.toggle('recommendationEnabled', state[button.dataset.toggle]);
   });
+  const deliveryDescription = document.querySelector('[data-toggle="delivery"]')?.closest('.recommendationCard')?.querySelector('.description');
+  if (deliveryDescription) {
+    deliveryDescription.innerHTML = state.deliveryPreEnabled && state.delivery
+      ? 'Активировали скидку в соответствии<br>с настройкой скидки в профиле'
+      : 'До 2,5 раз больше шансов на продажу. Привлеките покупателей из регионов';
+  }
 }
 
 function recommendationSheet(name) {

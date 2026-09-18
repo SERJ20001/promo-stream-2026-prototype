@@ -1,4 +1,4 @@
-const defaults = { ...recommendationDefaults, hvatamba: false, delivery: false, quantity: false, hvatambaPercent: 20, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3, quantityScope: 'all', promotionDays: 7, promotionBudget: 200, pickup: false, saleDelivery: false, paidServicesPaid: false };
+const defaults = { ...recommendationDefaults, hvatamba: false, delivery: false, deliveryPreEnabled: false, quantity: false, hvatambaPercent: 20, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3, quantityScope: 'all', promotionDays: 7, promotionBudget: 200, pickup: false, saleDelivery: false, paidServicesPaid: false };
 let state = { ...defaults };
 let sheetDraft = null;
 const sheetDraftFields = {
@@ -312,7 +312,17 @@ document.addEventListener('click', event => {
     case 'complete':
       if (paidServicesTotal(state) > 0 && !state.paidServicesPaid) return window.startPaymentFlow?.(paidServicesTotal(state));
       return summary();
-    case 'reset': state = { ...defaults }; photoFiles.clear(); try { localStorage.removeItem('promo-stream-selection-v1'); } catch {} closeSheet(); render(); $('#scroll').scrollTo({ top: 0, behavior: 'smooth' }); all('.recommendationCarousel').forEach(carousel => carousel.scrollTo({ left: 0 })); return;
+    case 'reset': {
+      const deliveryPreEnabled = state.deliveryPreEnabled;
+      state = { ...defaults, delivery: deliveryPreEnabled, deliveryPreEnabled };
+      photoFiles.clear();
+      try { localStorage.removeItem('promo-stream-selection-v1'); } catch {}
+      closeSheet();
+      render();
+      $('#scroll').scrollTo({ top: 0, behavior: 'smooth' });
+      all('.recommendationCarousel').forEach(carousel => carousel.scrollTo({ left: 0 }));
+      return;
+    }
     case 'save-exit': return toast('Изменения сохранены');
     case 'back': if ($('#scroll').scrollTop > 0) $('#scroll').scrollTo({ top: 0, behavior: 'smooth' }); else sheet('Вернуться назад?', `<p>Вы можете продолжить настройку или начать выбор скидок заново.</p><button class="primary" data-action="close">Остаться</button><button class="textButton" data-action="reset">Начать заново</button>`);
   }
@@ -350,6 +360,11 @@ $('#scroll').addEventListener('scroll', () => {
   $('#header').classList.toggle('headerCompact', compact); $('#screen').classList.toggle('headerIsCompact', compact); $('.compactWrap').setAttribute('aria-hidden', String(!compact)); $('.compactWrap').inert = !compact;
 }, { passive: true });
 $('.compactWrap').inert = true;
+document.addEventListener('promo:scenario-selected', event => {
+  const deliveryPreEnabled = event.detail?.scenario === 'free-d-plus';
+  state = { ...defaults, delivery: deliveryPreEnabled, deliveryPreEnabled };
+  render();
+});
 render();
 
 if (document.modelContext?.registerTool) {

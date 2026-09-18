@@ -10,7 +10,7 @@
   <style>[hidden]{display:none!important}html,body{margin:0}#assetGate{position:fixed;inset:0;z-index:100;background:white;display:grid;place-items:center}</style>
   <link rel="stylesheet" href="style.css?v=89">
   <link rel="stylesheet" href="alternative.css?v=95">
-  <link rel="stylesheet" href="viewer.css?v=89">
+  <link rel="stylesheet" href="viewer.css?v=96">
   <link rel="preload" as="image" href="assets/product-boots.png">
 </head>
 <body>
@@ -24,13 +24,11 @@
       <button id="assetGateRetry" class="viewerRetry" hidden>Повторить загрузку</button>
     </div>
   </div>
-  <section class="viewerChoice" id="viewerChoice" aria-labelledby="viewerChoiceTitle" hidden inert>
-    <div class="viewerChoiceContent">
-      <h1 id="viewerChoiceTitle" tabindex="-1">Как посмотреть<br>прототип?</h1>
-      <div class="viewerChoices">
-        <button class="viewerOption" data-viewer="phone"><strong>На телефоне</strong><span>Открыть на весь экран</span></button>
-        <button class="viewerOption" data-viewer="desktop"><strong>На компьютере</strong><span>Показать в рамке смартфона</span></button>
-      </div>
+  <section class="scenarioChoice" id="scenarioChoice" aria-labelledby="scenarioChoiceTitle" hidden inert>
+    <div class="scenarioChoiceContent">
+      <h1 class="scenarioChoiceTitle" id="scenarioChoiceTitle" tabindex="-1">Выберите сценарий</h1>
+      <button class="scenarioOption scenarioOptionFirst" data-scenario="free-d-plus"><span>Сценарий 1<br>FREE_D+</span></button>
+      <button class="scenarioOption scenarioOptionSecond" data-scenario="free-d-minus"><span>Сценарий 2<br>FREE_D-</span></button>
     </div>
   </section>
   <div class="stage viewerStage" id="viewerStage" hidden inert>
@@ -92,6 +90,6 @@
       </div>
     </div>
   </div>
-  <script src="preload.js?v=95"></script>
+  <script src="preload.js?v=96"></script>
 </body>
 </html>
