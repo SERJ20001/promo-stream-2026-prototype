@@ -1,13 +1,13 @@
 const recommendationCards = {
   promotion: [
     { title: 'Продвижение', icon: '1000-57649', toggle: 'promotion', description: 'Прирост просмотров ~42–333<br>Лимит: 35 контактов', button: '7 дней · 100 ₽', sheet: 'promotion' },
-    { title: 'Большой размер объявления', icon: '1000-57661', toggle: 'xl', description: 'Большая карточка в результатах поиска по сравнению с конкурентами', button: '7 дней · 100 ₽' },
-    { title: 'Выделение цены цветом', icon: '1000-57673', toggle: 'highlight', description: 'Привлечёт внимание к цене объявления. Ваше конкурентное преимущество', button: '7 дней · 100 ₽' }
+    { title: 'XL-объявление', icon: '1000-57661', toggle: 'xl', description: 'Покупатели увидят большую карточку<br>в результатах поиска', button: '7 дней · 100 ₽' },
+    { title: 'Выделение цены цветом', icon: '1000-57673', toggle: 'highlight', description: 'Подключайте, если цена — ваше<br>конкурентное преимущество', button: '7 дней · 100 ₽' }
   ],
   discounts: [
     { title: 'Хватамба', icon: '1000-57689', toggle: 'hvatamba', description: 'Увеличьте шансы на продажу до 2 раз<br>12 авг – 20 сен · ещё 7 дней', button: 'Скидка <span data-percent="hvatamba">20</span>%', sheet: 'hvatamba', price: 'hvatambaPrice' },
     { title: 'Скидка на доставку', icon: '1000-57711', toggle: 'delivery', description: 'До 2,5 раз больше шансов на*продажу. Привлеките покупателей из регионов', button: '<span id="deliveryValue">350 ₽</span>', sheet: 'delivery' },
-    { title: 'Скидка за количество', icon: '1000-57723', toggle: 'quantity', description: 'Выгодно купить сразу несколько товаров. Увеличивает средний чек', button: '<span id="quantityValue">10% от 3 товаров</span>', sheet: 'quantity' },
+    { title: 'Скидка за количество', icon: '1000-57723', toggle: 'quantity', description: 'Поставьте на одинаковые или разные<br>товары. Поможет увеличить средний чек', button: '<span id="quantityValue">10% от 3 товаров</span>', sheet: 'quantity' },
   ],
   content: [
     { title: 'Загрузите ещё 5 фото', icon: '1000-57736', description: 'Они привлекают внимание и помогают<br>решиться на покупку', upload: 'photo' },
@@ -88,7 +88,7 @@ function renderRecommendations() {
   document.querySelectorAll('.scoreButton').forEach(button => button.setAttribute('aria-label', `Привлекательность ${score}%. Как рассчитывается показатель`));
   document.querySelectorAll('[data-payment]').forEach(node => { node.textContent = money(paidServicesTotal(state)); });
   const hasPaidServices = paidServicesTotal(state) > 0;
-  const selectedServices = [state.promotion && 'Продвижение', state.xl && 'XL размер', state.highlight && 'Выделение цены цветом'].filter(Boolean);
+  const selectedServices = [state.promotion && 'Продвижение', state.xl && 'XL-объявление', state.highlight && 'Выделение цены цветом'].filter(Boolean);
   const servicesLabel = selectedServices.length > 2 ? `${selectedServices.slice(0, 2).join(', ')}, +${selectedServices.length - 2}` : selectedServices.join(', ');
   document.querySelector('[data-services-row]').hidden = !hasPaidServices;
   document.querySelector('[data-services-label]').textContent = servicesLabel;
@@ -122,7 +122,7 @@ function recommendationSheet(name) {
   }
   if (name === 'total') {
     const serviceRows = [];
-    for (const [key, label] of [['promotion', 'Продвижение на 7 дней'], ['xl', 'Большой размер объявления'], ['highlight', 'Выделение цены цветом']]) {
+    for (const [key, label] of [['promotion', 'Продвижение на 7 дней'], ['xl', 'XL-объявление'], ['highlight', 'Выделение цены цветом']]) {
       if (state[key]) serviceRows.push([label, money(100)]);
     }
     const payment = paidServicesTotal(state);
@@ -135,7 +135,7 @@ function recommendationSheet(name) {
     const rows = (items, extraClass = '') => items.map(([label, value, type]) => `<div class="totalCalculationRow ${extraClass}">${type === 'commission' ? `<button type="button" class="commissionInfo" data-commission-info aria-label="${label}. Подробнее о комиссии">${label}<img src="assets/question-outline.svg" alt=""></button>` : `<span>${label}</span>`}<i></i><strong>${value}</strong></div>`).join('');
     const needsPayment = payment > 0 && !state.paidServicesPaid;
     const services = serviceRows.length ? `<section class="totalCalculationServices"><strong class="totalCalculationHeading">Специальные услуги</strong>${rows(serviceRows)}<div class="totalCalculationRow totalCalculationPayment"><span>Заплатить сейчас</span><i></i><strong>${money(payment)}</strong></div></section>` : '';
-    sheet('Итого', `<div class="totalCalculation" style="height:${sheetHeight}px"><strong class="totalCalculationTitle" aria-hidden="true">Итого</strong><div class="totalCalculationBody"><section class="totalCalculationReceipt"><div class="totalCalculationRow totalCalculationPrice"><span>Ваша цена</span><i></i><strong>${money(basePrice)}</strong></div>${rows(adjustmentRows)}<div class="totalCalculationRow totalCalculationResult"><span>Получите за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></section>${services}</div><button class="totalSheetButton" data-action="${needsPayment ? 'complete' : 'close'}">${needsPayment ? `Оплатить ${money(payment)}` : 'Готово'}</button></div>`);
+    sheet('Итого', `<div class="totalCalculation" style="height:${sheetHeight}px"><strong class="totalCalculationTitle" aria-hidden="true">Итого</strong><div class="totalCalculationBody"><section class="totalCalculationReceipt"><div class="totalCalculationRow totalCalculationPrice"><span>Ваша цена</span><i></i><strong>${money(basePrice)}</strong></div>${rows(adjustmentRows)}<div class="totalCalculationRow totalCalculationResult"><span>Вы получите</span><i></i><strong>${payoutText()}</strong></div></section>${services}</div><button class="totalSheetButton" data-action="${needsPayment ? 'complete' : 'close'}">${needsPayment ? `Оплатить ${money(payment)}` : 'Готово'}</button></div>`);
     document.querySelector('.sheet').classList.add('figmaSheet', 'staticSheet', 'totalCalculationSheet', 'sheetCloseAlwaysVisible');
     document.querySelector('.sheet').style.setProperty('--total-sheet-height', `${sheetHeight}px`);
     document.querySelector('.sheet').scrollTop = 0;

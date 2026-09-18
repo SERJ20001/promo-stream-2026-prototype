@@ -239,7 +239,7 @@ function showCommissionTooltip(button) {
     tooltip = document.createElement('div');
     tooltip.className = 'commissionTooltip';
     tooltip.setAttribute('role', 'tooltip');
-    tooltip.textContent = 'Комиссия, если товар купят с доставкой или самовывозом';
+    tooltip.textContent = 'Если товар купят с доставкой или самовывозом';
     calculation.append(tooltip);
   }
   requestAnimationFrame(() => tooltip.classList.add('shown'));
@@ -261,7 +261,7 @@ function openSheet(name) {
 }
 function summary() {
   const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.delivery && `Скидка на доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от ${state.quantityCount} товаров`].filter(Boolean);
-  for (const [key, label] of [['promotion', 'Продвижение'], ['xl', 'Большой размер объявления'], ['highlight', 'Выделение цены цветом']]) {
+  for (const [key, label] of [['promotion', 'Продвижение'], ['xl', 'XL-объявление'], ['highlight', 'Выделение цены цветом']]) {
     if (state[key]) items.push(`${label} — 7 дней, ${money(100)}`);
   }
   items.push(`Привлекательность — ${attractivenessScore(state)}%`);
