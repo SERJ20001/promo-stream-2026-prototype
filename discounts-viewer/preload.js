@@ -3,7 +3,7 @@
     'badge-delivery-off.png', 'badge-delivery-on.png', 'badge-quantity-off.png', 'badge-quantity-on.png',
     'badge-sale-off.png', 'badge-sale-on.png', 'continue-button.png', 'delivery-discount.png',
     'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png', 'loading-spinner.png', 'question-outline.svg',
-    'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-boots.png',
+    'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-sneakers-v64.png',
     'quantity-discount.png', 'sale-hvatamba.png', 'sale-lovita.png', 'sales-info.png', 'sales-timeline.png',
     'sheet-delivery-v38.png', 'sheet-hvatamba-v38.png', 'sheet-lovita-v38.png', 'sheet-methods.png',
     'sheet-promotion.png', 'sheet-quantity-v38.png', 'sheet-views.png', 'status-bar.png', 'toggle-off.png', 'toggle-on.png'
@@ -17,7 +17,7 @@
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
   const styles = ['style.css?v=60', 'viewer.css?v=2'];
-  const scripts = ['viewer.js?v=2', 'app.js?v=viewer-13', 'intro.js?v=viewer-14', 'confetti.js?v=48'];
+  const scripts = ['viewer.js?v=2', 'app.js?v=viewer-14', 'intro.js?v=viewer-15', 'confetti.js?v=48'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();

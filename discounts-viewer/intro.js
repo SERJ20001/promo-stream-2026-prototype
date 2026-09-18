@@ -31,8 +31,8 @@ const introOrder = [0, 1, 2, 3, 4, 5, 6, 14, 8, 9, 10, 11, 12, 13];
 function introPrefill(index, height) {
   const field = (x, y, width, blockHeight, content, className = '') => `<div class="introPrefill ${className}" style="left:${x / 375 * 100}%;top:${y / height * 100}%;width:${width / 375 * 100}%;height:${blockHeight / height * 100}%">${content}</div>`;
   const input = (x, y, width, blockHeight, text, className = '') => field(x, y, width, blockHeight, `<span>${text}</span>`, `introInputPatch ${className}`);
-  if (index === 1) return field(16, 172, 208, 208, '<img src="assets/product-boots.png" alt="Ботинки Hermes">', 'introPhotoPatch');
-  if (index === 2) return input(16, 117, 343, 52, 'Ботинки Hermes');
+  if (index === 1) return field(16, 172, 208, 208, '<img src="assets/product-sneakers-v64.png" alt="Кроссовки Nike">', 'introPhotoPatch');
+  if (index === 2) return input(16, 117, 343, 52, 'Кроссовки Nike');
   if (index === 5) return input(16, 101, 343, 52, '5 000 ₽');
   if (index === 11) return field(16, 67, 128, 40, '339 ₽', 'introPaymentAmountPatch');
   if (index === 12) return field(75, 430, 225, 52, 'Оплата 339 ₽', 'introPaymentStatusPatch');
@@ -40,10 +40,10 @@ function introPrefill(index, height) {
     + field(286, 432, 74, 24, '4 850 ₽', 'introCommissionPayoutPatch');
   if (index === 4) return input(16, 369, 343, 52, 'Новое')
     + input(16, 477, 343, 52, '44')
-    + input(16, 611, 343, 52, 'Hermes')
+    + input(16, 611, 343, 52, 'Nike')
     + field(16, 750, 343, 44, 'Можно добавить — так у покупателей будет меньше вопросов', 'introCopyPatch')
     + field(16, 920, 343, 60, 'Старайтесь использовать меньше эмодзи и не пишите большими буквами: многих это отталкивает.', 'introCopyPatch')
-    + input(16, 1000, 343, 158, 'Ботинки Hermes, коричневая кожа. Новые, размер 44. Без дефектов.', 'introTextareaPatch');
+    + input(16, 1000, 343, 158, 'Кроссовки Nike. Новые, размер 44. Без дефектов.', 'introTextareaPatch');
   return '';
 }
 function showIntro(index) {
@@ -70,7 +70,7 @@ function showIntro(index) {
     ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""><button class="introHit introBack" aria-label="Назад"></button></header>`
     : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>'
     : '<button class="introHit introExit" aria-label="Назад к выбору режима"></button>';
-  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к публикации' };
+  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к объявлению' };
   const footerLabel = footerLabels[index] || 'Продолжить';
   const hasFooter = index > 0 && index !== 12;
   const footer = hasFooter ? `<footer class="introFixedFooter"><button class="introNext introFixedNext" aria-label="${footerLabel}">${footerLabels[index] ? `<span>${footerLabel}</span>` : '<img src="assets/continue-button.png" alt="Продолжить">'}</button></footer>` : '';
@@ -88,7 +88,7 @@ function showIntro(index) {
     intro.querySelector('.introCanvas').append(cover);
     const card = document.createElement('div');
     card.className = 'publicationCard publicationCardInitial';
-    card.innerHTML = '<img src="assets/product-boots.png" alt="Ботинки Hermes"><div><strong>5 000 ₽</strong><span>Ботинки Hermes</span><span class="publicationDetails">Новое, 44 размер</span></div>';
+    card.innerHTML = '<img src="assets/product-sneakers-v64.png" alt="Кроссовки Nike"><div><strong>5 000 ₽</strong><span>Кроссовки Nike</span><span class="publicationDetails">Новое, 44 размер</span></div>';
     document.querySelector('#app').append(card);
   }
   intro.scrollTop = 0;
