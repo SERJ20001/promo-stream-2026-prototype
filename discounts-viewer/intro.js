@@ -24,7 +24,7 @@ let introIndex = 0;
 let publicationTimer;
 let introTransitioning = false;
 const introAsset = index => {
-  const versions = { 3: '-v51', 6: '-v49', 8: '-v62', 10: '-v61', 13: '-v50', 14: '-v51' };
+  const versions = { 3: '-v51', 6: '-v49', 8: '-v62', 9: '-v66', 10: '-v61', 13: '-v50', 14: '-v51' };
   return `assets/intro/flow-${index}${versions[index] || ''}.png`;
 };
 const introOrder = [0, 1, 2, 3, 4, 5, 6, 14, 8, 9, 10, 11, 12, 13];

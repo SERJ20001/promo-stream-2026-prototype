@@ -1,6 +1,7 @@
 const defaults = { hvatamba: false, lovita: false, delivery: false, quantity: false, hvatambaPercent: 10, lovitaPercent: 20, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3 };
 let scenarioDefaults = { ...defaults };
 let state = { ...scenarioDefaults };
+let selectedScenario = 'free-d-minus';
 const money = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const $ = selector => document.querySelector(selector);
 const all = selector => [...document.querySelectorAll(selector)];
@@ -67,6 +68,9 @@ function render() {
   }
   $('[data-payout]').textContent = payoutText();
   $('#deliveryValue').textContent = money(state.deliveryAmount);
+  $('#deliveryDescription').textContent = selectedScenario === 'free-d-plus' && state.delivery
+    ? 'Активировали скидку в соответствии с настройкой скидки в профиле'
+    : 'До 2,5 раз больше шансов на*продажу. Привлеките покупателей из регионов';
   $('#quantityValue').textContent = `${state.quantityPercent}% от ${state.quantityCount} товаров`;
   hasRendered = true;
 }
@@ -136,9 +140,9 @@ function openSheet(name) {
   if (name === 'sales') {
     const timeline = state.hvatamba && state.lovita;
     const description = timeline
-      ? `Цена с учётом подключённых скидок: Хватамба с 12 августа — ${money(5000 * (1 - state.hvatambaPercent / 100))}; Ловита с 20 сентября — ${money(5000 * (1 - state.lovitaPercent / 100))}; с 12 декабря — 5 000 ₽. Скидки действуют последовательно, цена меняется автоматически.`
-      : 'Чем больше распродаж вы подключите, тем дольше будем выделять ваш товар как распродажный. Вступайте во все доступные распродажи. Когда одна закончится, активируется скидка в следующей. Ваш товар получит максимум возможностей от всех распродаж.';
-    sheet('Больше распродаж, чтобы скидки не заканчивались', `<div class="figmaSheetCanvas"><img class="figmaSheetImage" src="assets/sales-${timeline ? 'timeline' : 'info'}.png" alt="${description}">${timeline ? `<span class="timelinePrice firstPrice">${money(5000 * (1 - state.hvatambaPercent / 100))}</span><span class="timelinePrice secondPrice">${money(5000 * (1 - state.lovitaPercent / 100))}</span>` : ''}</div>`);
+      ? `Присоединяйтесь к распродажам: так ваше объявление будет долго выделяться в поиске. Цена с учётом подключённых скидок: Хватамба с 12 августа — ${money(5000 * (1 - state.hvatambaPercent / 100))}; Ловита с 20 сентября — ${money(5000 * (1 - state.lovitaPercent / 100))}; с 12 декабря — 5 000 ₽. Покупатель увидит вашу наибольшую скидку, если даты распродаж пересекаются. Цена поменяется, когда распродажа закончится.`
+      : 'Товары со скидкой продаются быстрее почти на 41%, а сделок становится до*85% больше. Вступайте в распродажи, и ваши товары попадут в раздел со скидками. Выделим объявления ярким значком и перечеркнутой ценой. Когда одна распродажа закончится, активируется скидка на следующей.';
+    sheet(timeline ? 'Чтобы скидки не заканчивались' : 'Больше заказов с распродажей', `<div class="figmaSheetCanvas"><img class="figmaSheetImage" src="assets/sales-${timeline ? 'timeline' : 'info'}-v66.png" alt="${description}">${timeline ? `<span class="timelineHeadingPatch">Цена с учётом подключённых скидок</span><span class="timelinePrice firstPrice">${money(5000 * (1 - state.hvatambaPercent / 100))}</span><span class="timelinePrice secondPrice">${money(5000 * (1 - state.lovitaPercent / 100))}</span>` : ''}</div>`);
     $('.sheet').classList.add('figmaSheet');
     return;
   }
@@ -151,7 +155,7 @@ function openSheet(name) {
       state.delivery && { label: 'Скидка на доставку', value: money(state.deliveryAmount), interactive: true }
     ].filter(Boolean);
     const receiptRows = rows.map(({ label, value, interactive, className = '' }) => `<${interactive ? 'button' : 'div'} class="totalRow${interactive ? ' totalInfoRow' : ''}${className ? ` ${className}` : ''}"${interactive ? ' data-action="delivery-info" aria-describedby="deliveryHint"' : ''}><span>${label}${interactive ? '<img class="totalInfoIcon" src="assets/question-outline.svg" alt="">' : ''}</span><i></i><strong>${value}</strong></${interactive ? 'button' : 'div'}>`).join('');
-    sheet('Итого', `<div class="totalSheetBody"><div class="totalReceipt">${receiptRows}<div class="totalRow totalResult"><span>Придёт за товар<br>когда его купят</span><i></i><strong>${payoutText()}</strong></div></div></div><div class="deliveryHint" id="deliveryHint" role="status" hidden>Вычтем меньше, если доставка выйдет дешевле</div><div class="totalSheetFooter"><button class="primary" data-action="close">Готово</button></div>`);
+    sheet('Итого', `<div class="totalSheetBody"><div class="totalReceipt">${receiptRows}<div class="totalRow totalResult"><span>Вы получите</span><i></i><strong>${payoutText()}</strong></div></div></div><div class="deliveryHint" id="deliveryHint" role="status" hidden>Вычтем меньше, если доставка выйдет дешевле</div><div class="totalSheetFooter"><button class="primary" data-action="close">Готово</button></div>`);
     $('.sheet').classList.add('totalSheet');
     $('.sheet').style.setProperty('--total-sheet-height', `${230 + rows.length * 30}px`);
     $('.totalSheetBody').scrollTop = 0;
@@ -237,6 +241,7 @@ $('#carousel').addEventListener('keydown', event => {
 $('.compactWrap').inert = true;
 render();
 document.addEventListener('promo:scenario-selected', event => {
+  selectedScenario = event.detail?.scenario === 'free-d-plus' ? 'free-d-plus' : 'free-d-minus';
   scenarioDefaults = { ...defaults, delivery: Boolean(event.detail?.delivery) };
   state = { ...scenarioDefaults };
   render();

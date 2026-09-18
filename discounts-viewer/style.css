@@ -214,7 +214,8 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .figmaSheet h2 { position: absolute; width: 1px; height: 1px; padding: 0; margin: 0; overflow: hidden; clip-path: inset(50%); }
 .figmaSheetCanvas { position: relative; width: 100%; }
 .figmaSheetImage { display: block; width: 100%; height: auto; }
-.timelinePrice { position: absolute; top: 48.67%; height: 4.57%; display: flex; align-items: center; width: 22%; background: white; font-size: 16px; line-height: 24px; white-space: nowrap; }
+.timelineHeadingPatch { position: absolute; top: 35.53%; left: 4.27%; width: 91.47%; height: 4.39%; display: flex; align-items: center; background: white; font: 700 16px/20px 'Avito Text', sans-serif; white-space: nowrap; }
+.timelinePrice { position: absolute; top: 44.96%; height: 4.39%; display: flex; align-items: center; width: 22%; background: white; font-size: 15px; line-height: 20px; white-space: nowrap; }
 .firstPrice { left: 9.87%; color: #9654f5; }
 .secondPrice { left: 38.4%; color: #00b755; }
 
