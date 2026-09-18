@@ -6,24 +6,11 @@
   let ready = false;
   let selected = false;
 
-  function fitDevice() {
-    const scale = Math.min(1, Math.max(1, stage.clientWidth - 32) / 395, Math.max(1, stage.clientHeight - 32) / 832);
-    stage.style.setProperty('--viewer-scale', String(scale));
-  }
-
-  function viewerMode() {
-    const requested = new URLSearchParams(location.search).get('viewer');
-    if (['phone', 'desktop'].includes(requested)) return requested;
-    return matchMedia('(max-width: 499px)').matches ? 'phone' : 'desktop';
-  }
-
   function selectScenario(scenario) {
     if (!ready || selected || !Object.prototype.hasOwnProperty.call(scenarioDeliveryState, scenario)) return;
     const delivery = scenarioDeliveryState[scenario];
     selected = true;
-    stage.dataset.viewer = viewerMode();
     stage.hidden = false;
-    fitDevice();
     choice.inert = true;
     choice.hidden = true;
     stage.inert = false;
@@ -33,7 +20,6 @@
     document.dispatchEvent(new Event('promo:viewer-start'));
   }
 
-  new ResizeObserver(fitDevice).observe(stage);
   choice.addEventListener('click', event => {
     const button = event.target.closest('[data-scenario]');
     if (button) selectScenario(button.dataset.scenario);

@@ -4,7 +4,7 @@
     'badge-sale-off.png', 'badge-sale-on.png', 'continue-button.png', 'delivery-discount.png',
     'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png', 'loading-spinner.png', 'question-outline.svg',
     'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-boots.png', 'heart-balloon.png',
-    'quantity-discount.png', 'sale-hvatamba.png', 'status-bar.png'
+    'quantity-discount.png', 'sale-hvatamba.png'
   ].map(name => `assets/${name}`).concat([
     'close.svg', 'chevron.svg', 'camera.svg', 'video.svg', 'delivery.svg', 'hvatamba-hero.png', 'delivery-hero.png',
     'quantity-hero.png', 'promotion-balloon.png', 'promotion-plane.png', 'promotion-rocket.png', 'product-44.png',
@@ -23,8 +23,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=89', 'alternative.css?v=95', 'viewer.css?v=96'];
-  const scripts = ['viewer.js?v=96', 'recommendation-model.js?v=84', 'recommendations.js?v=96', 'app.js?v=96', 'intro.js?v=84', 'confetti.js?v=84', 'heart-balloon.js?v=84'];
+  const styles = ['style.css?v=89', 'alternative.css?v=95', 'viewer.css?v=97'];
+  const scripts = ['viewer.js?v=97', 'recommendation-model.js?v=84', 'recommendations.js?v=96', 'app.js?v=96', 'intro.js?v=84', 'confetti.js?v=84', 'heart-balloon.js?v=84'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();
