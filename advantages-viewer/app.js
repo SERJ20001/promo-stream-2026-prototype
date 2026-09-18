@@ -153,7 +153,7 @@ function choiceButtons(values, selected, suffix, field) {
   return values.map(value => `<button type="button" class="codedChoice ${value === selected ? 'selected' : ''}" data-sheet-choice="${field}" data-value="${value}">${value}${suffix}</button>`).join('');
 }
 function sheetProductSnippet(price, showOldPrice) {
-  return `<div class="sheetProductSnippet"><img src="assets/sheets/product-44.png" alt="Ботинки Hermes"><div><div class="sheetProductPrice"><strong>${money(price)}</strong>${showOldPrice ? '<del>5 000 ₽</del>' : ''}</div><span>Ботинки Hermes</span></div></div>`;
+  return `<div class="sheetProductSnippet"><img src="assets/product-sneakers-v98.png" alt="Кроссовки Nike"><div><div class="sheetProductPrice"><strong>${money(price)}</strong>${showOldPrice ? '<del>5 000 ₽</del>' : ''}</div><span>Кроссовки Nike</span></div></div>`;
 }
 function codedSheet(name) {
   if (name === 'hvatamba') {
@@ -257,7 +257,7 @@ function openSheet(name) {
   }
   clearSheetDraft();
   if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в распродаже, скидку на доставку или на несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не подключённые преимущества.</p>${done}`);
-  if (name === 'total') return sheet('Вы получите за товар', `<div class="receipt"><span>Цена с текущей скидкой</span><strong>${money(currentPrice())}</strong><span>Скидка на доставку</span><strong>${state.delivery ? `до ${money(state.deliveryAmount)}` : 'Не подключена'}</strong><span>Вы получите</span><strong>${payoutText()}</strong></div><p>${state.delivery ? 'Скидка на доставку может потратиться частично или не потратиться. Первая сумма — если она не расходуется, вторая — если используется полностью.' : 'Скидка на доставку выключена, поэтому показываем одну сумму.'}</p>${done}`);
+  if (name === 'total') return sheet('Вы получите', `<div class="receipt"><span>Цена с текущей скидкой</span><strong>${money(currentPrice())}</strong><span>Скидка на доставку</span><strong>${state.delivery ? `до ${money(state.deliveryAmount)}` : 'Не подключена'}</strong><span>Вы получите</span><strong>${payoutText()}</strong></div><p>${state.delivery ? 'Скидка на доставку может потратиться частично или не потратиться. Первая сумма — если она не расходуется, вторая — если используется полностью.' : 'Скидка на доставку выключена, поэтому показываем одну сумму.'}</p>${done}`);
 }
 function summary() {
   const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.delivery && `Скидка на доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от ${state.quantityCount} товаров`].filter(Boolean);
@@ -265,7 +265,7 @@ function summary() {
     if (state[key]) items.push(`${label} — 7 дней, ${money(100)}`);
   }
   items.push(`Привлекательность — ${attractivenessScore(state)}%`);
-  sheet('Всё готово', `<img class="summaryPhoto" src="assets/product-boots.png" alt="Ботинки Hermes"><h3>Ботинки Hermes</h3><div class="summaryPrice">${money(currentPrice())}</div><ul class="summaryList">${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>Без дополнительных скидок</li>'}</ul><p class="muted">Предпросмотр настроек. Реальное объявление не изменено.</p><button class="primary" data-action="close">Вернуться к настройкам</button><button class="textButton" data-action="reset">Начать заново</button>`);
+  sheet('Всё готово', `<img class="summaryPhoto" src="assets/product-sneakers-v98.png" alt="Кроссовки Nike"><h3>Кроссовки Nike</h3><div class="summaryPrice">${money(currentPrice())}</div><ul class="summaryList">${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>Без дополнительных скидок</li>'}</ul><p class="muted">Предпросмотр настроек. Реальное объявление не изменено.</p><button class="primary" data-action="close">Вернуться к настройкам</button><button class="textButton" data-action="reset">Начать заново</button>`);
 }
 document.addEventListener('click', event => {
   const button = event.target.closest('button, [data-action]'); if (!button) return;

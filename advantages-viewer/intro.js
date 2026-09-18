@@ -5,7 +5,7 @@ const introSteps = [
   ['Категория товара', 812],
   ['Параметры и описание', 1693],
   ['Цена товара', 812],
-  ['Адрес и способы продажи', 812],
+  ['Способ продажи', 812],
   ['Автопубликация', 812],
   ['Продвижение объявления', 1007],
   ['Заметный вид объявления', 812],
@@ -30,22 +30,27 @@ const introAsset = index => {
 };
 const introOrder = [0, 1, 2, 3, 4, 5, 6, 14];
 const paymentOrder = [10, 11, 12, 13];
+function saleMethodScreen() {
+  const toggle = '<span class="introSaleToggle" aria-hidden="true"><i></i></span>';
+  return `<div class="introSaleMethodContent"><div class="introSaleLead"><h2>Способ продажи</h2><p>Укажите, где находится товар и как его<br>смогут получить</p></div><section class="introAddressCard"><div class="introAddressValue"><span>Москва, Зубовский бульвар., 11А</span><img src="assets/sheets/chevron.svg" alt=""></div><div class="introAddressDetails"><img src="assets/intro/address-details-v98.png" alt=""><span>Теперь можно добавить<br>детали в адреса</span><button type="button" tabindex="-1">Настроить</button></div></section><section class="introSaleCard"><h3>Самовывоз</h3>${toggle}<p>Покупатель приедет по вашему адресу</p><div class="introSaleFacts"><span>Подготовка<small>от 1 дня</small></span><span>Бронь товара<small>5 дней</small></span></div><button type="button" tabindex="-1">Настроить</button><img class="introSaleArt introPickupArt" src="assets/intro/pickup-illustration-v98.png" alt=""></section><section class="introSaleCard"><h3>Доставка</h3>${toggle}<p>Товар смогут заказать из других регионов</p><div class="introSaleDeliveryCopy"><span>Доставят партнёры Авито</span><small>В пункт выдачи, постамат, курьером</small></div><button type="button" tabindex="-1">Настроить</button><img class="introSaleArt introDeliveryArt" src="assets/intro/delivery-illustration-v98.png" alt=""></section></div>`;
+}
 function introPrefill(index, height) {
   const field = (x, y, width, blockHeight, content, className = '') => `<div class="introPrefill ${className}" style="left:${x / 375 * 100}%;top:${y / height * 100}%;width:${width / 375 * 100}%;height:${blockHeight / height * 100}%">${content}</div>`;
   const input = (x, y, width, blockHeight, text, className = '') => field(x, y, width, blockHeight, `<span>${text}</span>`, `introInputPatch ${className}`);
-  if (index === 1) return field(16, 172, 208, 208, '<img src="assets/product-boots.png" alt="Ботинки Hermes">', 'introPhotoPatch');
-  if (index === 2) return input(16, 117, 343, 52, 'Ботинки Hermes');
+  if (index === 1) return field(16, 172, 208, 208, '<img src="assets/product-sneakers-v98.png" alt="Кроссовки Nike">', 'introPhotoPatch');
+  if (index === 2) return input(16, 117, 343, 52, 'Кроссовки Nike');
   if (index === 5) return input(16, 101, 343, 52, '5 000 ₽');
   if (index === 10) return field(306, 180, 54, 28, money(paymentAmount), 'introPaymentTotalPatch');
   if (index === 11) return field(16, 67, 128, 40, money(paymentAmount), 'introPaymentAmountPatch');
   if (index === 14) return field(300, 386, 60, 24, '−150 ₽', 'introCommissionAmountPatch')
     + field(286, 432, 74, 24, '4 850 ₽', 'introCommissionPayoutPatch');
-  if (index === 4) return input(16, 369, 343, 52, 'Новое')
-    + input(16, 477, 343, 52, '44')
-    + input(16, 611, 343, 52, 'Hermes')
-    + field(16, 750, 343, 44, 'Можно добавить — так у покупателей будет меньше вопросов', 'introCopyPatch')
-    + field(16, 920, 343, 60, 'Старайтесь использовать меньше эмодзи и не пишите большими буквами: многих это отталкивает.', 'introCopyPatch')
-    + input(16, 1000, 343, 158, 'Ботинки Hermes, коричневая кожа. Новые, размер 44. Без дефектов.', 'introTextareaPatch');
+  if (index === 4) return input(16, 369, 343, 52, 'Отличное')
+    + input(16, 477, 343, 52, '42')
+    + input(16, 611, 343, 52, 'Nike')
+    + field(16, 750, 343, 44, 'Укажите цвет, материал и другие подробности — это поможет покупателям.', 'introCopyPatch')
+    + field(16, 920, 343, 60, 'Используйте меньше эмодзи и не пишите большими буквами: многих это отталкивает.', 'introCopyPatch')
+    + field(72, 1166, 287, 52, 'Улучшить описание', 'introDescriptionButtonPatch');
+  if (index === 6) return field(0, 0, 375, 740, saleMethodScreen(), 'introSaleMethodPatch');
   return '';
 }
 function showIntro(index) {
@@ -79,7 +84,7 @@ function showIntro(index) {
     intro.querySelector('.introCanvas').append(cover);
     const card = document.createElement('div');
     card.className = 'publicationCard publicationCardInitial';
-    card.innerHTML = '<img src="assets/product-boots.png" alt="Ботинки Hermes"><div><strong>5 000 ₽</strong><span>Ботинки Hermes</span><span class="publicationDetails">Новое, 44 размер</span></div>';
+    card.innerHTML = '<img src="assets/product-sneakers-v98.png" alt="Кроссовки Nike"><div><strong>5 000 ₽</strong><span>Кроссовки Nike</span><span class="publicationDetails">Новое, 42 размер</span></div>';
     document.querySelector('#app').append(card);
   }
   intro.scrollTop = 0;

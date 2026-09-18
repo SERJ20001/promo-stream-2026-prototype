@@ -3,18 +3,20 @@
     'badge-delivery-off.png', 'badge-delivery-on.png', 'badge-quantity-off.png', 'badge-quantity-on.png',
     'badge-sale-off.png', 'badge-sale-on.png', 'continue-button.png', 'delivery-discount.png',
     'help-notification.png', 'icon-back.png', 'icon-chevron.png', 'icon-eye.png', 'icon-help.png', 'loading-spinner.png', 'question-outline.svg',
-    'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-boots.png', 'heart-balloon.png',
+    'old-price-header.png', 'old-price-sale.png', 'page-title.png', 'product-sneakers-v98.png', 'heart-balloon.png',
     'quantity-discount.png', 'sale-hvatamba.png'
   ].map(name => `assets/${name}`).concat([
     'close.svg', 'chevron.svg', 'camera.svg', 'video.svg', 'delivery.svg', 'hvatamba-hero.png', 'delivery-hero.png',
-    'quantity-hero.png', 'promotion-balloon.png', 'promotion-plane.png', 'promotion-rocket.png', 'product-44.png',
+    'quantity-hero.png', 'promotion-balloon.png', 'promotion-plane.png', 'promotion-rocket.png',
     'score-position.png', 'score-ring-50.png', 'score-ring-25-benefit.png', 'score-ring-25-content.png', 'score-hvatamba.svg'
   ].map(name => `assets/sheets/${name}`)).concat([
-    'sheet-attractiveness-v42.png'
+    'sheet-attractiveness-v98.png'
   ].map(name => `assets/recommendations/${name}`)).concat([
     '1000-57649.png?v=3', '1000-57661.png?v=3', '1000-57673.png?v=3', '1000-57689.png?v=3', '1000-57711.png?v=3',
     '1000-57723.png?v=3', '1000-57736.png?v=3', '1000-57748.png?v=3', '1000-57760.png?v=3'
-  ].map(name => `assets/alternative/${name}`)).concat([0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14].map(index => {
+  ].map(name => `assets/alternative/${name}`)).concat([
+    'pickup-illustration-v98.png', 'delivery-illustration-v98.png', 'address-details-v98.png'
+  ].map(name => `assets/intro/${name}`)).concat([0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14].map(index => {
     const versions = { 3: '-v51', 6: '-v49', 13: '-v50', 14: '-v51' };
     return `assets/intro/flow-${index}${versions[index] || ''}.png`;
   }));
@@ -23,8 +25,8 @@
     { path: 'fonts/AvitoSansText-Bold.woff2', family: 'Avito Text', weight: '700' },
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
-  const styles = ['style.css?v=89', 'alternative.css?v=95', 'viewer.css?v=97'];
-  const scripts = ['viewer.js?v=97', 'recommendation-model.js?v=84', 'recommendations.js?v=96', 'app.js?v=96', 'intro.js?v=84', 'confetti.js?v=84', 'heart-balloon.js?v=84'];
+  const styles = ['style.css?v=89', 'alternative.css?v=100', 'viewer.css?v=97'];
+  const scripts = ['viewer.js?v=97', 'recommendation-model.js?v=84', 'recommendations.js?v=98', 'app.js?v=98', 'intro.js?v=98', 'confetti.js?v=84', 'heart-balloon.js?v=84'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();
