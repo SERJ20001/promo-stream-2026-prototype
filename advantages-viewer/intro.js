@@ -3,7 +3,7 @@ const introSteps = [
   ['Фотографии товара', 812],
   ['Название объявления', 812],
   ['Категория товара', 812],
-  ['Параметры и описание', 1693],
+  ['Параметры и описание', 1693],
   ['Цена товара', 812],
   ['Способ продажи', 812],
   ['Автопубликация', 812],
@@ -32,7 +32,7 @@ const introOrder = [0, 1, 2, 3, 4, 5, 6, 14];
 const paymentOrder = [10, 11, 12, 13];
 function saleMethodScreen() {
   const toggle = '<span class="introSaleToggle" aria-hidden="true"><i></i></span>';
-  return `<div class="introSaleMethodContent"><div class="introSaleLead"><h2>Способ продажи</h2><p>Укажите, где находится товар и как его<br>смогут получить</p></div><section class="introAddressCard"><div class="introAddressValue"><span>Москва, Зубовский бульвар., 11А</span><img src="assets/sheets/chevron.svg" alt=""></div><div class="introAddressDetails"><img src="assets/intro/address-details-v98.png" alt=""><span>Теперь можно добавить<br>детали в адреса</span><button type="button" tabindex="-1">Настроить</button></div></section><section class="introSaleCard"><h3>Самовывоз</h3>${toggle}<p>Покупатель приедет по вашему адресу</p><div class="introSaleFacts"><span>Подготовка<small>от 1 дня</small></span><span>Бронь товара<small>5 дней</small></span></div><button type="button" tabindex="-1">Настроить</button><img class="introSaleArt introPickupArt" src="assets/intro/pickup-illustration-v98.png" alt=""></section><section class="introSaleCard"><h3>Доставка</h3>${toggle}<p>Товар смогут заказать из других регионов</p><div class="introSaleDeliveryCopy"><span>Доставят партнёры Авито</span><small>В пункт выдачи, постамат, курьером</small></div><button type="button" tabindex="-1">Настроить</button><img class="introSaleArt introDeliveryArt" src="assets/intro/delivery-illustration-v98.png" alt=""></section></div>`;
+  return `<div class="introSaleMethodContent"><div class="introSaleLead"><h2>Способ продажи</h2><p>Укажите, где находится товар и как его<br>смогут получить</p></div><section class="introAddressCard"><div class="introAddressValue"><span>Москва, Зубовский бульвар., 11А</span><img src="assets/sheets/chevron.svg" alt=""></div><div class="introAddressDetails"><img src="assets/intro/address-details-v98.png" alt=""><span>Теперь можно добавить<br>детали в адреса</span><button type="button" tabindex="-1">Настроить</button></div></section><section class="introSaleCard"><h3>Самовывоз</h3>${toggle}<p>Покупатель приедет по вашему адресу</p><div class="introSaleFacts"><span>Подготовка<small>от 1 дня</small></span><span>Бронь товара<small>5 дней</small></span></div><button type="button" tabindex="-1">Настроить</button><img class="introSaleArt introPickupArt" src="assets/intro/pickup-illustration-v98.png" alt=""></section><section class="introSaleCard"><h3>Доставка</h3>${toggle}<p>Товар смогут заказать из других регионов</p><div class="introSaleDeliveryCopy"><span>Доставят партнёры Авито</span><small>В пункт выдачи, постамат, курьером</small></div><button type="button" tabindex="-1">Настроить</button><img class="introSaleArt introDeliveryArt" src="assets/intro/delivery-illustration-v98.png" alt=""></section></div>`;
 }
 function introPrefill(index, height) {
   const field = (x, y, width, blockHeight, content, className = '') => `<div class="introPrefill ${className}" style="left:${x / 375 * 100}%;top:${y / height * 100}%;width:${width / 375 * 100}%;height:${blockHeight / height * 100}%">${content}</div>`;
@@ -47,8 +47,8 @@ function introPrefill(index, height) {
   if (index === 4) return input(16, 369, 343, 52, 'Отличное')
     + input(16, 477, 343, 52, '42')
     + input(16, 611, 343, 52, 'Nike')
-    + field(16, 750, 343, 44, 'Укажите цвет, материал и другие подробности — это поможет покупателям.', 'introCopyPatch')
-    + field(16, 920, 343, 60, 'Используйте меньше эмодзи и не пишите большими буквами: многих это отталкивает.', 'introCopyPatch')
+    + field(16, 750, 343, 44, 'Укажите цвет, материал и другие подробности — это поможет покупателям.', 'introCopyPatch')
+    + field(16, 920, 343, 60, 'Используйте меньше эмодзи и не пишите большими буквами: многих это отталкивает.', 'introCopyPatch')
     + field(72, 1166, 287, 52, 'Улучшить описание', 'introDescriptionButtonPatch');
   if (index === 6) return field(0, 0, 375, 740, saleMethodScreen(), 'introSaleMethodPatch');
   return '';
@@ -72,7 +72,7 @@ function showIntro(index) {
   const header = index ? imageHeader
     ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""></header>`
     : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button></nav></header>' : '';
-  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к публикации' };
+  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к оплате', 10: 'Оплатить', 11: 'Оплатить с кошелька', 13: 'Вернуться к публикации' };
   const footerLabel = footerLabels[index] || 'Продолжить';
   const hasFooter = index > 0 && index !== 12;
   const footer = hasFooter ? `<footer class="introFixedFooter"><button class="introNext introFixedNext" aria-label="${footerLabel}">${footerLabels[index] ? `<span>${footerLabel}</span>` : '<img src="assets/continue-button.png" alt="Продолжить">'}</button></footer>` : '';

@@ -1,18 +1,18 @@
 const recommendationCards = {
   promotion: [
     { title: 'Продвижение', icon: '1000-57649', toggle: 'promotion', description: 'Прирост просмотров ~42–333<br>Лимит: 35 контактов', button: '7 дней · 100 ₽', sheet: 'promotion' },
-    { title: 'XL-объявление', icon: '1000-57661', toggle: 'xl', description: 'Покупатели увидят большую карточку<br>в результатах поиска', button: '7 дней · 100 ₽' },
+    { title: 'XL-объявление', icon: '1000-57661', toggle: 'xl', description: 'Покупатели увидят большую карточку<br>в результатах поиска', button: '7 дней · 100 ₽' },
     { title: 'Выделение цены цветом', icon: '1000-57673', toggle: 'highlight', description: 'Подключайте, если цена — ваше<br>конкурентное преимущество', button: '7 дней · 100 ₽' }
   ],
   discounts: [
-    { title: 'Хватамба', icon: '1000-57689', toggle: 'hvatamba', description: 'Увеличьте шансы на продажу до 2 раз<br>12 авг – 20 сен · ещё 7 дней', button: 'Скидка <span data-percent="hvatamba">20</span>%', sheet: 'hvatamba', price: 'hvatambaPrice' },
-    { title: 'Скидка на доставку', icon: '1000-57711', toggle: 'delivery', description: 'До 2,5 раз больше шансов на*продажу. Привлеките покупателей из регионов', button: '<span id="deliveryValue">350 ₽</span>', sheet: 'delivery' },
-    { title: 'Скидка за количество', icon: '1000-57723', toggle: 'quantity', description: 'Поставьте на одинаковые или разные<br>товары. Поможет увеличить средний чек', button: '<span id="quantityValue">10% от 3 товаров</span>', sheet: 'quantity' },
+    { title: 'Хватамба', icon: '1000-57689', toggle: 'hvatamba', description: 'Увеличьте шансы на продажу до 2 раз<br>12 авг – 20 сен · ещё 7 дней', button: 'Скидка <span data-percent="hvatamba">20</span>%', sheet: 'hvatamba', price: 'hvatambaPrice' },
+    { title: 'Скидка на доставку', icon: '1000-57711', toggle: 'delivery', description: 'До 2,5 раз больше шансов на продажу. Привлеките покупателей из регионов', button: '<span id="deliveryValue">350 ₽</span>', sheet: 'delivery' },
+    { title: 'Скидка за количество', icon: '1000-57723', toggle: 'quantity', description: 'Поставьте на одинаковые или разные<br>товары. Поможет увеличить средний чек', button: '<span id="quantityValue">10% от 3 товаров</span>', sheet: 'quantity' },
   ],
   content: [
-    { title: 'Загрузите ещё 5 фото', icon: '1000-57736', description: 'Они привлекают внимание и помогают<br>решиться на покупку', upload: 'photo' },
-    { title: 'Добавьте короткое видео', icon: '1000-57748', description: 'Они помогают больше узнать о товаре<br>и повысить доверие', upload: 'video' },
-    { title: 'Способы связи', icon: '1000-57760', toggle: 'contacts', description: 'Сейчас вам можно только написать.<br>Многим это не подходит', button: 'Звонки и сообщения', sheet: 'methods' }
+    { title: 'Загрузите ещё 5 фото', icon: '1000-57736', description: 'Они привлекают внимание и помогают<br>решиться на покупку', upload: 'photo' },
+    { title: 'Добавьте короткое видео', icon: '1000-57748', description: 'Они помогают больше узнать о товаре<br>и повысить доверие', upload: 'video' },
+    { title: 'Способы связи', icon: '1000-57760', toggle: 'contacts', description: 'Сейчас вам можно только написать.<br>Многим это не подходит', button: 'Звонки и сообщения', sheet: 'methods' }
   ]
 };
 
@@ -107,8 +107,8 @@ function renderRecommendations() {
   const deliveryDescription = document.querySelector('[data-toggle="delivery"]')?.closest('.recommendationCard')?.querySelector('.description');
   if (deliveryDescription) {
     deliveryDescription.innerHTML = state.deliveryPreEnabled && state.delivery
-      ? 'Активировали скидку в соответствии<br>с настройкой скидки в профиле'
-      : 'До 2,5 раз больше шансов на*продажу. Привлеките покупателей из регионов';
+      ? 'Активировали скидку в соответствии<br>с настройкой скидки в профиле'
+      : 'До 2,5 раз больше шансов на продажу. Привлеките покупателей из регионов';
   }
 }
 
@@ -122,17 +122,17 @@ function recommendationSheet(name) {
   }
   if (name === 'total') {
     const serviceRows = [];
-    for (const [key, label] of [['promotion', 'Продвижение на 7 дней'], ['xl', 'XL-объявление'], ['highlight', 'Выделение цены цветом']]) {
+    for (const [key, label] of [['promotion', 'Продвижение на 7 дней'], ['xl', 'XL-объявление'], ['highlight', 'Выделение цены цветом']]) {
       if (state[key]) serviceRows.push([label, money(100)]);
     }
     const payment = paidServicesTotal(state);
     const discountRows = [
-      state.hvatamba && ['Скидка в распродаже', money(saleDiscountAmount())],
-      state.delivery && ['Скидка на доставку', money(state.deliveryAmount)]
+      state.hvatamba && ['Скидка в распродаже', money(saleDiscountAmount())],
+      state.delivery && ['Скидка на доставку', money(state.deliveryAmount)]
     ].filter(Boolean);
     const adjustmentRows = [['Комиссия 3%', money(commissionAmount()), 'commission'], ...discountRows];
     const sheetHeight = Math.min(580, 278 + discountRows.length * 30 + (serviceRows.length ? 86 + serviceRows.length * 32 : 0));
-    const rows = (items, extraClass = '') => items.map(([label, value, type]) => `<div class="totalCalculationRow ${extraClass}">${type === 'commission' ? `<button type="button" class="commissionInfo" data-commission-info aria-label="${label}. Подробнее о комиссии">${label}<img src="assets/question-outline.svg" alt=""></button>` : `<span>${label}</span>`}<i></i><strong>${value}</strong></div>`).join('');
+    const rows = (items, extraClass = '') => items.map(([label, value, type]) => `<div class="totalCalculationRow ${extraClass}">${type === 'commission' ? `<button type="button" class="commissionInfo" data-commission-info aria-label="${label}. Подробнее о комиссии">${label}<img src="assets/question-outline.svg" alt=""></button>` : `<span>${label}</span>`}<i></i><strong>${value}</strong></div>`).join('');
     const needsPayment = payment > 0 && !state.paidServicesPaid;
     const services = serviceRows.length ? `<section class="totalCalculationServices"><strong class="totalCalculationHeading">Специальные услуги</strong>${rows(serviceRows)}<div class="totalCalculationRow totalCalculationPayment"><span>Заплатить сейчас</span><i></i><strong>${money(payment)}</strong></div></section>` : '';
     sheet('Итого', `<div class="totalCalculation" style="height:${sheetHeight}px"><strong class="totalCalculationTitle" aria-hidden="true">Итого</strong><div class="totalCalculationBody"><section class="totalCalculationReceipt"><div class="totalCalculationRow totalCalculationPrice"><span>Ваша цена</span><i></i><strong>${money(basePrice)}</strong></div>${rows(adjustmentRows)}<div class="totalCalculationRow totalCalculationResult"><span>Вы получите</span><i></i><strong>${payoutText()}</strong></div></section>${services}</div><button class="totalSheetButton" data-action="${needsPayment ? 'complete' : 'close'}">${needsPayment ? `Оплатить ${money(payment)}` : 'Готово'}</button></div>`);
@@ -151,7 +151,7 @@ document.querySelector('#photoUpload').addEventListener('change', event => {
   if (!photoFiles.size) return;
   state.photos = photoFiles.size >= 5;
   render();
-  toast(state.photos ? 'Фотографии добавлены' : `Добавлено ${photoFiles.size} из 5 фотографий`);
+  toast(state.photos ? 'Фотографии добавлены' : `Добавлено ${photoFiles.size} из 5 фотографий`);
   event.target.value = '';
 });
 

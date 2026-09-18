@@ -87,8 +87,8 @@ function render() {
   });
   const badges = [
     { key: 'sale', enabled: state.hvatamba, label: 'Распродажа', sheet: 'sales' },
-    { key: 'delivery', enabled: state.delivery, label: 'Скидка на доставку', sheet: 'delivery' },
-    { key: 'quantity', enabled: state.quantity, label: 'Скидка за количество', sheet: 'quantity' }
+    { key: 'delivery', enabled: state.delivery, label: 'Скидка на доставку', sheet: 'delivery' },
+    { key: 'quantity', enabled: state.quantity, label: 'Скидка за количество', sheet: 'quantity' }
   ];
   all('[data-badges]').forEach(node => {
     if (!node.children.length) {
@@ -102,7 +102,7 @@ function render() {
   }
   $('[data-payout]').textContent = payoutText();
   $('#deliveryValue').textContent = money(state.deliveryAmount);
-  $('#quantityValue').textContent = `${state.quantityPercent}% от ${state.quantityCount} товаров`;
+  $('#quantityValue').textContent = `${state.quantityPercent}% от ${state.quantityCount} товаров`;
   renderRecommendations();
   hasRendered = true;
 }
@@ -162,15 +162,15 @@ function codedSheet(name) {
     return {
       title: 'Хватамба',
       height: 762,
-      body: `<div class="codedSheet" data-coded-sheet="hvatamba"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/hvatamba-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Хватамба</h3><p>Объявление станет заметнее — появится<br>значок «Скидка» и перечёркнутая цена.<br>Скидку проверим <button class="inlineLink" type="button">по правилам</button></p><label class="codedInput"><span class="codedInputValue"><input type="number" min="5" max="40" step="5" value="${hvatambaPercent}" style="--coded-input-size:${String(hvatambaPercent).length}ch" data-sheet-input="hvatambaPercent" inputmode="numeric" aria-label="Размер скидки в процентах"><span>%</span></span><button type="button" data-sheet-clear="hvatambaPercent" aria-label="Сбросить размер скидки"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedChoices">${choiceButtons([5, 10, 20, 30, 40], hvatambaPercent, '%', 'hvatambaPercent')}</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(price, true)}<button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
+      body: `<div class="codedSheet" data-coded-sheet="hvatamba"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/hvatamba-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Хватамба</h3><p>Объявление станет заметнее — появится<br>значок «Скидка» и перечёркнутая цена.<br>Скидку проверим <button class="inlineLink" type="button">по правилам</button></p><label class="codedInput"><span class="codedInputValue"><input type="number" min="5" max="40" step="5" value="${hvatambaPercent}" style="--coded-input-size:${String(hvatambaPercent).length}ch" data-sheet-input="hvatambaPercent" inputmode="numeric" aria-label="Размер скидки в процентах"><span>%</span></span><button type="button" data-sheet-clear="hvatambaPercent" aria-label="Сбросить размер скидки"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedChoices">${choiceButtons([5, 10, 20, 30, 40], hvatambaPercent, '%', 'hvatambaPercent')}</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(price, true)}<button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
     };
   }
   if (name === 'delivery') {
     const deliveryAmount = sheetValue('deliveryAmount');
     return {
-      title: 'Скидка на доставку',
+      title: 'Скидка на доставку',
       height: 762,
-      body: `<div class="codedSheet" data-coded-sheet="delivery"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/delivery-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Скидка на доставку</h3><p>Чем выше скидка, тем дешевле доставка<br>для покупателя</p><h4>Выберите сумму</h4><label class="codedInput"><span class="codedInputValue"><input type="number" min="50" max="1500" step="50" value="${deliveryAmount}" style="--coded-input-size:${String(deliveryAmount).length}ch" data-sheet-input="deliveryAmount" inputmode="numeric" aria-label="Скидка на доставку в рублях"><span>₽</span></span><button type="button" data-sheet-clear="deliveryAmount" aria-label="Сбросить скидку на доставку"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedRange"><input type="range" min="50" max="1500" step="50" value="${deliveryAmount}" data-sheet-input="deliveryAmount" aria-label="Скидка на доставку от 50 до 1500 рублей"><span>50</span><span>1 500</span></div><div class="codedHint"><strong>Оптимально — 200 ₽.</strong> Для 50% покупателей<br>доставка будет бесплатной, остальным скидка.</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(currentPrice(), state.hvatamba)}<button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
+      body: `<div class="codedSheet" data-coded-sheet="delivery"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/delivery-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Скидка на доставку</h3><p>Чем выше скидка, тем дешевле доставка<br>для покупателя</p><h4>Выберите сумму</h4><label class="codedInput"><span class="codedInputValue"><input type="number" min="50" max="1500" step="50" value="${deliveryAmount}" style="--coded-input-size:${String(deliveryAmount).length}ch" data-sheet-input="deliveryAmount" inputmode="numeric" aria-label="Скидка на доставку в рублях"><span>₽</span></span><button type="button" data-sheet-clear="deliveryAmount" aria-label="Сбросить скидку на доставку"><img src="assets/sheets/close.svg" alt=""></button></label><div class="codedRange"><input type="range" min="50" max="1500" step="50" value="${deliveryAmount}" data-sheet-input="deliveryAmount" aria-label="Скидка на доставку от 50 до 1500 рублей"><span>50</span><span>1 500</span></div><div class="codedHint"><strong>Оптимально — 200 ₽.</strong> Для 50% покупателей<br>доставка будет бесплатной, остальным скидка.</div></div></div><footer class="codedSheetFooter">${sheetProductSnippet(currentPrice(), state.hvatamba)}<button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
     };
   }
   if (name === 'quantity') {
@@ -178,9 +178,9 @@ function codedSheet(name) {
     const quantityCount = sheetValue('quantityCount');
     const quantityScope = sheetValue('quantityScope');
     return {
-      title: 'Скидка за количество',
+      title: 'Скидка за количество',
       height: 762,
-      body: `<div class="codedSheet" data-coded-sheet="quantity"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/quantity-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Скидка за количество</h3><h4>Размер скидки</h4><div class="codedChoices">${choiceButtons([5, 10, 15, 20, 30], quantityPercent, '%', 'quantityPercent')}</div><h4>При заказе от</h4><div class="codedChoices codedChoicesScrollable">${choiceButtons([2, 3, 5, 8, 10], quantityCount, ' товаров', 'quantityCount')}</div><h4>Будет применяться</h4><p>Скидка действует при покупке нескольких<br>товаров. Выберите товары для акции</p><div class="scopeChoices"><button type="button" class="scopeChoice ${quantityScope === 'all' ? 'selected' : ''}" data-string-choice="quantityScope" data-value="all">На все товары</button><button type="button" class="scopeChoice ${quantityScope === 'selected' ? 'selected' : ''}" data-string-choice="quantityScope" data-value="selected">На некоторые <img src="assets/sheets/chevron.svg" alt=""></button></div></div></div><footer class="codedSheetFooter codedSheetFooterButtonOnly"><button class="primary" data-action="apply-sheet">Сохранить</button></footer></div>`
+      body: `<div class="codedSheet" data-coded-sheet="quantity"><div class="codedSheetMain"><img class="codedHero" src="assets/sheets/quantity-hero.png" width="375" height="185" alt=""><div class="codedSheetCopy"><h3>Скидка за количество</h3><h4>Размер скидки</h4><div class="codedChoices">${choiceButtons([5, 10, 15, 20, 30], quantityPercent, '%', 'quantityPercent')}</div><h4>При заказе от</h4><div class="codedChoices codedChoicesScrollable">${choiceButtons([2, 3, 5, 8, 10], quantityCount, ' товаров', 'quantityCount')}</div><h4>Будет применяться</h4><p>Скидка действует при покупке нескольких<br>товаров. Выберите товары для акции</p><div class="scopeChoices"><button type="button" class="scopeChoice ${quantityScope === 'all' ? 'selected' : ''}" data-string-choice="quantityScope" data-value="all">На все товары</button><button type="button" class="scopeChoice ${quantityScope === 'selected' ? 'selected' : ''}" data-string-choice="quantityScope" data-value="selected">На некоторые <img src="assets/sheets/chevron.svg" alt=""></button></div></div></div><footer class="codedSheetFooter codedSheetFooterButtonOnly"><button class="primary" data-action="apply-sheet">Сохранить</button></footer></div>`
     };
   }
   if (name === 'promotion') {
@@ -190,7 +190,7 @@ function codedSheet(name) {
     return {
       title: 'Продвижение',
       height: 948,
-      body: `<div class="codedSheet codedSheetScrollable" data-coded-sheet="promotion"><div class="codedSheetScroll"><div class="codedStickyTitle"><h3>Продвижение</h3></div><div class="codedSheetCopy promotionCopy"><p>Чем больше бюджет, тем чаще объявление<br>попадает в топ поиска и рекомендаций.</p><h4>Количество дней</h4><div class="codedChoices codedChoicesScrollable">${choiceButtons([1, 5, 7, 14, 30], promotionDays, '', 'promotionDays')}<button type="button" class="codedChoice">Другой срок</button></div><h4>Бюджет</h4><div class="budgetCards">${budgets.map(([value, image]) => `<button type="button" class="budgetCard ${promotionBudget === value ? 'selected' : ''}" data-sheet-choice="promotionBudget" data-value="${value}"><span><strong>${money(value)}</strong><small>Прирост просмотров</small><b>~42–333</b></span><img src="assets/sheets/${image}" alt=""></button>`).join('')}</div><button type="button" class="otherBudget">Другой бюджет</button></div></div><footer class="codedSheetFooter codedSheetFooterButtonOnly"><button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
+      body: `<div class="codedSheet codedSheetScrollable" data-coded-sheet="promotion"><div class="codedSheetScroll"><div class="codedStickyTitle"><h3>Продвижение</h3></div><div class="codedSheetCopy promotionCopy"><p>Чем больше бюджет, тем чаще объявление<br>попадает в топ поиска и рекомендаций.</p><h4>Количество дней</h4><div class="codedChoices codedChoicesScrollable">${choiceButtons([1, 5, 7, 14, 30], promotionDays, '', 'promotionDays')}<button type="button" class="codedChoice">Другой срок</button></div><h4>Бюджет</h4><div class="budgetCards">${budgets.map(([value, image]) => `<button type="button" class="budgetCard ${promotionBudget === value ? 'selected' : ''}" data-sheet-choice="promotionBudget" data-value="${value}"><span><strong>${money(value)}</strong><small>Прирост просмотров</small><b>~42–333</b></span><img src="assets/sheets/${image}" alt=""></button>`).join('')}</div><button type="button" class="otherBudget">Другой бюджет</button></div></div><footer class="codedSheetFooter codedSheetFooterButtonOnly"><button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
     };
   }
   if (name === 'methods') {
@@ -198,7 +198,7 @@ function codedSheet(name) {
     return {
       title: 'Способы продажи',
       height: 862,
-      body: `<div class="codedSheet codedSheetScrollable" data-coded-sheet="methods"><div class="codedSheetScroll"><div class="codedStickyTitle"><h3>Ваши данные</h3></div><div class="codedSheetCopy methodsCopy"><button type="button" class="dataRow"><span><strong>Зубовский бульвар., 11А</strong><small>Москва</small></span><img src="assets/sheets/chevron.svg" alt=""></button><button type="button" class="dataRow"><span><strong>+7 999 909 00 99</strong><small>Звонки и сообщения · Показ отключён</small></span><img src="assets/sheets/chevron.svg" alt=""></button><h3>Способы продажи</h3>${methodCard('pickup', 'Самовывоз', 'Заказ заберут по вашему адресу', 'Подготовка от 1 дня · Бронь 5 дней')} ${methodCard('saleDelivery', 'Доставка', 'Товар смогут заказать по всей России', 'Пункты выдачи, Курьер, Постаматы')}</div></div><footer class="codedSheetFooter codedSheetFooterButtonOnly"><button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
+      body: `<div class="codedSheet codedSheetScrollable" data-coded-sheet="methods"><div class="codedSheetScroll"><div class="codedStickyTitle"><h3>Ваши данные</h3></div><div class="codedSheetCopy methodsCopy"><button type="button" class="dataRow"><span><strong>Зубовский бульвар., 11А</strong><small>Москва</small></span><img src="assets/sheets/chevron.svg" alt=""></button><button type="button" class="dataRow"><span><strong>+7 999 909 00 99</strong><small>Звонки и сообщения · Показ отключён</small></span><img src="assets/sheets/chevron.svg" alt=""></button><h3>Способы продажи</h3>${methodCard('pickup', 'Самовывоз', 'Заказ заберут по вашему адресу', 'Подготовка от 1 дня · Бронь 5 дней')} ${methodCard('saleDelivery', 'Доставка', 'Товар смогут заказать по всей России', 'Пункты выдачи, Курьер, Постаматы')}</div></div><footer class="codedSheetFooter codedSheetFooterButtonOnly"><button class="primary" data-action="apply-sheet">Готово</button></footer></div>`
     };
   }
   return null;
@@ -239,7 +239,7 @@ function showCommissionTooltip(button) {
     tooltip = document.createElement('div');
     tooltip.className = 'commissionTooltip';
     tooltip.setAttribute('role', 'tooltip');
-    tooltip.textContent = 'Если товар купят с доставкой или самовывозом';
+    tooltip.textContent = 'Если товар купят с доставкой или самовывозом';
     calculation.append(tooltip);
   }
   requestAnimationFrame(() => tooltip.classList.add('shown'));
@@ -256,16 +256,16 @@ function openSheet(name) {
     return;
   }
   clearSheetDraft();
-  if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в распродаже, скидку на доставку или на несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не подключённые преимущества.</p>${done}`);
-  if (name === 'total') return sheet('Вы получите', `<div class="receipt"><span>Цена с текущей скидкой</span><strong>${money(currentPrice())}</strong><span>Скидка на доставку</span><strong>${state.delivery ? `до ${money(state.deliveryAmount)}` : 'Не подключена'}</strong><span>Вы получите</span><strong>${payoutText()}</strong></div><p>${state.delivery ? 'Скидка на доставку может потратиться частично или не потратиться. Первая сумма — если она не расходуется, вторая — если используется полностью.' : 'Скидка на доставку выключена, поэтому показываем одну сумму.'}</p>${done}`);
+  if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в распродаже, скидку на доставку или на несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не подключённые преимущества.</p>${done}`);
+  if (name === 'total') return sheet('Вы получите', `<div class="receipt"><span>Цена с текущей скидкой</span><strong>${money(currentPrice())}</strong><span>Скидка на доставку</span><strong>${state.delivery ? `до ${money(state.deliveryAmount)}` : 'Не подключена'}</strong><span>Вы получите</span><strong>${payoutText()}</strong></div><p>${state.delivery ? 'Скидка на доставку может потратиться частично или не потратиться. Первая сумма — если она не расходуется, вторая — если используется полностью.' : 'Скидка на доставку выключена, поэтому показываем одну сумму.'}</p>${done}`);
 }
 function summary() {
-  const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.delivery && `Скидка на доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от ${state.quantityCount} товаров`].filter(Boolean);
+  const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.delivery && `Скидка на доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от ${state.quantityCount} товаров`].filter(Boolean);
   for (const [key, label] of [['promotion', 'Продвижение'], ['xl', 'XL-объявление'], ['highlight', 'Выделение цены цветом']]) {
     if (state[key]) items.push(`${label} — 7 дней, ${money(100)}`);
   }
   items.push(`Привлекательность — ${attractivenessScore(state)}%`);
-  sheet('Всё готово', `<img class="summaryPhoto" src="assets/product-sneakers-v98.png" alt="Кроссовки Nike"><h3>Кроссовки Nike</h3><div class="summaryPrice">${money(currentPrice())}</div><ul class="summaryList">${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>Без дополнительных скидок</li>'}</ul><p class="muted">Предпросмотр настроек. Реальное объявление не изменено.</p><button class="primary" data-action="close">Вернуться к настройкам</button><button class="textButton" data-action="reset">Начать заново</button>`);
+  sheet('Всё готово', `<img class="summaryPhoto" src="assets/product-sneakers-v98.png" alt="Кроссовки Nike"><h3>Кроссовки Nike</h3><div class="summaryPrice">${money(currentPrice())}</div><ul class="summaryList">${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>Без дополнительных скидок</li>'}</ul><p class="muted">Предпросмотр настроек. Реальное объявление не изменено.</p><button class="primary" data-action="close">Вернуться к настройкам</button><button class="textButton" data-action="reset">Начать заново</button>`);
 }
 document.addEventListener('click', event => {
   const button = event.target.closest('button, [data-action]'); if (!button) return;
@@ -372,7 +372,7 @@ if (document.modelContext?.registerTool) {
   const tool = {
     name: 'configure_promo_selection',
     title: 'Выбрать акции прототипа',
-    description: 'Изменяет только переключатели в демо. Не сохраняет и не меняет реальное объявление.',
+    description: 'Изменяет только переключатели в демо. Не сохраняет и не меняет реальное объявление.',
     inputSchema: { type: 'object', properties: Object.fromEntries(['hvatamba', 'delivery', 'quantity'].map(key => [key, { type: 'boolean' }])), additionalProperties: false },
     annotations: { readOnlyHint: false, untrustedContentHint: false },
     execute(input) {
