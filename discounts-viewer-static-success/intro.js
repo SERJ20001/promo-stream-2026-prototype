@@ -42,7 +42,7 @@ function introPrefill(index, height) {
   if (index === 5) return input(16, 101, 343, 52, '5 000 ₽');
   if (index === 11) return field(16, 67, 128, 40, '339 ₽', 'introPaymentAmountPatch');
   if (index === 12) return field(75, 430, 225, 52, 'Оплата 339 ₽', 'introPaymentStatusPatch');
-  if (index === 14) return field(16, 364, 220, 64, 'Комиссия за продажу<br>с доставкой 10%', 'introCommissionLabelPatch')
+  if (index === 14) return field(16, 384, 220, 44, 'Комиссия за продажу<br>с доставкой 10%', 'introCommissionLabelPatch')
     + field(286, 386, 74, 24, '−500 ₽', 'introCommissionAmountPatch')
     + field(286, 432, 74, 24, '4 500 ₽', 'introCommissionPayoutPatch');
   if (index === 9) return field(34, 274, 307, 44, 'Покупатели увидят большую карточку<br>в&nbsp;результатах поиска', 'introEditorialPatch')
