@@ -14,7 +14,7 @@ jobs:
       - name: Проверить срок и снять публикацию
         env:
           GH_TOKEN: ${{ github.token }}
-          EXPIRES_AT: "2026-09-20T19:11:43.639260+00:00"
+          EXPIRES_AT: "2026-09-28T07:14:10+00:00"
         run: |
           if [ "$(date -u +%s)" -lt "$(date -u -d "$EXPIRES_AT" +%s)" ]; then exit 0; fi
           if [ ! -d discounts-viewer ]; then exit 0; fi
