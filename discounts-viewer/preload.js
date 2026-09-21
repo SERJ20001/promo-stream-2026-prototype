@@ -17,7 +17,7 @@
     { path: 'fonts/AvitoSansDisplay-Bold.woff2', family: 'Avito Display', weight: '700' }
   ];
   const styles = ['style.css?v=67', 'viewer.css?v=3'];
-  const scripts = ['viewer.js?v=3', 'app.js?v=viewer-17', 'intro.js?v=viewer-18', 'confetti.js?v=48'];
+  const scripts = ['viewer.js?v=3', 'app.js?v=viewer-17', 'intro.js?v=viewer-19', 'confetti.js?v=48'];
   const resources = [...styles, ...images, ...fonts.map(font => font.path), ...scripts];
   const completed = new Map();
   const executed = new Set();

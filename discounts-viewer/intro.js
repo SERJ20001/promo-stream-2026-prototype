@@ -68,11 +68,12 @@ function showIntro(index) {
   intro.dataset.step = String(index);
   const contentHeight = [812, 680, 311, 680, 1540, 680, 738, 680, 955, 680, 680, 680, 812, 680, 680][index];
   const imageHeader = index >= 10 && index <= 13;
+  const saveAction = [8, 9].includes(index) ? '' : '<span class="save">Сохранить и выйти</span>';
   const header = index ? imageHeader
     ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""><button class="introHit introBack" aria-label="Назад"></button></header>`
-    : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>'
+    : `<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button>${saveAction}</nav></header>`
     : '<button class="introHit introExit" aria-label="Назад к выбору сценария"></button>';
-  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к\u00A0оплате', 10: 'Оплатить', 11: 'Оплатить с\u00A0кошелька', 13: 'Вернуться к\u00A0объявлению' };
+  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к\u00A0оплате', 10: 'Оплатить', 11: 'Оплатить с\u00A0кошелька', 13: 'Далее' };
   const footerLabel = footerLabels[index] || 'Продолжить';
   const hasFooter = index > 0 && index !== 12;
   const footer = hasFooter ? `<footer class="introFixedFooter"><button class="introNext introFixedNext" aria-label="${footerLabel}">${footerLabels[index] ? `<span>${footerLabel}</span>` : '<img src="assets/continue-button.png" alt="Продолжить">'}</button></footer>` : '';
