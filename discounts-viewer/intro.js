@@ -20,6 +20,12 @@ intro.className = 'introFlow';
 intro.tabIndex = -1;
 intro.setAttribute('aria-label', 'Создание объявления');
 document.querySelector('#app').append(intro);
+const finalListing = document.createElement('section');
+finalListing.className = 'finalListing';
+finalListing.tabIndex = -1;
+finalListing.setAttribute('aria-label', 'Объявление');
+finalListing.innerHTML = '<img class="finalListingImage" src="assets/final-listing-v71.png" alt="Экран объявления"><button class="finalListingBack" aria-label="Назад"></button><span class="finalListingBottomMask" aria-hidden="true"></span>';
+document.querySelector('#app').append(finalListing);
 let introIndex = 0;
 let publicationTimer;
 let introTransitioning = false;
@@ -68,11 +74,12 @@ function showIntro(index) {
   intro.dataset.step = String(index);
   const contentHeight = [812, 680, 311, 680, 1540, 680, 738, 680, 955, 680, 680, 680, 812, 680, 680][index];
   const imageHeader = index >= 10 && index <= 13;
+  const saveAction = [8, 9].includes(index) ? '' : '<span class="save">Сохранить и выйти</span>';
   const header = index ? imageHeader
     ? `<header class="introFixedHeader introImageHeader"><img src="${introAsset(index)}" alt=""><button class="introHit introBack" aria-label="Назад"></button></header>`
-    : '<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button><span class="save">Сохранить и выйти</span></nav></header>'
+    : `<header class="introFixedHeader"><nav class="nav"><button class="back introBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button>${saveAction}</nav></header>`
     : '<button class="introHit introExit" aria-label="Назад к выбору сценария"></button>';
-  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к\u00A0оплате', 10: 'Оплатить', 11: 'Оплатить с\u00A0кошелька', 13: 'Вернуться к\u00A0объявлению' };
+  const footerLabels = { 7: 'Разместить объявление', 9: 'Перейти к\u00A0оплате', 10: 'Оплатить', 11: 'Оплатить с\u00A0кошелька', 13: 'Далее' };
   const footerLabel = footerLabels[index] || 'Продолжить';
   const hasFooter = index > 0 && index !== 12;
   const footer = hasFooter ? `<footer class="introFixedFooter"><button class="introNext introFixedNext" aria-label="${footerLabel}">${footerLabels[index] ? `<span>${footerLabel}</span>` : '<img src="assets/continue-button.png" alt="Продолжить">'}</button></footer>` : '';
@@ -240,6 +247,47 @@ async function transitionFromDiscounts(index) {
   intro.inert = false;
   introTransitioning = false;
 }
+async function transitionToFinalListing() {
+  if (introTransitioning) return;
+  introTransitioning = true;
+  const screen = document.querySelector('#screen');
+  screen.inert = true;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const outgoing = screen.animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduced ? 0 : 140, easing: 'ease-out', fill: 'forwards' });
+  await outgoing.finished.catch(() => {});
+  outgoing.cancel();
+  screen.hidden = true;
+  finalListing.hidden = false;
+  finalListing.inert = true;
+  const incoming = finalListing.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' });
+  await incoming.finished.catch(() => {});
+  incoming.cancel();
+  finalListing.inert = false;
+  finalListing.querySelector('.finalListingBack').focus({ preventScroll: true });
+  introTransitioning = false;
+}
+async function transitionFromFinalListing() {
+  if (introTransitioning) return;
+  introTransitioning = true;
+  finalListing.inert = true;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const outgoing = finalListing.animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduced ? 0 : 140, easing: 'ease-out', fill: 'forwards' });
+  await outgoing.finished.catch(() => {});
+  outgoing.cancel();
+  finalListing.hidden = true;
+  const screen = document.querySelector('#screen');
+  screen.hidden = false;
+  screen.inert = true;
+  const incoming = screen.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' });
+  await incoming.finished.catch(() => {});
+  incoming.cancel();
+  screen.inert = false;
+  document.querySelector('.continueButton').focus({ preventScroll: true });
+  introTransitioning = false;
+}
 intro.hidden = true;
+finalListing.hidden = true;
 document.querySelector('#screen').hidden = true;
+document.querySelector('.continueButton').addEventListener('click', transitionToFinalListing);
+finalListing.querySelector('.finalListingBack').addEventListener('click', transitionFromFinalListing);
 document.addEventListener('promo:viewer-start', () => showIntro(0));
