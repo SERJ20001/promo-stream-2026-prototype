@@ -20,6 +20,12 @@ intro.className = 'introFlow';
 intro.tabIndex = -1;
 intro.setAttribute('aria-label', 'Создание объявления');
 document.querySelector('#app').append(intro);
+const finalListing = document.createElement('section');
+finalListing.className = 'finalListing';
+finalListing.tabIndex = -1;
+finalListing.setAttribute('aria-label', 'Объявление');
+finalListing.innerHTML = '<img class="finalListingImage" src="assets/final-listing-v71.png" alt="Экран объявления"><button class="finalListingBack" aria-label="Назад"></button><span class="finalListingBottomMask" aria-hidden="true"></span>';
+document.querySelector('#app').append(finalListing);
 let introIndex = 0;
 let publicationTimer;
 let introTransitioning = false;
@@ -241,6 +247,47 @@ async function transitionFromDiscounts(index) {
   intro.inert = false;
   introTransitioning = false;
 }
+async function transitionToFinalListing() {
+  if (introTransitioning) return;
+  introTransitioning = true;
+  const screen = document.querySelector('#screen');
+  screen.inert = true;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const outgoing = screen.animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduced ? 0 : 140, easing: 'ease-out', fill: 'forwards' });
+  await outgoing.finished.catch(() => {});
+  outgoing.cancel();
+  screen.hidden = true;
+  finalListing.hidden = false;
+  finalListing.inert = true;
+  const incoming = finalListing.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' });
+  await incoming.finished.catch(() => {});
+  incoming.cancel();
+  finalListing.inert = false;
+  finalListing.querySelector('.finalListingBack').focus({ preventScroll: true });
+  introTransitioning = false;
+}
+async function transitionFromFinalListing() {
+  if (introTransitioning) return;
+  introTransitioning = true;
+  finalListing.inert = true;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const outgoing = finalListing.animate([{ opacity: 1 }, { opacity: 0 }], { duration: reduced ? 0 : 140, easing: 'ease-out', fill: 'forwards' });
+  await outgoing.finished.catch(() => {});
+  outgoing.cancel();
+  finalListing.hidden = true;
+  const screen = document.querySelector('#screen');
+  screen.hidden = false;
+  screen.inert = true;
+  const incoming = screen.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced ? 0 : 240, easing: 'ease-in', fill: 'forwards' });
+  await incoming.finished.catch(() => {});
+  incoming.cancel();
+  screen.inert = false;
+  document.querySelector('.continueButton').focus({ preventScroll: true });
+  introTransitioning = false;
+}
 intro.hidden = true;
+finalListing.hidden = true;
 document.querySelector('#screen').hidden = true;
+document.querySelector('.continueButton').addEventListener('click', transitionToFinalListing);
+finalListing.querySelector('.finalListingBack').addEventListener('click', transitionFromFinalListing);
 document.addEventListener('promo:viewer-start', () => showIntro(0));
