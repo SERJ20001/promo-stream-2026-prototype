@@ -1,0 +1,293 @@
+const defaults = { hvatamba: false, lovita: false, delivery: false, quantity: false, hvatambaPercent: 10, lovitaPercent: 20, deliveryAmount: 350, quantityPercent: 10, quantityCount: 3 };
+let scenarioDefaults = { ...defaults };
+let state = { ...scenarioDefaults };
+let selectedScenario = 'free-d-minus';
+const money = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
+const $ = selector => document.querySelector(selector);
+const all = selector => [...document.querySelectorAll(selector)];
+const basePrice = 5000;
+const commissionRate = 3;
+const activeSalePercent = () => state.hvatamba ? state.hvatambaPercent : state.lovita ? state.lovitaPercent : 0;
+const currentPrice = () => basePrice * (1 - activeSalePercent() / 100);
+const commissionAmount = () => currentPrice() * commissionRate / 100;
+const saleDiscountAmount = () => basePrice - currentPrice();
+const payoutAmount = () => Math.max(0, currentPrice() - commissionAmount() - (state.delivery ? state.deliveryAmount : 0));
+const payoutText = () => money(payoutAmount());
+let returnFocus;
+let toastTimer;
+let deliveryHintTimer;
+let deliveryHintHideTimer;
+let hasRendered = false;
+let sheetClosing = false;
+let compactHeaderVisible = false;
+let scrollFrame;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const smoothScrollBehavior = () => reducedMotion.matches ? 'auto' : 'smooth';
+function clampScrollPosition(element) {
+  const limit = Math.max(0, element.scrollHeight - element.clientHeight);
+  const clamped = Math.min(limit, Math.max(0, element.scrollTop));
+  if (clamped !== element.scrollTop) element.scrollTop = clamped;
+}
+function render() {
+  $('.help').classList.toggle('hasNotification', state.hvatamba && state.lovita);
+  all('[data-toggle]').forEach(button => {
+    const enabled = state[button.dataset.toggle];
+    button.setAttribute('aria-checked', String(enabled));
+    button.querySelector('img').src = `assets/toggle-${enabled ? 'on' : 'off'}.png`;
+  });
+  all('[data-price]').forEach(node => {
+    const nextPrice = money(currentPrice());
+    if (node.textContent === nextPrice) return;
+    node.textContent = nextPrice;
+    node.getAnimations().forEach(animation => animation.cancel());
+    if (hasRendered && !reducedMotion.matches) node.animate([
+      { opacity: 0 },
+      { opacity: 1 }
+    ], { duration: 260, easing: 'cubic-bezier(.2,.7,.2,1)' });
+  });
+  all('[data-old]').forEach(node => {
+    node.hidden = false;
+    const hasActiveSale = activeSalePercent() > 0;
+    node.classList.toggle('priceVisible', hasActiveSale);
+    node.setAttribute('aria-hidden', String(!hasActiveSale));
+  });
+  const badges = [
+    { key: 'sale', enabled: state.hvatamba || state.lovita, label: 'Распродажа', sheet: 'sales' },
+    { key: 'delivery', enabled: state.delivery, label: 'Скидка на доставку', sheet: 'delivery' },
+    { key: 'quantity', enabled: state.quantity, label: 'Скидка за количество', sheet: 'quantity' }
+  ];
+  all('[data-badges]').forEach(node => {
+    if (!node.children.length) {
+      node.innerHTML = badges.map(badge => `<span class="badge ${badge.key}Badge" role="img" aria-label="${badge.label}"><img class="badgeOff" src="assets/badge-${badge.key}-off.png" alt=""><img class="badgeOn" src="assets/badge-${badge.key}-on.png" alt=""></span>`).join('');
+    }
+    badges.forEach((badge, index) => node.children[index].classList.toggle('badgeEnabled', badge.enabled));
+  });
+  for (const sale of ['hvatamba', 'lovita']) {
+    $(`[data-percent="${sale}"]`).textContent = state[`${sale}Percent`];
+    $(`#${sale}Price`).textContent = money(5000 * (1 - state[`${sale}Percent`] / 100));
+  }
+  $('[data-payout]').textContent = payoutText();
+  $('#deliveryValue').textContent = money(state.deliveryAmount);
+  $('#deliveryDescription').textContent = selectedScenario === 'free-d-plus' && state.delivery
+    ? 'Активировали скидку в\u00A0соответствии с\u00A0настройкой скидки в\u00A0профиле'
+    : 'До\u00A02,5 раз больше шансов на\u00A0продажу. Привлеките покупателей из\u00A0регионов';
+  $('#quantityValue').textContent = `${state.quantityPercent}% от\u00A0${state.quantityCount} товаров`;
+  hasRendered = true;
+}
+function toast(message) {
+  clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').classList.add('shown');
+  toastTimer = setTimeout(() => $('#toast').classList.remove('shown'), 2400);
+}
+async function closeSheet() {
+  clearTimeout(deliveryHintTimer);
+  clearTimeout(deliveryHintHideTimer);
+  const overlay = $('#overlay');
+  if (overlay.hidden || sheetClosing) return;
+  sheetClosing = true;
+  overlay.inert = true;
+  if (!reducedMotion.matches) {
+    overlay.getAnimations({ subtree: true }).forEach(animation => {
+      try { animation.finish(); } catch {}
+    });
+    const scrim = overlay.querySelector('.scrim');
+    const panel = overlay.querySelector('.sheet');
+    const animations = [
+      scrim.animate([{ opacity: getComputedStyle(scrim).opacity }, { opacity: 0 }], { duration: 160, easing: 'ease-out', fill: 'forwards' }),
+      panel.animate([{ transform: getComputedStyle(panel).transform }, { transform: 'translateY(100%)' }], { duration: 220, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' })
+    ];
+    await Promise.allSettled(animations.map(animation => animation.finished));
+    animations.forEach(animation => animation.cancel());
+  }
+  overlay.hidden = true;
+  overlay.inert = false;
+  $('#screen').inert = false;
+  returnFocus?.focus({ preventScroll: true });
+  sheetClosing = false;
+}
+function sheet(title, body) {
+  clearTimeout(toastTimer); $('#toast').classList.remove('shown');
+  $('.sheet').classList.remove('figmaSheet', 'staticSheet', 'totalSheet');
+  returnFocus = document.activeElement;
+  $('#sheetContent').innerHTML = `<h2 id="sheetTitle">${title}</h2>${body}`;
+  all('.sheetBodyScroll, .totalSheetBody').forEach(element => element.addEventListener('scroll', () => clampScrollPosition(element), { passive: true }));
+  $('#overlay').hidden = false; $('#screen').inert = true;
+  $('.sheet').focus({ preventScroll: true });
+}
+const done = '<button class="primary" data-action="close">Понятно</button>';
+function sheetSelection(name) {
+  const patch = (x, y, width, height, content, extra = '') => `<div class="sheetValuePatch ${extra}" style="left:${x / 375 * 100}%;top:${y / 762 * 100}%;width:${width / 375 * 100}%;height:${height / 762 * 100}%">${content}</div>`;
+  const chips = (values, selected, suffix) => values.map(value => `<span class="sheetChoice ${value === selected ? 'selected' : ''}">${value}${suffix}</span>`).join('');
+  if (name === 'hvatamba' || name === 'lovita') {
+    const percent = state[`${name}Percent`];
+    return patch(25, 326, 280, 30, `${percent}%`, 'fieldPatch')
+      + patch(16, 373, 343, 36, chips([5, 10, 20, 30, 40], percent, '%'), 'chipsPatch')
+      + patch(66, 644, 72, 22, money(5000 * (1 - percent / 100)), 'previewPricePatch');
+  }
+  if (name === 'delivery') {
+    const position = Math.min(100, Math.max(0, (state.deliveryAmount - 50) / 1450 * 100));
+    return patch(25, 337, 280, 36, money(state.deliveryAmount), 'fieldPatch')
+      + patch(28, 373, 319, 18, `<span class="sheetSliderTrack"><span style="width:${position}%"></span><i style="left:${position}%"></i></span>`, 'sliderPatch')
+      + patch(66, 644, 72, 22, money(currentPrice()), 'previewPricePatch')
+      + (!state.hvatamba ? patch(138, 644, 70, 22, '') : '');
+  }
+  if (name === 'quantity') {
+    return patch(16, 287, 343, 38, chips([5, 10, 15, 20, 30], state.quantityPercent, '%'), 'chipsPatch')
+      + patch(16, 375, 359, 36, chips([2, 3, 5, 8, 10], state.quantityCount, ' товаров'), 'chipsPatch countPatch');
+  }
+  return '';
+}
+function openSheet(name) {
+  if (name === 'sales') {
+    const timeline = state.hvatamba && state.lovita;
+    const canvasHeight = timeline ? 456 : 398;
+    const textPatch = (x, y, width, height, content, className = '') => `<span class="salesTextPatch ${className}" style="left:${x / 375 * 100}%;top:${y / canvasHeight * 100}%;width:${width / 375 * 100}%;height:${height / canvasHeight * 100}%">${content}</span>`;
+    const description = timeline
+      ? `Присоединяйтесь к\u00A0распродажам: так ваше объявление будет долго выделяться в\u00A0поиске. Цена с\u00A0учётом подключённых скидок: Хватамба с\u00A012 августа — ${money(5000 * (1 - state.hvatambaPercent / 100))}; Ловита с\u00A020 сентября — ${money(5000 * (1 - state.lovitaPercent / 100))}; с\u00A012 декабря — 5 000 ₽. Покупатель увидит вашу наибольшую скидку, если даты распродаж пересекаются. Цена поменяется, когда распродажа закончится.`
+      : 'Товары со\u00A0скидкой продаются быстрее почти на\u00A041%, а\u00A0сделок становится до\u00A085% больше. Вступайте в\u00A0распродажи, и\u00A0ваши товары попадут в\u00A0раздел со\u00A0скидками. Выделим объявления ярким значком и\u00A0перечеркнутой ценой. Когда одна распродажа закончится, активируется скидка на\u00A0следующей.';
+    const textPatches = timeline
+      ? textPatch(16, 32, 270, 60, 'Чтобы скидки<br>не&nbsp;заканчивались', 'salesTitlePatch')
+        + textPatch(16, 104, 343, 40, 'Присоединяйтесь к&nbsp;распродажам: так ваше<br>объявление будет долго выделяться в&nbsp;поиске.')
+        + textPatch(16, 162, 343, 20, 'Цена с&nbsp;учётом подключённых скидок', 'salesHeadingPatch')
+        + textPatch(16, 346, 343, 60, 'Покупатель увидит вашу наибольшую скидку,<br>если даты распродаж пересекаются. Цена<br>поменяется, когда распродажа закончится.')
+      : textPatch(16, 32, 270, 60, 'Больше заказов<br>с&nbsp;распродажей', 'salesTitlePatch')
+        + textPatch(16, 102, 343, 40, 'Товары со&nbsp;скидкой продаются быстрее почти<br>на&nbsp;41%, а&nbsp;сделок становится до&nbsp;85% больше.')
+        + textPatch(76, 168, 283, 40, 'Вступайте в&nbsp;распродажи, и&nbsp;ваши<br>товары попадут в&nbsp;раздел со&nbsp;скидками')
+        + textPatch(76, 238, 283, 40, 'Выделим объявления ярким значком<br>и&nbsp;перечеркнутой ценой')
+        + textPatch(76, 308, 283, 40, 'Когда одна распродажа закончится,<br>активируется скидка на&nbsp;следующей');
+    const prices = timeline ? `<span class="timelinePrice firstPrice">${money(5000 * (1 - state.hvatambaPercent / 100))}</span><span class="timelinePrice secondPrice">${money(5000 * (1 - state.lovitaPercent / 100))}</span>` : '';
+    sheet(timeline ? 'Чтобы скидки не заканчивались' : 'Больше заказов с распродажей', `<div class="figmaSheetCanvas"><img class="figmaSheetImage" src="assets/sales-${timeline ? 'timeline' : 'info'}-v66.png" alt="${description}">${textPatches}${prices}</div>`);
+    $('.sheet').classList.add('figmaSheet');
+    return;
+  }
+  if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в&nbsp;распродаже, скидку на&nbsp;доставку или на&nbsp;несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не&nbsp;подключённые преимущества.</p>${done}`);
+  if (name === 'total') {
+    const rows = [
+      { label: 'Ваша цена', value: money(basePrice), className: 'totalBaseRow' },
+      { label: `Комиссия за&nbsp;продажу<br>с&nbsp;доставкой ${commissionRate}%`, value: money(commissionAmount()) },
+      activeSalePercent() && { label: 'Скидка в&nbsp;распродаже', value: money(saleDiscountAmount()) },
+      state.delivery && { label: 'Скидка на&nbsp;доставку', value: money(state.deliveryAmount), interactive: true }
+    ].filter(Boolean);
+    const receiptRows = rows.map(({ label, value, interactive, className = '' }) => `<${interactive ? 'button' : 'div'} class="totalRow${interactive ? ' totalInfoRow' : ''}${className ? ` ${className}` : ''}"${interactive ? ' data-action="delivery-info" aria-describedby="deliveryHint"' : ''}><span>${label}${interactive ? '<img class="totalInfoIcon" src="assets/question-outline.svg" alt="">' : ''}</span><i></i><strong>${value}</strong></${interactive ? 'button' : 'div'}>`).join('');
+    sheet('Итого', `<div class="totalSheetBody"><div class="totalReceipt">${receiptRows}<div class="totalRow totalResult"><span>Вы получите</span><i></i><strong>${payoutText()}</strong></div></div></div><div class="deliveryHint" id="deliveryHint" role="status" hidden>Вычтем меньше, если доставка выйдет дешевле</div><div class="totalSheetFooter"><button class="primary" data-action="close">Готово</button></div>`);
+    $('.sheet').classList.add('totalSheet');
+    $('.sheet').style.setProperty('--total-sheet-height', `${230 + rows.length * 30}px`);
+    $('.totalSheetBody').scrollTop = 0;
+    return;
+  }
+  const sheets = {
+    hvatamba: { title: 'Хватамба', height: 762 },
+    lovita: { title: 'Ловита', height: 762 },
+    delivery: { title: 'Скидка на доставку', height: 762 },
+    quantity: { title: 'Скидка за количество', height: 762 },
+    methods: { title: 'Способы продажи', height: 862 },
+    views: { title: 'Цена просмотра', height: 756 },
+    promotion: { title: 'Продвижение', height: 948 }
+  };
+  const preview = sheets[name];
+  if (!preview) return;
+  const footerHeight = ['hvatamba', 'lovita', 'delivery'].includes(name) ? 132 : name === 'quantity' ? 76 : 100;
+  const bodyHeight = preview.height - footerHeight;
+  const canvas = `<div class="figmaSheetCanvas"><img class="figmaSheetImage" src="assets/sheet-${name}${['hvatamba', 'lovita', 'delivery', 'quantity'].includes(name) ? '-v38' : ''}.png" width="375" height="${preview.height}" alt="${preview.title}. Статичный макет настроек.">${sheetSelection(name)}</div>`;
+  sheet(preview.title, `<div class="sheetBodyScroll"><div class="sheetBodyCrop" style="aspect-ratio:375/${bodyHeight}">${canvas}</div></div><div class="sheetFixedFooter" style="aspect-ratio:375/${footerHeight}"><div class="sheetFooterImage" style="transform:translateY(-${bodyHeight / preview.height * 100}%)">${canvas}</div><button class="sheetDoneHotspot" data-action="close" aria-label="Закрыть шторку" style="height:${Math.min(76, footerHeight) / footerHeight * 100}%"></button></div>`);
+  $('.sheet').classList.add('figmaSheet', 'staticSheet');
+  $('.sheet').scrollTop = 0;
+}
+function summary(saved = false) {
+  const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.lovita && `Ловита — ${state.lovitaPercent}% после Хватамбы`, state.delivery && `Скидка на&nbsp;доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от&nbsp;${state.quantityCount} товаров`].filter(Boolean);
+  sheet(saved ? 'Настройки сохранены' : 'Всё готово', `<img class="summaryPhoto" src="assets/product-sneakers-v64.png" alt="Кроссовки Nike"><h3>Кроссовки Nike</h3><div class="summaryPrice">${money(currentPrice())}</div><ul class="summaryList">${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>Без дополнительных скидок</li>'}</ul><p class="muted">${saved ? 'Выбор сохранён в этом браузере.' : 'Предпросмотр настроек. Реальное объявление не изменено.'}</p><button class="primary" data-action="close">Вернуться к настройкам</button><button class="textButton" data-action="reset">Начать заново</button>`);
+}
+document.addEventListener('click', event => {
+  const button = event.target.closest('button, [data-action]'); if (!button) return;
+  if (button.dataset.toggle) { state[button.dataset.toggle] = !state[button.dataset.toggle]; render(); return; }
+  if (button.dataset.sheet) return openSheet(button.dataset.sheet);
+  switch (button.dataset.action) {
+    case 'close': return closeSheet();
+    case 'delivery-info': {
+      const hint = $('#deliveryHint');
+      if (!hint) return;
+      clearTimeout(deliveryHintTimer);
+      clearTimeout(deliveryHintHideTimer);
+      hint.hidden = false;
+      const sheetRect = $('.sheet').getBoundingClientRect();
+      const rowRect = button.getBoundingClientRect();
+      hint.style.top = `${Math.max(54, rowRect.top - sheetRect.top - hint.offsetHeight - 8)}px`;
+      requestAnimationFrame(() => hint.classList.add('shown'));
+      deliveryHintTimer = setTimeout(() => {
+        hint.classList.remove('shown');
+        deliveryHintHideTimer = setTimeout(() => { hint.hidden = true; }, 180);
+      }, 4000);
+      return;
+    }
+    case 'save':
+      try { localStorage.setItem('promo-stream-selection-v1', JSON.stringify(state)); summary(true); } catch { toast('Не удалось сохранить настройки в браузере'); }
+      return;
+    case 'reset': state = { ...scenarioDefaults }; try { localStorage.removeItem('promo-stream-selection-v1'); } catch {} closeSheet(); render(); $('#scroll').scrollTo({ top: 0, behavior: smoothScrollBehavior() }); $('#carousel').scrollTo({ left: 0 }); return;
+  }
+});
+document.addEventListener('keydown', event => {
+  if ($('#overlay').hidden) return;
+  if (event.key === 'Escape') closeSheet();
+  if (event.key === 'Tab') {
+    const controls = [...$('.sheet').querySelectorAll('button, input:checked, select')];
+    const first = controls[0], last = controls.at(-1);
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === $('.sheet'))) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
+});
+function updateCompactHeader() {
+  scrollFrame = undefined;
+  const scrollTop = $('#scroll').scrollTop;
+  const compact = compactHeaderVisible ? scrollTop >= 170 : scrollTop > 200;
+  if (compact === compactHeaderVisible) return;
+  compactHeaderVisible = compact;
+  $('#header').classList.toggle('headerCompact', compact);
+  $('.compactWrap').setAttribute('aria-hidden', String(!compact));
+  $('.compactWrap').inert = !compact;
+}
+$('#scroll').addEventListener('scroll', () => {
+  clampScrollPosition($('#scroll'));
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateCompactHeader);
+}, { passive: true });
+$('#carousel').addEventListener('keydown', event => {
+  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { event.preventDefault(); $('#carousel').scrollBy({ left: (event.key === 'ArrowRight' ? 1 : -1) * 333, behavior: smoothScrollBehavior() }); }
+});
+$('.compactWrap').inert = true;
+render();
+document.addEventListener('promo:scenario-selected', event => {
+  selectedScenario = event.detail?.scenario === 'free-d-plus' ? 'free-d-plus' : 'free-d-minus';
+  scenarioDefaults = { ...defaults, delivery: Boolean(event.detail?.delivery) };
+  state = { ...scenarioDefaults };
+  render();
+});
+for (const name of ['badge-sale', 'badge-delivery', 'badge-quantity', 'toggle']) {
+  for (const variant of ['on', 'off']) {
+    const image = new Image();
+    image.src = `assets/${name}-${variant}.png`;
+  }
+}
+
+if (document.modelContext?.registerTool) {
+  const lifecycle = new AbortController();
+  const tool = {
+    name: 'configure_promo_selection',
+    title: 'Выбрать акции прототипа',
+    description: 'Изменяет только переключатели в демо. Не сохраняет и не меняет реальное объявление.',
+    inputSchema: { type: 'object', properties: Object.fromEntries(['hvatamba', 'lovita', 'delivery', 'quantity'].map(key => [key, { type: 'boolean' }])), additionalProperties: false },
+    annotations: { readOnlyHint: false, untrustedContentHint: false },
+    execute(input) {
+      const allowed = ['hvatamba', 'lovita', 'delivery', 'quantity'];
+      if (!input || typeof input !== 'object' || Array.isArray(input) || Object.entries(input).some(([key, value]) => !allowed.includes(key) || typeof value !== 'boolean')) throw new Error('Нужны только булевы значения переключателей.');
+      Object.assign(state, input);
+      render();
+      return { selection: Object.fromEntries(allowed.map(key => [key, state[key]])), currentPrice: currentPrice() };
+    }
+  };
+  try { Promise.resolve(document.modelContext.registerTool(tool, { signal: lifecycle.signal })).catch(error => console.warn('WebMCP registration:', error.message)); }
+  catch (error) { console.warn('WebMCP registration:', error.message); }
+  window.addEventListener('pagehide', event => { if (!event.persisted) lifecycle.abort(); }, { once: true });
+}
+
+for (const name of ['hvatamba', 'lovita', 'delivery', 'quantity', 'methods', 'views', 'promotion']) {
+  const preview = new Image();
+  preview.src = `assets/sheet-${name}${['hvatamba', 'lovita', 'delivery', 'quantity'].includes(name) ? '-v38' : ''}.png`;
+}
