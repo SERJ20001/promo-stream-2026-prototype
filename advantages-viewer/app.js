@@ -13,7 +13,7 @@ const money = value => `${formatAmount(value)} ₽`;
 const $ = selector => document.querySelector(selector);
 const all = selector => [...document.querySelectorAll(selector)];
 const basePrice = 5000;
-const commissionRate = 3;
+const commissionRate = 10;
 const currentPrice = () => state.hvatamba ? basePrice * (1 - state.hvatambaPercent / 100) : basePrice;
 const commissionAmount = () => Math.round(basePrice * commissionRate / 100);
 const saleDiscountAmount = () => basePrice - currentPrice();

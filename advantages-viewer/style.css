@@ -281,10 +281,12 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .introTextareaPatch { align-items: flex-start; padding-top: 16px; white-space: normal; }
 .introCopyPatch { align-items: flex-start; border-radius: 0; background: white; white-space: normal; }
 .introPhotoPatch { border-radius: 12px; background: white; }
-.introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionAmountPatch, .introCommissionPayoutPatch { justify-content: flex-end; background: white; white-space: nowrap; }
+.introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionLabelPatch, .introCommissionAmountPatch, .introCommissionPayoutPatch { background: white; }
+.introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionAmountPatch, .introCommissionPayoutPatch { justify-content: flex-end; white-space: nowrap; }
 .introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionPayoutPatch { font-weight: 700; }
 .introPaymentTotalPatch { font-size: 16px; line-height: 20px; }
 .introPaymentAmountPatch { justify-content: flex-start; font-size: 32px; line-height: 40px; }
+.introCommissionLabelPatch { align-items: flex-start; font-size: 15px; line-height: 20px; white-space: normal; }
 .introCommissionAmountPatch { font-size: 15px; line-height: 20px; }
 .introCommissionPayoutPatch { font-size: 16px; line-height: 20px; }
 

@@ -130,7 +130,7 @@ function recommendationSheet(name) {
       state.hvatamba && ['Скидка в распродаже', money(saleDiscountAmount())],
       state.delivery && ['Скидка на доставку', money(state.deliveryAmount)]
     ].filter(Boolean);
-    const adjustmentRows = [['Комиссия 3%', money(commissionAmount()), 'commission'], ...discountRows];
+    const adjustmentRows = [[`Комиссия ${commissionRate}%`, money(commissionAmount()), 'commission'], ...discountRows];
     const sheetHeight = Math.min(580, 278 + discountRows.length * 30 + (serviceRows.length ? 86 + serviceRows.length * 32 : 0));
     const rows = (items, extraClass = '') => items.map(([label, value, type]) => `<div class="totalCalculationRow ${extraClass}">${type === 'commission' ? `<button type="button" class="commissionInfo" data-commission-info aria-label="${label}. Подробнее о комиссии">${label}<img src="assets/question-outline.svg" alt=""></button>` : `<span>${label}</span>`}<i></i><strong>${value}</strong></div>`).join('');
     const needsPayment = payment > 0 && !state.paidServicesPaid;
