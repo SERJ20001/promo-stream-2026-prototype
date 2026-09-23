@@ -6,7 +6,7 @@ const money = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const $ = selector => document.querySelector(selector);
 const all = selector => [...document.querySelectorAll(selector)];
 const basePrice = 5000;
-const commissionRate = 3;
+const commissionRate = 10;
 const activeSalePercent = () => state.hvatamba ? state.hvatambaPercent : state.lovita ? state.lovitaPercent : 0;
 const currentPrice = () => basePrice * (1 - activeSalePercent() / 100);
 const commissionAmount = () => currentPrice() * commissionRate / 100;

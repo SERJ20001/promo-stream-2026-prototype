@@ -261,13 +261,15 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .introCopyPatch { align-items: flex-start; border-radius: 0; background: white; white-space: normal; }
 .introEditorialPatch { align-items: flex-start; background: #f2f1f0; font-size: 15px; line-height: 22px; white-space: normal; }
 .introPhotoPatch { border-radius: 12px; }
-.introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionAmountPatch, .introCommissionPayoutPatch { justify-content: flex-end; background: white; white-space: nowrap; }
+.introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionLabelPatch, .introCommissionAmountPatch, .introCommissionPayoutPatch { background: white; white-space: nowrap; }
+.introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionAmountPatch, .introCommissionPayoutPatch { justify-content: flex-end; }
 .introPaymentTotalPatch, .introPaymentAmountPatch, .introCommissionPayoutPatch { font-weight: 700; }
 .introPaymentTotalPatch { font-size: 16px; line-height: 20px; }
 .introPaymentAmountPatch { justify-content: flex-start; font-size: 32px; line-height: 40px; }
 .introPaymentStatusPatch { justify-content: center; background: white; font-size: 32px; font-weight: 700; line-height: 40px; white-space: nowrap; }
 .introCommissionAmountPatch { font-size: 15px; line-height: 20px; }
 .introCommissionPayoutPatch { font-size: 16px; line-height: 20px; }
+.introCommissionLabelPatch { justify-content: flex-start; font-size: 15px; line-height: 20px; }
 
 .introFlow { display: flex; flex-direction: column; overflow: hidden; outline: none; }
 .introViewport { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: none; scrollbar-width: none; }
@@ -324,11 +326,6 @@ button:focus-visible, select:focus-visible, .carousel:focus-visible { outline: 2
 .publicationCard strong + span { margin-top: 2px; }
 .publicationCardInitial strong { height: 20px; }
 .publicationCardInitial strong + span { margin-top: 1px; }
-.publicationCardStatic { top: 45.58%; transform: rotate(1deg); }
-.publicationBack { display: grid; place-items: center; }
-.publicationBack img { width: 24px; height: 24px; }
-.publicationStaticTitle { position: absolute; top: calc(45.58% - 82px); right: 30px; left: 30px; z-index: 11; height: 64px; margin: 0; color: #141414; text-align: center; white-space: nowrap; font: 700 28px/32px 'Avito Text', sans-serif; }
-
 .status, .home { display: none; }
 .header { height: 52px; }
 .header.headerCompact { height: 108px; }

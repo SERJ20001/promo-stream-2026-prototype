@@ -42,8 +42,9 @@ function introPrefill(index, height) {
   if (index === 5) return input(16, 101, 343, 52, '5 000 ₽');
   if (index === 11) return field(16, 67, 128, 40, '339 ₽', 'introPaymentAmountPatch');
   if (index === 12) return field(75, 430, 225, 52, 'Оплата 339 ₽', 'introPaymentStatusPatch');
-  if (index === 14) return field(300, 386, 60, 24, '−150 ₽', 'introCommissionAmountPatch')
-    + field(286, 432, 74, 24, '4 850 ₽', 'introCommissionPayoutPatch');
+  if (index === 14) return field(16, 384, 220, 44, 'Комиссия за продажу<br>с доставкой 10%', 'introCommissionLabelPatch')
+    + field(286, 386, 74, 24, '−500 ₽', 'introCommissionAmountPatch')
+    + field(286, 432, 74, 24, '4 500 ₽', 'introCommissionPayoutPatch');
   if (index === 9) return field(34, 274, 307, 44, 'Покупатели увидят большую карточку<br>в&nbsp;результатах поиска', 'introEditorialPatch')
     + field(34, 476, 307, 44, 'Подключайте, если цена&nbsp;— ваше<br>конкурентное преимущество', 'introEditorialPatch');
   if (index === 4) return input(16, 369, 343, 52, 'Новое')
@@ -109,18 +110,31 @@ function showIntro(index) {
     next.src = introAsset(introOrder[introOrder.indexOf(index) + 1] ?? 13);
   }
 }
-function showPublicationSuccess() {
+function showPublicationCelebration() {
   intro.inert = true;
   const celebration = document.createElement('section');
   celebration.className = 'publicationCelebration';
   celebration.setAttribute('aria-label', 'Объявление опубликовано');
-  celebration.innerHTML = '<div class="publicationNav"><button class="introHit publicationBack" aria-label="Назад"><img src="assets/icon-back.png" alt=""></button></div><h1 class="publicationStaticTitle">Объявление успешно<br>опубликовано</h1>';
+  celebration.innerHTML = `<div class="publicationNav"><img src="${introAsset(14)}" alt=""><button class="introHit publicationBack" aria-label="Назад"></button></div>`;
   document.querySelector('#app').append(celebration);
   celebration.querySelector('.publicationBack').addEventListener('click', () => transitionFromPublication(14, 140, 220));
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const card = document.querySelector('.publicationCard');
-  card.classList.remove('publicationCardInitial');
-  card.classList.add('publicationCardStatic');
-  publicationTimer = setTimeout(showPromotionAfterPublication, 2000);
+  const photo = card.querySelector('img');
+  const expansion = { duration: reduced ? 0 : 720, easing: 'cubic-bezier(.22,.75,.25,1)', fill: 'forwards' };
+  celebration.animate([{ backgroundColor: '#ffffff00' }, { backgroundColor: '#fff' }], { duration: reduced ? 0 : 240, fill: 'forwards' });
+  card.animate([
+    { top: '269px', left: '10px', width: 'calc(100% - 20px)', height: '103px', padding: '12px', borderRadius: '28px', transform: 'rotate(0deg)' },
+    { top: '45.58%', left: '20px', width: 'calc(100% - 40px)', height: '130px', padding: '12px', borderRadius: '28px', transform: 'rotate(1deg)' }
+  ], expansion);
+  photo.animate([{ width: '80px', height: '80px', borderRadius: '16px' }, { width: '106px', height: '106px', borderRadius: '20px' }], expansion);
+  card.querySelector('strong').animate([
+    { transform: 'scale(0.888888889)', lineHeight: '22.5px', height: '20px' },
+    { transform: 'scale(1)', lineHeight: '22px', height: '22px' }
+  ], expansion);
+  card.querySelector('strong + span').animate([{ marginTop: '1px' }, { marginTop: '2px' }], expansion);
+  document.dispatchEvent(new Event('promo:confetti'));
+  publicationTimer = setTimeout(showPromotionAfterPublication, reduced ? 800 : 3000);
 }
 async function transitionToIntro(index) {
   if (introTransitioning) return;
@@ -157,7 +171,7 @@ intro.addEventListener('click', event => {
     return transitionToIntro(previousIndex);
   }
   if (!event.target.closest('.introNext')) return;
-  if (introIndex === 14) return showPublicationSuccess();
+  if (introIndex === 14) return showPublicationCelebration();
   if (introOrder.indexOf(introIndex) + 1 < introOrder.length) {
     const nextIndex = introOrder[introOrder.indexOf(introIndex) + 1];
     return transitionToIntro(nextIndex);
