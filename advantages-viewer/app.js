@@ -22,7 +22,7 @@ const paidServiceKeys = ['promotion', 'xl', 'highlight'];
 const enabledDiscountsCount = () => discountKeys.filter(key => state[key]).length;
 const payoutBeforeDelivery = () => Math.max(0, currentPrice() - commissionAmount());
 const payoutAmount = () => Math.max(0, payoutBeforeDelivery() - (state.delivery ? state.deliveryAmount : 0));
-const payoutText = () => state.delivery ? `${formatAmount(payoutBeforeDelivery())} – ${money(payoutAmount())}` : money(payoutBeforeDelivery());
+const payoutText = () => money(payoutAmount());
 let returnFocus;
 let toastTimer;
 let commissionTooltipTimer;
@@ -257,7 +257,7 @@ function openSheet(name) {
   }
   clearSheetDraft();
   if (name === 'benefits') return sheet('Больше поводов купить', `<p>Выберите преимущества объявления: участие в распродаже, скидку на доставку или на несколько товаров.</p><p>Бейджи над карточками показывают, что вы подключили. Пунктирные бейджи — ещё не подключённые преимущества.</p>${done}`);
-  if (name === 'total') return sheet('Вы получите', `<div class="receipt"><span>Цена с текущей скидкой</span><strong>${money(currentPrice())}</strong><span>Скидка на доставку</span><strong>${state.delivery ? `до ${money(state.deliveryAmount)}` : 'Не подключена'}</strong><span>Вы получите</span><strong>${payoutText()}</strong></div><p>${state.delivery ? 'Скидка на доставку может потратиться частично или не потратиться. Первая сумма — если она не расходуется, вторая — если используется полностью.' : 'Скидка на доставку выключена, поэтому показываем одну сумму.'}</p>${done}`);
+  if (name === 'total') return sheet('Вы получите', `<div class="receipt"><span>Цена с текущей скидкой</span><strong>${money(currentPrice())}</strong><span>Скидка на доставку</span><strong>${state.delivery ? money(state.deliveryAmount) : 'Не подключена'}</strong><span>Вы получите</span><strong>${payoutText()}</strong></div><p>${state.delivery ? 'Скидка на доставку полностью вычитается из суммы выплаты.' : 'Скидка на доставку выключена.'}</p>${done}`);
 }
 function summary() {
   const items = [state.hvatamba && `Хватамба — ${state.hvatambaPercent}% сейчас`, state.delivery && `Скидка на доставку — ${money(state.deliveryAmount)}`, state.quantity && `${state.quantityPercent}% от ${state.quantityCount} товаров`].filter(Boolean);

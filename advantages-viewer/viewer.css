@@ -20,3 +20,6 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
 .viewerStage .totalSheetCanvas::after,
 .viewerStage .fixedSheetFooter::after { content: ''; position: absolute; inset: auto 0 0; z-index: 4; height: 34px; background: white; }
 .viewerStage .totalCalculation .totalSheetButton { bottom: 16px; }
+@media (max-width: 499px) {
+  .scenarioChoiceContent, .viewerDevice, .viewerDisplay, .viewerStage .phone { width: 100%; height: 100%; max-width: none; max-height: none; }
+}
