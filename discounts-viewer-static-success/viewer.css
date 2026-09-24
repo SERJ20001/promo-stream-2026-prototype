@@ -1,6 +1,7 @@
-html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: white; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #ececeb; }
+#assetGate { background: #ececeb; }
 .viewerStage[hidden], .scenarioChoice[hidden], .assetGate[hidden], .viewerRetry[hidden] { display: none; }
-.scenarioChoice { position: fixed; inset: 0; display: grid; place-items: center; overflow: hidden; background: white; color: #141414; font-family: 'Avito Text', sans-serif; outline: none; }
+.scenarioChoice { position: fixed; inset: 0; display: grid; place-items: center; overflow: hidden; background: #ececeb; color: #141414; font-family: 'Avito Text', sans-serif; outline: none; }
 .scenarioChoiceCanvas { position: relative; width: min(100%, 375px); height: min(100dvh, 812px); background: white; }
 .scenarioOption { position: absolute; left: 107.5px; display: flex; width: 166.5px; height: 166.5px; flex-direction: column; align-items: center; justify-content: center; border: 0; border-radius: 16px; background: #f2f1f0; color: #141414; font: 400 15px/20px 'Avito Text', sans-serif; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .scenarioOptionFirst { top: 235px; }
@@ -10,5 +11,18 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
 .scenarioOption:active { background: #e1e0df; transform: scale(.985); }
 .scenarioOption:focus-visible, .viewerRetry:focus-visible { outline: 3px solid #141414; outline-offset: 4px; }
 .viewerRetry { margin-top: 24px; border: 0; border-radius: 16px; padding: 16px 24px; background: #141414; color: white; font: 16px/20px 'Avito Text', sans-serif; cursor: pointer; }
-.viewerStage { background: white; }
-.viewerStage .phone { width: min(100%, 375px); height: min(100dvh, 812px); max-width: 375px; max-height: 812px; border-radius: 0; box-shadow: none; }
+.viewerStage { background: #ececeb; }
+.viewerStage .phone { width: min(100%, 375px); height: min(100dvh, 812px); max-width: 375px; max-height: 812px; background: white; border-radius: 0; box-shadow: none; }
+
+@media (min-width: 500px) {
+  .scenarioChoiceCanvas,
+  .viewerStage .phone { border-radius: 36px; box-shadow: 0 18px 80px #00000018; }
+}
+
+@media (max-width: 499px) {
+  html,
+  body,
+  #assetGate,
+  .scenarioChoice,
+  .viewerStage { background: white; }
+}
